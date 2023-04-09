@@ -162,6 +162,7 @@ def enter_series():
     press_group([Buttons.DPAD_RIGHT]*3, 0.5, 0)
     # TODO 可选进入多人一还是多人二
     press_group([Buttons.DPAD_UP]*2, 0.5, 0)
+    time.sleep(2)
     press_group([Buttons.A]*1, 0.5, 0)
 
 
