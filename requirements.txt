@@ -1,0 +1,4 @@
+nxbt
+pytesseract
+inputimeout
+pytest
