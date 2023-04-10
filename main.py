@@ -28,6 +28,7 @@ G_RACE_QUIT_EVENT = threading.Event()
 
 # 是否活跃状态
 G_IS_ALIVE = threading.Event()
+G_CLEAR_COUNT = 0
 
 # 正序选车
 SELECT_CAR_ACTION = [
@@ -94,9 +95,8 @@ def press_group(buttons, sleep=1, shot=1):
 
 def press_button(button, sleep=2, shot=1):
     """按下按键"""
-    global G_IS_ALIVE
-    if not G_IS_ALIVE.is_set():
-        G_IS_ALIVE.set()
+    global G_CLEAR_COUNT
+    G_CLEAR_COUNT = 0
     logger.info(f"Press button {button}")
     NX.press_buttons(CONTROLLER_INDEX, [button])
     if sleep > 0:
@@ -475,13 +475,13 @@ def start_keep_alive():
 def clear_alive():
     """没在挂机释放每隔60s释放一次IS_ALIVE状态"""
     global G_IS_ALIVE
-    count = 0
+    global G_CLEAR_COUNT
     while G_RUN.is_set():
         time.sleep(1)
-        count += 1
-        if not G_RACE_RUN_EVENT.is_set() and count > 50:
+        G_CLEAR_COUNT += 1
+        if not G_RACE_RUN_EVENT.is_set() and G_CLEAR_COUNT > 50:
             logger.info("Clear IS_ALIVE event.")
-            count = 0
+            G_CLEAR_COUNT = 0
             G_IS_ALIVE.clear()
 
 
@@ -495,10 +495,11 @@ def command_input():
     global G_RACE_RUN_EVENT
     global G_RACE_QUIT_EVENT
     global G_IS_ALIVE
+    global G_CLEAR_COUNT
 
     while G_RUN.is_set():
         command = input("Please input command \n")
-        G_IS_ALIVE.set()
+        G_CLEAR_COUNT = 0
         if command == "stop":
             # 停止挂机
             if G_RACE_RUN_EVENT.is_set():
