@@ -249,7 +249,7 @@ def auto_select_car(reverse=False):
         press_button(select_action[SELECT_COUNT], 2)
 
 
-def select_car(row, column):
+def select_car(row, column, confirm=1):
     """开始比赛并选择车
     row 第几行
     column 第几列
@@ -270,6 +270,11 @@ def select_car(row, column):
     for i in range(column - 1):
         press_button(Buttons.DPAD_RIGHT, 0, 0)
 
+    if confirm:
+        confirm_and_play()
+
+
+def confirm_and_play():
     # 确认车辆
     logger.info("Confirm car")
     press_a(2)
@@ -315,7 +320,7 @@ def car_hunt():
     logger.info("Wait for select car")
     wait_for("CAR SELECTION")
     logger.info("Start select car")
-    select_car(2, 5)
+    select_car(2, 5, confirm=0)
     logger.info("Start confirm car")
     press_a(3)
     logger.info("Wait for Play button")
