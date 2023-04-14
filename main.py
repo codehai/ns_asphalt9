@@ -260,6 +260,9 @@ def select_car(row, column):
     for i in range(25):
         press_button(Buttons.DPAD_LEFT, 0, 0)
 
+    for i in range(3):
+        press_button(Buttons.DPAD_UP, 0, 0)
+
     # 选车
     for i in range(row):
         press_button(Buttons.DPAD_DOWN, 0, 0)
@@ -310,9 +313,15 @@ def car_hunt():
     """寻车"""
     press_a(1)
     wait_for("CAR SELECTION")
+    select_car(2, 5)
     press_a(1)
     wait_for("PLAY", 30)
-    press_a(1)
+    press_a(3)
+    text = ocr_screen()
+    if "TICKETS" in text:
+        press_a(1)
+        press_b(1)
+        press_a(1)
     process_race()    
 
 
