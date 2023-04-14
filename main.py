@@ -330,6 +330,7 @@ def car_hunt():
     logger.info("OCR screen")
     text = ocr_screen()
     if "TICKETS" in text:
+        press_button(Buttons.DPAD_DOWN, 2)
         press_a(2)
         press_b(2)
         press_a(2)
