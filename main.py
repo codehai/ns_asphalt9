@@ -306,6 +306,16 @@ def choose_series():
     press_a(1)
 
 
+def car_hunt():
+    """寻车"""
+    press_a(1)
+    wait_for("CAR SELECTION")
+    press_a(1)
+    wait_for("PLAY", 30)
+    press_a(1)
+    process_race()    
+
+
 def connect_controller():
     """连接手柄"""
     NX.press_buttons(CONTROLLER_INDEX, [Buttons.L,Buttons.R], down=1)
@@ -356,6 +366,11 @@ def process_screen(text):
             "identity": "CLASSIC",
             "action": play_game,
             "args": (1,),
+        },
+        "car_hunt": {
+            "identity": "CAR HUNT",
+            "action": car_hunt,
+            "args": (),
         },
         "select_cat": {
             "identity": "CAR SELECTION",
