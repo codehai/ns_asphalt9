@@ -310,18 +310,27 @@ def choose_series():
 
 def car_hunt():
     """寻车"""
-    press_a(1)
-    wait_for("CAR SELECTION")
-    select_car(2, 5)
-    press_a(1)
-    wait_for("PLAY", 30)
+    logger.info("Start process car hunt.")
     press_a(3)
+    logger.info("Wait for select car")
+    wait_for("CAR SELECTION")
+    logger.info("Start select car")
+    select_car(2, 5)
+    logger.info("Start confirm car")
+    press_a(3)
+    logger.info("Wait for Play button")
+    wait_for("PLAY", 30)
+    logger.info("Press play button")
+    press_a(3)
+    logger.info("OCR screen")
     text = ocr_screen()
     if "TICKETS" in text:
-        press_a(1)
-        press_b(1)
-        press_a(1)
-    process_race()    
+        press_a(2)
+        press_b(2)
+        press_a(2)
+    logger.info("Start process race")
+    process_race()
+    logger.info("Finished car hunt")
 
 
 def connect_controller():
