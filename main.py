@@ -156,14 +156,14 @@ def enter_game():
 
 def enter_series():
     """进入多人赛事"""
-    press_group([Buttons.B]*5, 0.5, 0)
-    press_group([Buttons.DPAD_DOWN]*5, 0.5, 0)
-    press_group([Buttons.DPAD_LEFT]*5, 0.5, 0)
-    press_group([Buttons.DPAD_RIGHT]*3, 0.5, 0)
+    press_group([Buttons.B] * 5, 0.5, 0)
+    press_group([Buttons.DPAD_DOWN] * 5, 0.5, 0)
+    press_group([Buttons.DPAD_LEFT] * 5, 0.5, 0)
+    press_group([Buttons.DPAD_RIGHT] * 3, 0.5, 0)
     # TODO 可选进入多人一还是多人二
-    press_group([Buttons.DPAD_UP]*2, 0.5, 0)
+    press_group([Buttons.DPAD_UP] * 2, 0.5, 0)
     time.sleep(2)
-    press_group([Buttons.A]*1, 0.5, 0)
+    press_group([Buttons.A] * 1, 0.5, 0)
 
 
 def play_game(select_car=1):
@@ -300,8 +300,7 @@ def choose_series():
     """选择比赛项目"""
     try:
         screenshot()
-        c = inputimeout(
-            prompt="Please select series 1 World 2 Limited \n", timeout=10)
+        c = inputimeout(prompt="Please select series 1 World 2 Limited \n", timeout=10)
     except TimeoutOccurred:
         c = "timeout"
     if c == "2":
@@ -327,9 +326,15 @@ def car_hunt():
 
 def connect_controller():
     """连接手柄"""
-    NX.press_buttons(CONTROLLER_INDEX, [Buttons.L,Buttons.R], down=1)
+    NX.press_buttons(CONTROLLER_INDEX, [Buttons.L, Buttons.R], down=1)
     time.sleep(1)
-    NX.press_buttons(CONTROLLER_INDEX, [Buttons.A,], down=0.5)
+    NX.press_buttons(
+        CONTROLLER_INDEX,
+        [
+            Buttons.A,
+        ],
+        down=0.5,
+    )
 
 
 def wait(seconds=3):
@@ -345,7 +350,7 @@ def process_screen(text):
             "action": process_race,
             "args": (),
         },
-        "connect_controller":{
+        "connect_controller": {
             "identity": "Press.*on the controller",
             "action": connect_controller,
             "args": (),
@@ -365,14 +370,13 @@ def process_screen(text):
             "action": enter_series,
             "args": (),
         },
-
         "play_trial": {
             "identity": "TRIAL",
             "action": play_game,
             "args": (0,),
         },
         "play_classic": {
-            "identity": "CLASSIC",
+            "identity": "CLASSIC|WORLD SERIES",
             "action": play_game,
             "args": (1,),
         },
@@ -417,23 +421,21 @@ def process_screen(text):
             "action": press_group,
             "args": ([Buttons.DPAD_LEFT, Buttons.B], 1, 1),
         },
-        "system_error":{
+        "system_error": {
             "identity": "software.*closed",
             "action": press_group,
-            "args": ([Buttons.A]*3, 1, 1),
-        }
+            "args": ([Buttons.A] * 3, 1, 1),
+        },
     }
     match_page = []
     for page in page_mapping:
         if has_text(page_mapping[page]["identity"], text):
             if "not_in" in page_mapping[page]:
                 if not has_text(page_mapping[page]["not_in"], text):
-                    logger.info(
-                        f"match identity: {page_mapping[page]['identity']}")
+                    logger.info(f"match identity: {page_mapping[page]['identity']}")
                     match_page.append(page)
             else:
-                logger.info(
-                    f"match identity: {page_mapping[page]['identity']}")
+                logger.info(f"match identity: {page_mapping[page]['identity']}")
                 match_page.append(page)
     logger.info(f"match results: {match_page}")
     if len(match_page) >= 1:
@@ -447,8 +449,7 @@ def process_screen(text):
 
 
 def capture():
-    filename = "".join([str(d)
-                       for d in datetime.datetime.now().timetuple()]) + ".jpg"
+    filename = "".join([str(d) for d in datetime.datetime.now().timetuple()]) + ".jpg"
     shutil.copy("./images/output.jpg", f"./images/{filename}")
     return filename
 
@@ -473,7 +474,7 @@ def event_loop():
             )
             # 出错重新进多人
             enter_series()
- 
+
     G_RACE_QUIT_EVENT.set()
 
 

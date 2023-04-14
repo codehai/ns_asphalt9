@@ -18,7 +18,7 @@
    同时输出switch到显示器和采集卡，方便debug
 
 
-### 文档地址(TODO)
+### 文档地址
 
 [Wiki](https://github.com/codehai/ns_asphalt9/wiki)
 
