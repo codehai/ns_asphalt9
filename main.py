@@ -395,7 +395,7 @@ def process_screen(text):
             "args": (1,),
         },
         "car_hunt": {
-            "identity": "CAR HUNT",
+            "identity": "CAR HUNT.*PORSCHE 718 CAYMAN GT4",
             "action": car_hunt,
             "args": (),
         },
