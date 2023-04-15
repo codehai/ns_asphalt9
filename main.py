@@ -426,7 +426,7 @@ def process_screen(text):
             "args": (Buttons.B,),
         },
         "next_page": {
-            "identity": "NEXT|RATING|WINNER|YOUR|CONGRATULATIONS|CONNECTION ERROR",
+            "identity": "NEXT|RATING|WINNER|YOUR|CONGRATULATIONS|CONNECTION ERROR|STAR UP",
             "not_in": "YOUR CAR",
             "action": press_button,
             "args": (Buttons.A,),
