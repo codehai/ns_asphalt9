@@ -311,9 +311,9 @@ def process_car_hunt():
         progress = progress[0] if progress else "0"
         logger.info(f"Current position {position}, progress {progress}")
         progress = int(progress.replace("%", ""))
-        if progress >= 0 and progress < 22:
+        if progress > 0 and progress < 22:
             NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
-            time.sleep(0.2)
+            time.sleep(0.4)
             NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
             NX.press_buttons(CONTROLLER_INDEX, [Buttons.DPAD_LEFT])
         if progress >= 22:
