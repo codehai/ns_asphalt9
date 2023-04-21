@@ -304,16 +304,22 @@ def process_race():
 def process_car_hunt():
     global FINISHED_COUNT
     for i in range(100):
-        NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
-        NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
         text = ocr_screen()
         position = re.findall(r"\d/\d", text)
         position = position[0] if position else ""
         progress = re.findall(r"\d+%", text)
-        progress = progress[0] if progress else ""
+        progress = int(progress[0]) if progress else 0
         logger.info(f"Current position {position}, progress {progress}")
+        if progress > 0 and progress < 22:
+            NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y, Buttons.DPAD_LEFT])
+        if progress >= 22:
+            NX.press_buttons(CONTROLLER_INDEX, [Buttons.ZL], 25)
+            for i in range(10):
+                NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
+                NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
         if has_text("NEXT|RATING|WINNER|YOUR", text):
             break
+
     FINISHED_COUNT += 1
     logger.info(f"Already finished {FINISHED_COUNT} times.")
 
