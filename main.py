@@ -308,8 +308,9 @@ def process_car_hunt():
         position = re.findall(r"\d/\d", text)
         position = position[0] if position else ""
         progress = re.findall(r"\d+%", text)
-        progress = int(progress[0]) if progress else 0
+        progress = progress[0] if progress else ""
         logger.info(f"Current position {position}, progress {progress}")
+        progress = int(progress.replace("%", ""))
         if progress > 0 and progress < 22:
             NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y, Buttons.DPAD_LEFT])
         if progress >= 22:
