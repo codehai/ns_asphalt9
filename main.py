@@ -301,6 +301,23 @@ def process_race():
     logger.info(f"Already finished {FINISHED_COUNT} times.")
 
 
+def process_car_hunt():
+    global FINISHED_COUNT
+    for i in range(100):
+        NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
+        NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
+        text = ocr_screen()
+        position = re.findall(r"\d/\d", text)
+        position = position[0] if position else ""
+        progress = re.findall(r"\d+%", text)
+        progress = progress[0] if progress else ""
+        logger.info(f"Current position {position}, progress {progress}")
+        if has_text("NEXT|RATING|WINNER|YOUR", text):
+            break
+    FINISHED_COUNT += 1
+    logger.info(f"Already finished {FINISHED_COUNT} times.")
+
+
 def choose_series():
     """选择比赛项目"""
     try:
@@ -336,6 +353,32 @@ def car_hunt():
         press_a(2)
     logger.info("Start process race")
     process_race()
+    logger.info("Finished car hunt")
+
+
+def car_hunt_mkx():
+    """寻车"""
+    logger.info("Start process car hunt.")
+    press_a(3)
+    logger.info("Wait for select car")
+    wait_for("CAR SELECTION")
+    logger.info("Start select car")
+    select_car(2, 5, confirm=0)
+    logger.info("Start confirm car")
+    press_a(3)
+    logger.info("Wait for Play button")
+    wait_for("PLAY", 30)
+    logger.info("Press play button")
+    press_a(3)
+    logger.info("OCR screen")
+    text = ocr_screen()
+    if "TICKETS" in text:
+        press_button(Buttons.DPAD_DOWN, 2)
+        press_a(2)
+        press_b(2)
+        press_a(2)
+    logger.info("Start process race")
+    process_car_hunt()
     logger.info("Finished car hunt")
 
 
@@ -398,6 +441,11 @@ def process_screen(text):
         "car_hunt": {
             "identity": "CAR HUNT.*PORSCHE 718 CAYMAN GT4",
             "action": car_hunt,
+            "args": (),
+        },
+        "car_hunt_mkx": {
+            "identity": "CAR HUNT.*BOLWELL",
+            "action": car_hunt_mkx,
             "args": (),
         },
         "select_cat": {
