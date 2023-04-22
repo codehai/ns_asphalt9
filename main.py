@@ -270,6 +270,8 @@ def select_car(row, column, confirm=1):
     for i in range(column - 1):
         press_button(Buttons.DPAD_RIGHT, 0, 0)
 
+    time.sleep(2)
+
     if confirm:
         confirm_and_play()
 
