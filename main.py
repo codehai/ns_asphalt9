@@ -479,7 +479,7 @@ def process_screen(text):
             "args": (Buttons.Y, 3),
         },
         "back": {
-            "identity": "DEMOTED|DISCONNECTED|NO CONNECTION|YOUR CLUB ACHIEVED",
+            "identity": "DEMOTED|DISCONNECTED|NO CONNECTION|YOUR CLUB ACHIEVED|CONGRATULATIONS.*IMPROVE",
             "action": press_button,
             "args": (Buttons.B,),
         },
