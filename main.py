@@ -548,7 +548,7 @@ def event_loop():
                 f"Caught exception, err = {err}, page text = {text}, filename = {filename}"
             )
             # 出错重新进多人
-            enter_series()
+            # enter_series()
 
     G_RACE_QUIT_EVENT.set()
 
