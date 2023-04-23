@@ -10,6 +10,7 @@ def ocr(name="output", path="./images"):
     string = pytesseract.image_to_string(im, lang="eng", config="--psm 11")
     text = string.replace("\n", " ")
     im.close()
+    logger.info(f"ocr text = {text}")
     return text
 
 
