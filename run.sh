@@ -1,0 +1,1 @@
+docker run --net=host --privileged -p 6080:80 -p 5900:5900 -v /dev/shm:/dev/shm ubuntu-desktop:v1
