@@ -168,7 +168,14 @@ def enter_series():
 
 def enter_carhunt():
     """进入寻车"""
-    pass
+    press_group([Buttons.B] * 5, 0.5, 0)
+    press_group([Buttons.DPAD_DOWN] * 5, 0.5, 0)
+    press_group([Buttons.DPAD_LEFT] * 5, 0.5, 0)
+    press_group([Buttons.DPAD_RIGHT] * 2, 0.5, 0)
+    time.sleep(2)
+    press_group([Buttons.A] * 1, 0.5, 0)
+    press_group([Buttons.DPAD_RIGHT] * 5, 0.5, 0)
+    press_group([Buttons.A] * 2, 0.5, 0)
 
 
 def play_game(select_car=1):
@@ -443,6 +450,11 @@ def process_screen(text):
         "enter_series": {
             "identity": "WORLD.*(TRIAL)",
             "action": enter_series,
+            "args": (),
+        },
+        "enter_carhunt": {
+            "identity": "PLAY LIMITED.*TIME EVENTS",
+            "action": enter_carhunt,
             "args": (),
         },
         "play_trial": {
