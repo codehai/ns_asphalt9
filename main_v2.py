@@ -6,7 +6,6 @@ import threading
 
 import nxbt
 from nxbt import Nxbt
-from inputimeout import inputimeout, TimeoutOccurred
 from nxbt import Buttons
 
 from ocr import ocr
@@ -292,136 +291,72 @@ def confirm_and_play():
     press_a(3)
 
 
-def process_race():
+def process_race(race_mode=0):
     global FINISHED_COUNT
     global G_PAGE_DATA
 
-    for i in range(100):
-        time.sleep(3)
-        press_button(Buttons.Y, 0.7, 0)
-        press_button(Buttons.Y, 0, 0)
+    logger.info("Start process race")
+
+    for _ in range(100):
         text = G_PAGE_DATA["text"]
         position = re.findall(r"\d/\d", text)
         position = position[0] if position else ""
         progress = re.findall(r"\d+%", text)
         progress = progress[0] if progress else ""
         logger.info(f"Current position {position}, progress {progress}")
-        if has_text("NEXT|RATING|WINNER|YOUR", text):
-            break
-    FINISHED_COUNT += 1
-    logger.info(f"Already finished {FINISHED_COUNT} times.")
 
-
-def process_car_hunt():
-    global FINISHED_COUNT
-    global G_PAGE_DATA
-    for i in range(100):
-        time.sleep(1)
-        text = G_PAGE_DATA["text"]
-        position = re.findall(r"\d/\d", text)
-        position = position[0] if position else ""
-        progress = re.findall(r"\d+%", text)
-        progress = progress[0] if progress else "0"
-        logger.info(f"Current position {position}, progress {progress}")
-        progress = int(progress.replace("%", ""))
-        if progress > 0 and progress < 22:
-            NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
-            time.sleep(0.4)
-            NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
-            NX.press_buttons(CONTROLLER_INDEX, [Buttons.DPAD_LEFT])
-        if progress >= 22:
-            NX.press_buttons(CONTROLLER_INDEX, [Buttons.ZL], 23)
-            for i in range(10):
-                NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
-                NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
         if has_text("NEXT|RATING|WINNER|YOUR", text):
             break
 
+        if race_mode == 1:
+            progress = int(progress.replace("%", ""))
+            if progress > 0 and progress < 22:
+                NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
+                time.sleep(0.4)
+                NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
+                NX.press_buttons(CONTROLLER_INDEX, [Buttons.DPAD_LEFT])
+            if progress >= 22:
+                NX.press_buttons(CONTROLLER_INDEX, [Buttons.ZL], 23)
+                for _ in range(10):
+                    NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
+                    NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
+            time.sleep(1)
+        else:
+            press_button(Buttons.Y, 0.7, 0)
+            press_button(Buttons.Y, 0, 0)
+            time.sleep(3)
+
     FINISHED_COUNT += 1
     logger.info(f"Already finished {FINISHED_COUNT} times.")
-
-
-def choose_series():
-    """选择比赛项目"""
-    try:
-        screenshot()
-        c = inputimeout(prompt="Please select series 1 World 2 Limited \n", timeout=10)
-    except TimeoutOccurred:
-        c = "timeout"
-    if c == "2":
-        press_button(Buttons.DPAD_DOWN, 0.5)
-    press_a(1)
 
 
 def car_hunt():
     """寻车"""
     global G_PAGE_DATA
+    race_mode = 0
+    if "BOLWELL" in G_PAGE_DATA["text"]:
+        race_mode = 1
     logger.info("Start process car hunt.")
     press_a(3)
-    logger.info("Wait for select car")
     wait_for("CAR SELECTION")
-    logger.info("Start select car")
     select_car(2, 5, confirm=0)
-    logger.info("Start confirm car")
     press_a(3)
-    logger.info("Wait for Play button")
     wait_for("PLAY", 30)
-    logger.info("Press play button")
     press_a(3)
-    logger.info("OCR screen")
     text = G_PAGE_DATA["text"]
     if "TICKETS" in text:
         press_button(Buttons.DPAD_DOWN, 2)
         press_a(2)
         press_b(2)
         press_a(2)
-    logger.info("Start process race")
-    process_race()
-    logger.info("Finished car hunt")
-
-
-def car_hunt_mkx():
-    """寻车"""
-    global G_PAGE_DATA
-    logger.info("Start process car hunt.")
-    press_a(3)
-    logger.info("Wait for select car")
-    wait_for("CAR SELECTION")
-    logger.info("Start select car")
-    select_car(2, 5, confirm=0)
-    logger.info("Start confirm car")
-    press_a(3)
-    logger.info("Wait for Play button")
-    wait_for("PLAY", 30)
-    logger.info("Press play button")
-    press_a(3)
-    logger.info("OCR screen")
-    text = G_PAGE_DATA["text"]
-    if "TICKETS" in text:
-        press_button(Buttons.DPAD_DOWN, 2)
-        press_a(2)
-        press_b(2)
-        press_a(2)
-    logger.info("Start process race")
-    process_car_hunt()
-    logger.info("Finished car hunt")
+    process_race(race_mode)
 
 
 def connect_controller():
     """连接手柄"""
-    NX.press_buttons(CONTROLLER_INDEX, [Buttons.L, Buttons.R], down=1)
+    NX.press_buttons(CONTROLLER_INDEX, [Buttons.L, Buttons.R], 1)
     time.sleep(1)
-    NX.press_buttons(
-        CONTROLLER_INDEX,
-        [
-            Buttons.A,
-        ],
-        down=0.5,
-    )
-
-
-def wait(seconds=3):
-    time.sleep(3)
+    NX.press_buttons(CONTROLLER_INDEX, [Buttons.A], 0.5)
 
 
 def process_screen(text):
@@ -464,13 +399,8 @@ def process_screen(text):
             "args": (1,),
         },
         "car_hunt": {
-            "identity": "CAR HUNT.*PORSCHE 718 CAYMAN GT4",
+            "identity": "CAR HUNT.*PORSCHE 718 CAYMAN GT4|CAR HUNT.*BOLWELL",
             "action": car_hunt,
-            "args": (),
-        },
-        "car_hunt_mkx": {
-            "identity": "CAR HUNT.*BOLWELL",
-            "action": car_hunt_mkx,
             "args": (),
         },
         "select_cat": {
@@ -494,7 +424,7 @@ def process_screen(text):
             "args": (Buttons.Y, 3),
         },
         "back": {
-            "identity": "DEMOTED|DISCONNECTED|NO CONNECTION|YOUR CLUB ACHIEVED|CONGRATULATIONS.*IMPROVE",
+            "identity": "DEMOTED|DISCONNECTED|NO CONNECTION|YOUR CLUB ACHIEVED|CONGRATULATIONS.*IMPROVE|TIER",
             "action": press_button,
             "args": (Buttons.B,),
         },

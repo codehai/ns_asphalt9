@@ -166,6 +166,11 @@ def enter_series():
     press_group([Buttons.A] * 1, 0.5, 0)
 
 
+def enter_carhunt():
+    """进入寻车"""
+    pass
+
+
 def play_game(select_car=1):
     """点击play并等待进入到选车界面"""
     press_a(0.1)
