@@ -1,0 +1,91 @@
+import time
+from random import randint
+
+import nxbt
+from nxbt import Nxbt
+
+from .log import logger
+
+
+def random_colour():
+    return [
+        randint(0, 255),
+        randint(0, 255),
+        randint(0, 255),
+    ]
+
+
+class Buttons:
+    """The button object containing the button string constants."""
+
+    Y = "Y"
+    X = "X"
+    B = "B"
+    A = "A"
+    JCL_SR = "JCL_SR"
+    JCL_SL = "JCL_SL"
+    R = "R"
+    ZR = "ZR"
+    MINUS = "MINUS"
+    PLUS = "PLUS"
+    R_STICK_PRESS = "R_STICK_PRESS"
+    L_STICK_PRESS = "L_STICK_PRESS"
+    HOME = "HOME"
+    CAPTURE = "CAPTURE"
+    DPAD_DOWN = "DPAD_DOWN"
+    DPAD_UP = "DPAD_UP"
+    DPAD_RIGHT = "DPAD_RIGHT"
+    DPAD_LEFT = "DPAD_LEFT"
+    JCR_SR = "JCR_SR"
+    JCR_SL = "JCR_SL"
+    L = "L"
+    ZL = "ZL"
+
+
+class ProController:
+    def __init__(self) -> None:
+        self.nx = Nxbt()
+        adapters = self.nx.get_available_adapters()
+        controller_idxs = []
+        for i in range(0, len(adapters)):
+            index = self.nx.create_controller(
+                nxbt.PRO_CONTROLLER,
+                adapter_path=adapters[i],
+                colour_body=random_colour(),
+                colour_buttons=random_colour(),
+            )
+            controller_idxs.append(index)
+        self.controller_index = controller_idxs[-1]
+        self.nx.wait_for_connection(self.controller_index)
+        logger.info("Connected switch")
+        self.press_buttons(Buttons.A)
+
+    def press_buttons(self, button, down=0.1, up=0.1, block=True):
+        global NO_OPERATION_COUNT
+        NO_OPERATION_COUNT = 0
+        buttons = []
+        if isinstance(button, str):
+            buttons.append(button)
+        else:
+            buttons = button
+        self.nx.press_buttons(self.controller_index, buttons, down, up, block)
+
+    def press_group(self, buttons, sleep=1):
+        for b in buttons:
+            logger.info(f"Press button {b}")
+            self.nx.press_buttons(b)
+            if sleep:
+                time.sleep(sleep)
+
+    def press_button(self, button, sleep=2):
+        """按下按键"""
+        logger.info(f"Press button {button}")
+        self.nx.press_buttons(button)
+        if sleep > 0:
+            time.sleep(sleep)
+
+    def press_a(self, sleep=3):
+        self.press_button(Buttons.A, sleep)
+
+    def press_b(self, sleep=2):
+        self.press_button(Buttons.B, sleep)
