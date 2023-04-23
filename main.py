@@ -175,6 +175,7 @@ def enter_carhunt():
     time.sleep(2)
     press_group([Buttons.A] * 1, 0.5, 0)
     press_group([Buttons.DPAD_RIGHT] * 5, 0.5, 0)
+    time.sleep(2)
     press_group([Buttons.A] * 2, 0.5, 0)
 
 
