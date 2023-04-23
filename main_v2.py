@@ -5,6 +5,7 @@ import time
 import threading
 
 import nxbt
+from nxbt import Nxbt
 from inputimeout import inputimeout, TimeoutOccurred
 from nxbt import Buttons
 
@@ -29,6 +30,8 @@ G_RACE_QUIT_EVENT = threading.Event()
 # 是否活跃状态
 G_IS_ALIVE = threading.Event()
 G_CLEAR_COUNT = 0
+
+NO_OPERATION_COUNT = 0
 
 # 正序选车
 SELECT_CAR_ACTION = [
@@ -72,10 +75,20 @@ KEY_MAPPING = {
 }
 
 
+class BaseNxbt(Nxbt):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def press_buttons(self, controller_index, buttons, down=0.1, up=0.1, block=True):
+        global NO_OPERATION_COUNT
+        NO_OPERATION_COUNT = 0
+        return super().press_buttons(controller_index, buttons, down, up, block)
+
+
 def init_controller():
     """连接switch"""
     global NX, CONTROLLER_INDEX
-    NX = nxbt.Nxbt()
+    NX = BaseNxbt()
     CONTROLLER_INDEX = NX.create_controller(nxbt.PRO_CONTROLLER)
     NX.wait_for_connection(CONTROLLER_INDEX)
     time.sleep(1)
@@ -95,8 +108,6 @@ def press_group(buttons, sleep=1, shot=1):
 
 def press_button(button, sleep=2, shot=1):
     """按下按键"""
-    global G_CLEAR_COUNT
-    G_CLEAR_COUNT = 0
     logger.info(f"Press button {button}")
     NX.press_buttons(CONTROLLER_INDEX, [button])
     if sleep > 0:
@@ -120,19 +131,13 @@ def has_text(identity, page_text):
     return False
 
 
-def ocr_screen():
-    """截图并识别"""
-    screenshot()
-    text = ocr()
-    return text
-
-
 def wait_for(text, timeout=10):
     """等待屏幕出现text"""
+    global G_PAGE_DATA
     count = 0
     logger.info(f"Wait for text = {text}")
     while True:
-        screen_text = ocr_screen()
+        screen_text = G_PAGE_DATA["text"]
         if has_text(text, screen_text):
             return screen_text
         count += 1
@@ -168,11 +173,12 @@ def enter_series():
 
 def play_game(select_car=1):
     """点击play并等待进入到选车界面"""
+    global G_PAGE_DATA
     press_a(0.1)
     if select_car:
         for i in range(20):
             time.sleep(1)
-            text = ocr_screen()
+            text = G_PAGE_DATA["text"]
             if has_text("CAR SELECTION", text):
                 break
 
@@ -233,7 +239,7 @@ def auto_select_car(reverse=False):
             press_a()
 
         press_a(5)
-        text = ocr_screen()
+        text = G_PAGE_DATA["text"]
         # 点两下a能开始比赛说明车可用
         if has_text("SEARCHING", text):
             return
@@ -243,7 +249,8 @@ def auto_select_car(reverse=False):
                 press_b(3)
             if has_text("CAR SELECTION", text):
                 break
-            text = ocr_screen()
+            text = G_PAGE_DATA["text"]
+            time.sleep(2)
 
         SELECT_COUNT += 1
         press_button(select_action[SELECT_COUNT], 2)
@@ -287,11 +294,13 @@ def confirm_and_play():
 
 def process_race():
     global FINISHED_COUNT
+    global G_PAGE_DATA
+
     for i in range(100):
         time.sleep(3)
         press_button(Buttons.Y, 0.7, 0)
         press_button(Buttons.Y, 0, 0)
-        text = ocr_screen()
+        text = G_PAGE_DATA["text"]
         position = re.findall(r"\d/\d", text)
         position = position[0] if position else ""
         progress = re.findall(r"\d+%", text)
@@ -305,8 +314,10 @@ def process_race():
 
 def process_car_hunt():
     global FINISHED_COUNT
+    global G_PAGE_DATA
     for i in range(100):
-        text = ocr_screen()
+        time.sleep(1)
+        text = G_PAGE_DATA["text"]
         position = re.findall(r"\d/\d", text)
         position = position[0] if position else ""
         progress = re.findall(r"\d+%", text)
@@ -344,6 +355,7 @@ def choose_series():
 
 def car_hunt():
     """寻车"""
+    global G_PAGE_DATA
     logger.info("Start process car hunt.")
     press_a(3)
     logger.info("Wait for select car")
@@ -357,7 +369,7 @@ def car_hunt():
     logger.info("Press play button")
     press_a(3)
     logger.info("OCR screen")
-    text = ocr_screen()
+    text = G_PAGE_DATA["text"]
     if "TICKETS" in text:
         press_button(Buttons.DPAD_DOWN, 2)
         press_a(2)
@@ -370,6 +382,7 @@ def car_hunt():
 
 def car_hunt_mkx():
     """寻车"""
+    global G_PAGE_DATA
     logger.info("Start process car hunt.")
     press_a(3)
     logger.info("Wait for select car")
@@ -383,7 +396,7 @@ def car_hunt_mkx():
     logger.info("Press play button")
     press_a(3)
     logger.info("OCR screen")
-    text = ocr_screen()
+    text = G_PAGE_DATA["text"]
     if "TICKETS" in text:
         press_button(Buttons.DPAD_DOWN, 2)
         press_a(2)
@@ -481,7 +494,7 @@ def process_screen(text):
             "args": (Buttons.Y, 3),
         },
         "back": {
-            "identity": "DEMOTED|DISCONNECTED|NO CONNECTION|YOUR CLUB ACHIEVED|CONGRATULATIONS.*IMPROVE|TIER",
+            "identity": "DEMOTED|DISCONNECTED|NO CONNECTION|YOUR CLUB ACHIEVED|CONGRATULATIONS.*IMPROVE",
             "action": press_button,
             "args": (Buttons.B,),
         },
@@ -532,10 +545,11 @@ def capture():
 def event_loop():
     global G_RACE_QUIT_EVENT
     global G_RACE_RUN_EVENT
+    global G_PAGE_DATA
 
     while G_RACE_RUN_EVENT.is_set() and G_RUN.is_set():
         try:
-            text = ocr_screen()
+            text = G_PAGE_DATA["text"]
             has_words = re.findall("\w", text)
             if has_words:
                 process_screen(text)
@@ -553,40 +567,26 @@ def event_loop():
     G_RACE_QUIT_EVENT.set()
 
 
+def start_event_loop():
+    t = threading.Thread(target=event_loop, args=())
+    t.start()
+
+
 def keep_alive():
     """每60秒检测一次是否是活跃状态"""
-    global G_IS_ALIVE
-    count = 0
+    global NO_OPERATION_COUNT
     while G_RUN.is_set():
-        count += 1
+        NO_OPERATION_COUNT += 1
         time.sleep(1)
-        if not G_IS_ALIVE.is_set() and count > 60:
-            # 如果退出了event loop并且没有指令输入， 按一下b键防止断开手柄连接
+        if NO_OPERATION_COUNT > 60:
+            # 如果退出了event loop并且没有指令输入， 按一下y键防止断开手柄连接
             logger.info("Keep alive press button y")
             NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
-            count = 0
+            NO_OPERATION_COUNT = 0
 
 
 def start_keep_alive():
     t = threading.Thread(target=keep_alive, args=())
-    t.start()
-
-
-def clear_alive():
-    """没在挂机释放每隔60s释放一次IS_ALIVE状态"""
-    global G_IS_ALIVE
-    global G_CLEAR_COUNT
-    while G_RUN.is_set():
-        time.sleep(1)
-        G_CLEAR_COUNT += 1
-        if not G_RACE_RUN_EVENT.is_set() and G_CLEAR_COUNT > 50:
-            logger.info("Clear IS_ALIVE event.")
-            G_CLEAR_COUNT = 0
-            G_IS_ALIVE.clear()
-
-
-def start_clear_alive():
-    t = threading.Thread(target=clear_alive, args=())
     t.start()
 
 
@@ -618,6 +618,7 @@ def command_input():
                 G_RACE_RUN_EVENT.set()
                 G_RACE_QUIT_EVENT.clear()
                 logger.info("Start run event loop.")
+                start_event_loop()
 
         elif command == "quit":
             # 退出程序
@@ -635,9 +636,32 @@ def command_input():
             logger.info(f"{command} command not support!")
 
 
-def start_command_input():
-    t = threading.Thread(target=command_input, args=())
-    t.start()
+from multiprocessing import Process, Manager
+
+
+G_PAGE_DATA = None
+G_RUN = None
+
+
+def ocr_screen(page_data, run):
+    """截图并识别"""
+    while run:
+        screenshot()
+        text = ocr()
+        page_data["text"] = text
+
+
+def start_ocr():
+    global G_PAGE_DATA
+    global G_RUN
+
+    with Manager() as manager:
+        G_PAGE_DATA = manager.dict()
+        G_RUN = manager.Event()
+        G_RUN.set()
+        p = Process(target=ocr_screen, args=(G_PAGE_DATA, G_RUN))
+        p.start()
+        p.join()
 
 
 def main():
@@ -647,19 +671,11 @@ def main():
 
     G_RACE_QUIT_EVENT.set()
     G_IS_ALIVE.set()
-    G_RUN.set()
 
     init_controller()
+    start_ocr()
     start_keep_alive()
-    start_clear_alive()
-    start_command_input()
-
-    while G_RUN.is_set():
-        screenshot()
-        if G_RACE_RUN_EVENT.is_set():
-            event_loop()
-        else:
-            time.sleep(1)
+    command_input()
 
 
 if __name__ == "__main__":
