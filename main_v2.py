@@ -529,12 +529,12 @@ def start_ocr():
     global G_PAGE_DATA
     global G_RUN
 
-    manager = Manager()
-    G_PAGE_DATA = manager.dict()
-    G_RUN = manager.Event()
-    G_RUN.set()
-    p = Process(target=ocr_screen, args=(G_PAGE_DATA, G_RUN))
-    p.start()
+    with Manager() as manager:
+        G_PAGE_DATA = manager.dict()
+        G_RUN = manager.Event()
+        G_RUN.set()
+        p = Process(target=ocr_screen, args=(G_PAGE_DATA, G_RUN))
+        p.start()
 
 
 def init_event():
