@@ -519,7 +519,6 @@ def command_input():
 def ocr_screen(page_data, run):
     """截图并识别"""
     while run.is_set():
-        screenshot()
         text = ocr()
         page_data["text"] = text
 
@@ -555,10 +554,14 @@ def main():
         G_PAGE_DATA = manager.dict()
         G_RUN = manager.Event()
         G_RUN.set()
-        p = Process(target=ocr_screen, args=(G_PAGE_DATA, G_RUN))
-        p.start()
+        process_ocr = Process(target=ocr_screen, args=(G_PAGE_DATA, G_RUN))
+        process_ocr.start()
+
+        process_screen = Process(target=screenshot, args=())
+        process_screen.start()
+
         command_input()
-        p.join()
+        process_ocr.join()
 
 
 if __name__ == "__main__":
