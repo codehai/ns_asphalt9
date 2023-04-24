@@ -535,7 +535,6 @@ def start_ocr():
         G_RUN.set()
         p = Process(target=ocr_screen, args=(G_PAGE_DATA, G_RUN))
         p.start()
-        p.join()
 
 
 def init_event():
@@ -547,6 +546,7 @@ def main():
     global PRO
     init_event()
     PRO = ProController()
+    logger.info
     start_ocr()
     start_keep_alive()
     command_input()
