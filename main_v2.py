@@ -563,7 +563,7 @@ def main():
         process_ocr = Process(target=ocr_screen, args=(G_PAGE_DATA, G_RUN))
         process_ocr.start()
 
-        process_screen = Process(target=shot_screen, args=(G_RUN))
+        process_screen = Process(target=shot_screen, args=(G_RUN,))
         process_screen.start()
 
         command_input()
