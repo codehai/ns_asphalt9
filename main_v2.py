@@ -545,7 +545,7 @@ def init_event():
 def main():
     global PRO
     init_event()
-    PRO = ProController()
+    # PRO = ProController()
     logger.info
     start_ocr()
     start_keep_alive()
