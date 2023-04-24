@@ -558,6 +558,7 @@ def main():
         p = Process(target=ocr_screen, args=(G_PAGE_DATA, G_RUN))
         p.start()
         command_input()
+        p.join()
 
 
 if __name__ == "__main__":
