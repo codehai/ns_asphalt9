@@ -546,10 +546,18 @@ def main():
     global PRO
     init_event()
     # PRO = ProController()
-    logger.info
-    start_ocr()
-    start_keep_alive()
-    command_input()
+    # start_keep_alive()
+
+    global G_PAGE_DATA
+    global G_RUN
+
+    with Manager() as manager:
+        G_PAGE_DATA = manager.dict()
+        G_RUN = manager.Event()
+        G_RUN.set()
+        p = Process(target=ocr_screen, args=(G_PAGE_DATA, G_RUN))
+        p.start()
+        command_input()
 
 
 if __name__ == "__main__":
