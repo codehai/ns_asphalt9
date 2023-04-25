@@ -8,6 +8,7 @@ from ocr import ocr
 from screenshot import screenshot
 from utils.controller import Buttons, pro
 from utils.log import logger
+import traceback
 
 
 FINISHED_COUNT = 0
@@ -389,33 +390,33 @@ def process_screen(text):
         # },
         "confirm_car": {
             "identity": "TOP SPEED|HANDLING|NITRO",
-            "action": "press_button",
+            "action": pro.press_button,
             "args": (Buttons.A, 3),
         },
         "search_game": {
             "identity": "SEARCHING",
-            "action": "press_button",
+            "action": pro.press_button,
             "args": (Buttons.Y, 3),
         },
         "back": {
             "identity": "DEMOTED|DISCONNECTED|NO CONNECTION|YOUR CLUB ACHIEVED|CONGRATULATIONS.*IMPROVE|TIER",
-            "action": "press_button",
+            "action": pro.press_button,
             "args": (Buttons.B,),
         },
         "next_page": {
             "identity": "NEXT|RATING|WINNER|YOUR|CONGRATULATIONS|CONNECTION ERROR|STAR UP",
             "not_in": "YOUR CAR",
-            "action": "press_button",
+            "action": pro.press_button,
             "args": (Buttons.A,),
         },
         "offline_mode_no": {
             "identity": "OFFLINE MODE",
-            "action": "press_button",
+            "action": pro.press_button,
             "args": ([Buttons.DPAD_LEFT, Buttons.B], 1, 1),
         },
         "system_error": {
             "identity": "software.*closed",
-            "action": "press_button",
+            "action": pro.press_button,
             "args": ([Buttons.A] * 3, 1, 1),
         },
     }
@@ -434,10 +435,7 @@ def process_screen(text):
         page_data = page_mapping[match_page[0]]
         action = page_data["action"]
         args = page_data["args"]
-        if isinstance(action, str) and action == "press_button":
-            pro.press_button(*args)
-        else:
-            action(*args)
+        action(*args)
     else:
         logger.info("Match none page. Sleep 3 seconds and try again.")
         time.sleep(3)
@@ -465,7 +463,8 @@ def event_loop():
         except Exception as err:
             filename = capture()
             logger.error(
-                f"Caught exception, err = {err}, page text = {text}, filename = {filename}"
+                f"Caught exception, err = {err}, traceback = {traceback.format_exc()}, \
+                  page text = {text}, filename = {filename}"
             )
             # 出错重新进多人
             # enter_series()
