@@ -105,32 +105,32 @@ def enter_game():
         Buttons.A,
         Buttons.A,
     ]
-    pro.press_group(buttons, 0.5, 0)
+    pro.press_group(buttons, 0.5)
 
 
 def enter_series():
     """进入多人赛事"""
-    pro.press_group([Buttons.B] * 5, 0.5, 0)
-    pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5, 0)
-    pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5, 0)
-    pro.press_group([Buttons.DPAD_RIGHT] * 3, 0.5, 0)
-    pro.press_group([Buttons.DPAD_UP] * 2, 0.5, 0)
+    pro.press_group([Buttons.B] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_RIGHT] * 3, 0.5)
+    pro.press_group([Buttons.DPAD_UP] * 2, 0.5)
     time.sleep(2)
-    pro.press_group([Buttons.A] * 1, 0.5, 0)
+    pro.press_group([Buttons.A] * 1, 0.5)
 
 
 def enter_carhunt():
     """进入寻车"""
-    pro.press_group([Buttons.B] * 5, 0.5, 0)
-    pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5, 0)
-    pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5, 0)
-    pro.press_group([Buttons.DPAD_RIGHT] * 2, 0.5, 0)
+    pro.press_group([Buttons.B] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_RIGHT] * 2, 0.5)
     time.sleep(2)
-    pro.press_group([Buttons.A] * 1, 0.5, 0)
+    pro.press_group([Buttons.A] * 1, 0.5)
     time.sleep(2)
-    pro.press_group([Buttons.DPAD_RIGHT] * 5, 0.5, 0)
+    pro.press_group([Buttons.DPAD_RIGHT] * 5, 0.5)
     time.sleep(2)
-    pro.press_group([Buttons.A] * 2, 0.5, 0)
+    pro.press_group([Buttons.A] * 2, 0.5)
 
 
 def play_game(select_car=1):
