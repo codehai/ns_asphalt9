@@ -1,19 +1,15 @@
 import datetime
 import re
 import shutil
-import time
 import threading
-
-import nxbt
-from inputimeout import inputimeout, TimeoutOccurred
-from nxbt import Buttons
+import time
 
 from ocr import ocr
 from screenshot import screenshot
+from utils.controller import Buttons, pro
 from utils.log import logger
 
-NX = None
-CONTROLLER_INDEX = None
+
 FINISHED_COUNT = 0
 
 # 是否初始化车所在位置
@@ -27,8 +23,7 @@ G_RACE_RUN_EVENT = threading.Event()
 G_RACE_QUIT_EVENT = threading.Event()
 
 # 是否活跃状态
-G_IS_ALIVE = threading.Event()
-G_CLEAR_COUNT = 0
+NO_OPERATION_COUNT = 0
 
 # 正序选车
 SELECT_CAR_ACTION = [
@@ -72,47 +67,6 @@ KEY_MAPPING = {
 }
 
 
-def init_controller():
-    """连接switch"""
-    global NX, CONTROLLER_INDEX
-    NX = nxbt.Nxbt()
-    CONTROLLER_INDEX = NX.create_controller(nxbt.PRO_CONTROLLER)
-    NX.wait_for_connection(CONTROLLER_INDEX)
-    time.sleep(1)
-    logger.info("Connected switch")
-    NX.press_buttons(CONTROLLER_INDEX, [Buttons.A])
-
-
-def press_group(buttons, sleep=1, shot=1):
-    for b in buttons:
-        logger.info(f"Press button {b}")
-        NX.press_buttons(CONTROLLER_INDEX, [b])
-        if sleep:
-            time.sleep(sleep)
-        if shot:
-            screenshot()
-
-
-def press_button(button, sleep=2, shot=1):
-    """按下按键"""
-    global G_CLEAR_COUNT
-    G_CLEAR_COUNT = 0
-    logger.info(f"Press button {button}")
-    NX.press_buttons(CONTROLLER_INDEX, [button])
-    if sleep > 0:
-        time.sleep(sleep)
-    if shot:
-        screenshot()
-
-
-def press_a(sleep=3):
-    press_button(Buttons.A, sleep)
-
-
-def press_b(sleep=2):
-    press_button(Buttons.B, sleep)
-
-
 def has_text(identity, page_text):
     """page_text中是否包含identity"""
     if re.findall(identity, page_text):
@@ -151,38 +105,38 @@ def enter_game():
         Buttons.A,
         Buttons.A,
     ]
-    press_group(buttons, 0.5, 0)
+    pro.press_group(buttons, 0.5, 0)
 
 
 def enter_series():
     """进入多人赛事"""
-    press_group([Buttons.B] * 5, 0.5, 0)
-    press_group([Buttons.DPAD_DOWN] * 5, 0.5, 0)
-    press_group([Buttons.DPAD_LEFT] * 5, 0.5, 0)
-    press_group([Buttons.DPAD_RIGHT] * 3, 0.5, 0)
+    pro.press_group([Buttons.B] * 5, 0.5, 0)
+    pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5, 0)
+    pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5, 0)
+    pro.press_group([Buttons.DPAD_RIGHT] * 3, 0.5, 0)
     # TODO 可选进入多人一还是多人二
-    press_group([Buttons.DPAD_UP] * 2, 0.5, 0)
+    pro.press_group([Buttons.DPAD_UP] * 2, 0.5, 0)
     time.sleep(2)
-    press_group([Buttons.A] * 1, 0.5, 0)
+    pro.press_group([Buttons.A] * 1, 0.5, 0)
 
 
 def enter_carhunt():
     """进入寻车"""
-    press_group([Buttons.B] * 5, 0.5, 0)
-    press_group([Buttons.DPAD_DOWN] * 5, 0.5, 0)
-    press_group([Buttons.DPAD_LEFT] * 5, 0.5, 0)
-    press_group([Buttons.DPAD_RIGHT] * 2, 0.5, 0)
+    pro.press_group([Buttons.B] * 5, 0.5, 0)
+    pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5, 0)
+    pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5, 0)
+    pro.press_group([Buttons.DPAD_RIGHT] * 2, 0.5, 0)
     time.sleep(2)
-    press_group([Buttons.A] * 1, 0.5, 0)
+    pro.press_group([Buttons.A] * 1, 0.5, 0)
     time.sleep(2)
-    press_group([Buttons.DPAD_RIGHT] * 5, 0.5, 0)
+    pro.press_group([Buttons.DPAD_RIGHT] * 5, 0.5, 0)
     time.sleep(2)
-    press_group([Buttons.A] * 2, 0.5, 0)
+    pro.press_group([Buttons.A] * 2, 0.5, 0)
 
 
 def play_game(select_car=1):
     """点击play并等待进入到选车界面"""
-    press_a(0.1)
+    pro.press_a(0.1)
     if select_car:
         for i in range(20):
             time.sleep(1)
@@ -199,7 +153,7 @@ def auto_select_car(reverse=False):
     # 车库重置到第一辆车
     if reverse and not INITED_CAR_POSITION:
         for i in range(5):
-            press_button(Buttons.DPAD_RIGHT, 0.1)
+            pro.press_button(Buttons.DPAD_RIGHT, 0.1)
         INITED_CAR_POSITION = True
 
     # 选车
@@ -215,38 +169,38 @@ def auto_select_car(reverse=False):
             actions = SELECT_REVERSE[: SELECT_COUNT + 1]
             actions.reverse()
             for action in actions:
-                press_button(action, 0.2)
+                pro.press_button(action, 0.2)
             time.sleep(2)
             SELECT_COUNT = -1
 
         # 检查车辆是否可用
-        press_a()
+        pro.press_a()
         text = wait_for("TOP SPEED|HANDLING")
         if has_text("GET KEY", text):
-            press_b()
+            pro.press_b()
             wait_for("CAR SELECTION")
             SELECT_COUNT += 1
-            press_button(select_action[SELECT_COUNT], 2)
+            pro.press_button(select_action[SELECT_COUNT], 2)
             continue
 
         # 处理跳到第一辆车的情况, 重置车的位置
         if has_text("EMIRA", text):
-            press_b(3)
+            pro.press_b(3)
             wait_for("CAR SELECTION")
 
             # 重置
             action = Buttons.DPAD_RIGHT if reverse else Buttons.DPAD_LEFT
             for i in range(5):
-                press_button(action, 0.2)
+                pro.press_button(action, 0.2)
             time.sleep(2)
 
             # 快进select
             for step in range(SELECT_COUNT + 1):
-                press_button(select_action[step], 0.2)
+                pro.press_button(select_action[step], 0.2)
             time.sleep(2)
-            press_a()
+            pro.press_a()
 
-        press_a(5)
+        pro.press_a(5)
         text = ocr_screen()
         # 点两下a能开始比赛说明车可用
         if has_text("SEARCHING", text):
@@ -254,13 +208,13 @@ def auto_select_car(reverse=False):
 
         for i in range(2):
             if has_text("TOP SPEED|HANDLING", text):
-                press_b(3)
+                pro.press_b(3)
             if has_text("CAR SELECTION", text):
                 break
             text = ocr_screen()
 
         SELECT_COUNT += 1
-        press_button(select_action[SELECT_COUNT], 2)
+        pro.press_button(select_action[SELECT_COUNT], 2)
 
 
 def select_car(row, column, confirm=1):
@@ -272,17 +226,17 @@ def select_car(row, column, confirm=1):
     logger.info("Start select car.")
     # 车库重置到第一辆车
     for i in range(25):
-        press_button(Buttons.DPAD_LEFT, 0, 0)
+        pro.press_button(Buttons.DPAD_LEFT, 0, 0)
 
     for i in range(3):
-        press_button(Buttons.DPAD_UP, 0, 0)
+        pro.press_button(Buttons.DPAD_UP, 0, 0)
 
     # 选车
     for i in range(row):
-        press_button(Buttons.DPAD_DOWN, 0, 0)
+        pro.press_button(Buttons.DPAD_DOWN, 0, 0)
 
     for i in range(column - 1):
-        press_button(Buttons.DPAD_RIGHT, 0, 0)
+        pro.press_button(Buttons.DPAD_RIGHT, 0, 0)
 
     time.sleep(2)
 
@@ -293,18 +247,18 @@ def select_car(row, column, confirm=1):
 def confirm_and_play():
     # 确认车辆
     logger.info("Confirm car")
-    press_a(2)
+    pro.press_a(2)
     # 开始比赛
     logger.info("Start race")
-    press_a(3)
+    pro.press_a(3)
 
 
 def process_race():
     global FINISHED_COUNT
     for i in range(100):
         time.sleep(3)
-        press_button(Buttons.Y, 0.7, 0)
-        press_button(Buttons.Y, 0, 0)
+        pro.press_button(Buttons.Y, 0.7, 0)
+        pro.press_button(Buttons.Y, 0, 0)
         text = ocr_screen()
         position = re.findall(r"\d/\d", text)
         position = position[0] if position else ""
@@ -328,15 +282,15 @@ def process_car_hunt():
         logger.info(f"Current position {position}, progress {progress}")
         progress = int(progress.replace("%", ""))
         if progress > 0 and progress < 22:
-            NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
+            pro.press_buttons(Buttons.Y)
             time.sleep(0.4)
-            NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
-            NX.press_buttons(CONTROLLER_INDEX, [Buttons.DPAD_LEFT])
+            pro.press_buttons(Buttons.Y)
+            pro.press_buttons(Buttons.DPAD_LEFT)
         if progress >= 22:
-            NX.press_buttons(CONTROLLER_INDEX, [Buttons.ZL], 23)
+            pro.press_buttons(Buttons.ZL)
             for i in range(10):
-                NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
-                NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
+                pro.press_buttons(Buttons.Y)
+                pro.press_buttons(Buttons.Y)
         if has_text("NEXT|RATING|WINNER|YOUR", text):
             break
 
@@ -344,39 +298,27 @@ def process_car_hunt():
     logger.info(f"Already finished {FINISHED_COUNT} times.")
 
 
-def choose_series():
-    """选择比赛项目"""
-    try:
-        screenshot()
-        c = inputimeout(prompt="Please select series 1 World 2 Limited \n", timeout=10)
-    except TimeoutOccurred:
-        c = "timeout"
-    if c == "2":
-        press_button(Buttons.DPAD_DOWN, 0.5)
-    press_a(1)
-
-
 def car_hunt():
     """寻车"""
     logger.info("Start process car hunt.")
-    press_a(3)
+    pro.press_a(3)
     logger.info("Wait for select car")
     wait_for("CAR SELECTION")
     logger.info("Start select car")
     select_car(2, 5, confirm=0)
     logger.info("Start confirm car")
-    press_a(3)
+    pro.press_a(3)
     logger.info("Wait for Play button")
     wait_for("PLAY", 30)
     logger.info("Press play button")
-    press_a(3)
+    pro.press_a(3)
     logger.info("OCR screen")
     text = ocr_screen()
     if "TICKETS" in text:
-        press_button(Buttons.DPAD_DOWN, 2)
-        press_a(2)
-        press_b(2)
-        press_a(2)
+        pro.press_button(Buttons.DPAD_DOWN, 2)
+        pro.press_a(2)
+        pro.press_b(2)
+        pro.press_a(2)
     logger.info("Start process race")
     process_race()
     logger.info("Finished car hunt")
@@ -385,24 +327,24 @@ def car_hunt():
 def car_hunt_mkx():
     """寻车"""
     logger.info("Start process car hunt.")
-    press_a(3)
+    pro.press_a(3)
     logger.info("Wait for select car")
     wait_for("CAR SELECTION")
     logger.info("Start select car")
     select_car(2, 5, confirm=0)
     logger.info("Start confirm car")
-    press_a(3)
+    pro.press_a(3)
     logger.info("Wait for Play button")
     wait_for("PLAY", 30)
     logger.info("Press play button")
-    press_a(3)
+    pro.press_a(3)
     logger.info("OCR screen")
     text = ocr_screen()
     if "TICKETS" in text:
-        press_button(Buttons.DPAD_DOWN, 2)
-        press_a(2)
-        press_b(2)
-        press_a(2)
+        pro.press_button(Buttons.DPAD_DOWN, 2)
+        pro.press_a(2)
+        pro.press_b(2)
+        pro.press_a(2)
     logger.info("Start process race")
     process_car_hunt()
     logger.info("Finished car hunt")
@@ -410,15 +352,9 @@ def car_hunt_mkx():
 
 def connect_controller():
     """连接手柄"""
-    NX.press_buttons(CONTROLLER_INDEX, [Buttons.L, Buttons.R], down=1)
+    pro.press_buttons([Buttons.L, Buttons.R], down=1)
     time.sleep(1)
-    NX.press_buttons(
-        CONTROLLER_INDEX,
-        [
-            Buttons.A,
-        ],
-        down=0.5,
-    )
+    pro.press_buttons([Buttons.A], down=0.5)
 
 
 def wait(seconds=3):
@@ -491,33 +427,33 @@ def process_screen(text):
         # },
         "confirm_car": {
             "identity": "TOP SPEED|HANDLING|NITRO",
-            "action": press_button,
+            "action": pro.press_button,
             "args": (Buttons.A, 3),
         },
         "search_game": {
             "identity": "SEARCHING",
-            "action": press_button,
+            "action": pro.press_button,
             "args": (Buttons.Y, 3),
         },
         "back": {
             "identity": "DEMOTED|DISCONNECTED|NO CONNECTION|YOUR CLUB ACHIEVED|CONGRATULATIONS.*IMPROVE|TIER",
-            "action": press_button,
+            "action": pro.press_button,
             "args": (Buttons.B,),
         },
         "next_page": {
             "identity": "NEXT|RATING|WINNER|YOUR|CONGRATULATIONS|CONNECTION ERROR|STAR UP",
             "not_in": "YOUR CAR",
-            "action": press_button,
+            "action": pro.press_button,
             "args": (Buttons.A,),
         },
         "offline_mode_no": {
             "identity": "OFFLINE MODE",
-            "action": press_group,
+            "action": pro.press_button,
             "args": ([Buttons.DPAD_LEFT, Buttons.B], 1, 1),
         },
         "system_error": {
             "identity": "software.*closed",
-            "action": press_group,
+            "action": pro.press_button,
             "args": ([Buttons.A] * 3, 1, 1),
         },
     }
@@ -574,16 +510,15 @@ def event_loop():
 
 def keep_alive():
     """每60秒检测一次是否是活跃状态"""
-    global G_IS_ALIVE
-    count = 0
+    global NO_OPERATION_COUNT
     while G_RUN.is_set():
-        count += 1
+        NO_OPERATION_COUNT += 1
         time.sleep(1)
-        if not G_IS_ALIVE.is_set() and count > 60:
-            # 如果退出了event loop并且没有指令输入， 按一下b键防止断开手柄连接
+        if NO_OPERATION_COUNT > 60:
+            # 如果退出了event loop并且没有指令输入， 按一下y键防止断开手柄连接
             logger.info("Keep alive press button y")
-            NX.press_buttons(CONTROLLER_INDEX, [Buttons.Y])
-            count = 0
+            pro.press_buttons(Buttons.Y)
+            NO_OPERATION_COUNT = 0
 
 
 def start_keep_alive():
@@ -591,29 +526,10 @@ def start_keep_alive():
     t.start()
 
 
-def clear_alive():
-    """没在挂机释放每隔60s释放一次IS_ALIVE状态"""
-    global G_IS_ALIVE
-    global G_CLEAR_COUNT
-    while G_RUN.is_set():
-        time.sleep(1)
-        G_CLEAR_COUNT += 1
-        if not G_RACE_RUN_EVENT.is_set() and G_CLEAR_COUNT > 50:
-            logger.info("Clear IS_ALIVE event.")
-            G_CLEAR_COUNT = 0
-            G_IS_ALIVE.clear()
-
-
-def start_clear_alive():
-    t = threading.Thread(target=clear_alive, args=())
-    t.start()
-
-
 def command_input():
     global G_RUN
     global G_RACE_RUN_EVENT
     global G_RACE_QUIT_EVENT
-    global G_IS_ALIVE
     global G_CLEAR_COUNT
 
     while G_RUN.is_set():
@@ -649,7 +565,7 @@ def command_input():
                 logger.info("Please stop event loop first.")
             else:
                 control_data = KEY_MAPPING.get(command)
-                press_button(control_data, 0.5)
+                pro.press_button(control_data, 0.5)
         else:
             logger.info(f"{command} command not support!")
 
@@ -662,19 +578,14 @@ def start_command_input():
 def main():
     global G_RACE_RUN_EVENT
     global G_RACE_QUIT_EVENT
-    global G_IS_ALIVE
 
     G_RACE_QUIT_EVENT.set()
-    G_IS_ALIVE.set()
     G_RUN.set()
 
-    init_controller()
     start_keep_alive()
-    start_clear_alive()
     start_command_input()
 
     while G_RUN.is_set():
-        screenshot()
         if G_RACE_RUN_EVENT.is_set():
             event_loop()
         else:

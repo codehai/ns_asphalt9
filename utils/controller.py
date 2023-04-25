@@ -45,18 +45,9 @@ class Buttons:
 class ProController:
     def __init__(self) -> None:
         self.nx = Nxbt()
-        adapters = self.nx.get_available_adapters()
-        controller_idxs = []
-        for i in range(0, len(adapters)):
-            index = self.nx.create_controller(
-                nxbt.PRO_CONTROLLER,
-                adapter_path=adapters[i],
-                colour_body=random_colour(),
-                colour_buttons=random_colour(),
-            )
-            controller_idxs.append(index)
-        self.controller_index = controller_idxs[-1]
+        self.controller_index = self.create_controller(nxbt.PRO_CONTROLLER)
         self.nx.wait_for_connection(self.controller_index)
+        time.sleep(1)
         logger.info("Connected switch")
         self.press_buttons(Buttons.A)
 
@@ -89,3 +80,6 @@ class ProController:
 
     def press_b(self, sleep=2):
         self.press_button(Buttons.B, sleep)
+
+
+pro = ProController()
