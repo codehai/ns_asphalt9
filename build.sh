@@ -1,1 +1,0 @@
-docker build -t ubuntu-desktop:v1 . 

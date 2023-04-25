@@ -493,11 +493,9 @@ def command_input():
     global G_RUN
     global G_RACE_RUN_EVENT
     global G_RACE_QUIT_EVENT
-    global G_CLEAR_COUNT
 
     while G_RUN.is_set():
         command = input("Please input command \n")
-        G_CLEAR_COUNT = 0
         if command == "stop":
             # 停止挂机
             if G_RACE_RUN_EVENT.is_set():
