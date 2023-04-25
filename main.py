@@ -411,12 +411,12 @@ def process_screen(text):
         "offline_mode_no": {
             "identity": "OFFLINE MODE",
             "action": pro.press_button,
-            "args": ([Buttons.DPAD_LEFT, Buttons.B], 1, 1),
+            "args": ([Buttons.DPAD_LEFT, Buttons.B], 1),
         },
         "system_error": {
             "identity": "software.*closed",
             "action": pro.press_button,
-            "args": ([Buttons.A] * 3, 1, 1),
+            "args": ([Buttons.A] * 3, 1),
         },
     }
     match_page = []
