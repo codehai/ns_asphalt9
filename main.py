@@ -226,17 +226,17 @@ def select_car(row, column, confirm=1):
     logger.info("Start select car.")
     # 车库重置到第一辆车
     for i in range(25):
-        pro.press_button(Buttons.DPAD_LEFT, 0, 0)
+        pro.press_button(Buttons.DPAD_LEFT, 0)
 
     for i in range(3):
-        pro.press_button(Buttons.DPAD_UP, 0, 0)
+        pro.press_button(Buttons.DPAD_UP, 0)
 
     # 选车
     for i in range(row):
-        pro.press_button(Buttons.DPAD_DOWN, 0, 0)
+        pro.press_button(Buttons.DPAD_DOWN, 0)
 
     for i in range(column - 1):
-        pro.press_button(Buttons.DPAD_RIGHT, 0, 0)
+        pro.press_button(Buttons.DPAD_RIGHT, 0)
 
     time.sleep(2)
 
@@ -277,8 +277,8 @@ def process_race(race_mode=0):
                     pro.press_buttons(Buttons.Y)
             time.sleep(1)
         else:
-            pro.press_button(Buttons.Y, 0.7, 0)
-            pro.press_button(Buttons.Y, 0, 0)
+            pro.press_button(Buttons.Y, 0.7)
+            pro.press_button(Buttons.Y, 0)
             time.sleep(3)
 
         if has_text("NEXT|RATING|WINNER|YOUR", text):
