@@ -45,7 +45,7 @@ class Buttons:
 class ProController:
     def __init__(self) -> None:
         self.nx = Nxbt()
-        self.controller_index = self.create_controller(nxbt.PRO_CONTROLLER)
+        self.controller_index = self.nx.create_controller(nxbt.PRO_CONTROLLER)
         self.nx.wait_for_connection(self.controller_index)
         time.sleep(1)
         logger.info("Connected switch")
