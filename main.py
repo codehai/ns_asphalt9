@@ -389,33 +389,33 @@ def process_screen(text):
         # },
         "confirm_car": {
             "identity": "TOP SPEED|HANDLING|NITRO",
-            "action": pro.press_button,
+            "action": "press_button",
             "args": (Buttons.A, 3),
         },
         "search_game": {
             "identity": "SEARCHING",
-            "action": pro.press_button,
+            "action": "press_button",
             "args": (Buttons.Y, 3),
         },
         "back": {
             "identity": "DEMOTED|DISCONNECTED|NO CONNECTION|YOUR CLUB ACHIEVED|CONGRATULATIONS.*IMPROVE|TIER",
-            "action": pro.press_button,
+            "action": "press_button",
             "args": (Buttons.B,),
         },
         "next_page": {
             "identity": "NEXT|RATING|WINNER|YOUR|CONGRATULATIONS|CONNECTION ERROR|STAR UP",
             "not_in": "YOUR CAR",
-            "action": pro.press_button,
+            "action": "press_button",
             "args": (Buttons.A,),
         },
         "offline_mode_no": {
             "identity": "OFFLINE MODE",
-            "action": pro.press_button,
+            "action": "press_button",
             "args": ([Buttons.DPAD_LEFT, Buttons.B], 1, 1),
         },
         "system_error": {
             "identity": "software.*closed",
-            "action": pro.press_button,
+            "action": "press_button",
             "args": ([Buttons.A] * 3, 1, 1),
         },
     }
@@ -434,7 +434,10 @@ def process_screen(text):
         page_data = page_mapping[match_page[0]]
         action = page_data["action"]
         args = page_data["args"]
-        action(*args)
+        if isinstance(action, str) and action == "press_button":
+            pro.press_button(*args)
+        else:
+            action(*args)
     else:
         logger.info("Match none page. Sleep 3 seconds and try again.")
         time.sleep(3)
