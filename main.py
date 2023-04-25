@@ -3,13 +3,12 @@ import re
 import shutil
 import threading
 import time
+import traceback
 
 from ocr import ocr
 from screenshot import screenshot
 from utils.controller import Buttons, pro
 from utils.log import logger
-import traceback
-
 
 FINISHED_COUNT = 0
 
