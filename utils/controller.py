@@ -71,7 +71,7 @@ class ProController:
     def press_button(self, button, sleep=2):
         """按下按键"""
         logger.info(f"Press button {button}")
-        self.nx.press_buttons(button)
+        self.press_buttons(button)
         if sleep > 0:
             time.sleep(sleep)
 
