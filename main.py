@@ -114,7 +114,6 @@ def enter_series():
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5, 0)
     pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5, 0)
     pro.press_group([Buttons.DPAD_RIGHT] * 3, 0.5, 0)
-    # TODO 可选进入多人一还是多人二
     pro.press_group([Buttons.DPAD_UP] * 2, 0.5, 0)
     time.sleep(2)
     pro.press_group([Buttons.A] * 1, 0.5, 0)
@@ -253,52 +252,41 @@ def confirm_and_play():
     pro.press_a(3)
 
 
-def process_race():
+def process_race(race_mode=0):
     global FINISHED_COUNT
     for i in range(100):
-        time.sleep(3)
-        pro.press_button(Buttons.Y, 0.7, 0)
-        pro.press_button(Buttons.Y, 0, 0)
         text = ocr_screen()
         position = re.findall(r"\d/\d", text)
         position = position[0] if position else ""
         progress = re.findall(r"\d+%", text)
         progress = progress[0] if progress else ""
         logger.info(f"Current position {position}, progress {progress}")
+
+        if race_mode == 1:
+            progress = int(progress.replace("%", ""))
+            if progress > 0 and progress < 22:
+                pro.press_buttons(Buttons.Y)
+                time.sleep(0.4)
+                pro.press_buttons(Buttons.Y)
+                pro.press_buttons(Buttons.DPAD_LEFT)
+            if progress >= 22:
+                pro.press_buttons(Buttons.ZL, 23)
+                for _ in range(10):
+                    pro.press_buttons(Buttons.Y)
+                    pro.press_buttons(Buttons.Y)
+            time.sleep(1)
+        else:
+            pro.press_button(Buttons.Y, 0.7, 0)
+            pro.press_button(Buttons.Y, 0, 0)
+            time.sleep(3)
+
         if has_text("NEXT|RATING|WINNER|YOUR", text):
             break
     FINISHED_COUNT += 1
     logger.info(f"Already finished {FINISHED_COUNT} times.")
 
 
-def process_car_hunt():
-    global FINISHED_COUNT
-    for i in range(100):
-        text = ocr_screen()
-        position = re.findall(r"\d/\d", text)
-        position = position[0] if position else ""
-        progress = re.findall(r"\d+%", text)
-        progress = progress[0] if progress else "0"
-        logger.info(f"Current position {position}, progress {progress}")
-        progress = int(progress.replace("%", ""))
-        if progress > 0 and progress < 22:
-            pro.press_buttons(Buttons.Y)
-            time.sleep(0.4)
-            pro.press_buttons(Buttons.Y)
-            pro.press_buttons(Buttons.DPAD_LEFT)
-        if progress >= 22:
-            pro.press_buttons(Buttons.ZL)
-            for i in range(10):
-                pro.press_buttons(Buttons.Y)
-                pro.press_buttons(Buttons.Y)
-        if has_text("NEXT|RATING|WINNER|YOUR", text):
-            break
-
-    FINISHED_COUNT += 1
-    logger.info(f"Already finished {FINISHED_COUNT} times.")
-
-
-def car_hunt():
+def car_hunt(race_mode=0):
     """寻车"""
     logger.info("Start process car hunt.")
     pro.press_a(3)
@@ -320,33 +308,7 @@ def car_hunt():
         pro.press_b(2)
         pro.press_a(2)
     logger.info("Start process race")
-    process_race()
-    logger.info("Finished car hunt")
-
-
-def car_hunt_mkx():
-    """寻车"""
-    logger.info("Start process car hunt.")
-    pro.press_a(3)
-    logger.info("Wait for select car")
-    wait_for("CAR SELECTION")
-    logger.info("Start select car")
-    select_car(2, 5, confirm=0)
-    logger.info("Start confirm car")
-    pro.press_a(3)
-    logger.info("Wait for Play button")
-    wait_for("PLAY", 30)
-    logger.info("Press play button")
-    pro.press_a(3)
-    logger.info("OCR screen")
-    text = ocr_screen()
-    if "TICKETS" in text:
-        pro.press_button(Buttons.DPAD_DOWN, 2)
-        pro.press_a(2)
-        pro.press_b(2)
-        pro.press_a(2)
-    logger.info("Start process race")
-    process_car_hunt()
+    process_race(race_mode)
     logger.info("Finished car hunt")
 
 
@@ -412,8 +374,8 @@ def process_screen(text):
         },
         "car_hunt_mkx": {
             "identity": "CAR HUNT.*BOLWELL",
-            "action": car_hunt_mkx,
-            "args": (),
+            "action": car_hunt,
+            "args": (1,),
         },
         "select_cat": {
             "identity": "CAR SELECTION",
