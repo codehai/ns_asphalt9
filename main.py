@@ -10,6 +10,7 @@ from screenshot import screenshot
 from utils.controller import Buttons, pro
 from utils.log import logger
 
+
 FINISHED_COUNT = 0
 
 # 是否初始化车所在位置
@@ -543,7 +544,7 @@ def main():
     G_RACE_QUIT_EVENT.set()
     G_RUN.set()
 
-    start_keep_alive()
+    # start_keep_alive()
     start_command_input()
 
     while G_RUN.is_set():
