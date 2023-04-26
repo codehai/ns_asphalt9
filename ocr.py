@@ -122,7 +122,7 @@ class Page:
         self.prepare()
         match_pages = []
         for name in self.features:
-            if self.has_text(self.features[name], self.text):
+            if self.has_text(self.features[name]):
                 match_pages.append(name)
 
         match_page = None
