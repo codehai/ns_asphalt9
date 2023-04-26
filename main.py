@@ -10,6 +10,7 @@ from screenshot import screenshot
 from utils.controller import Buttons, pro
 from utils.log import logger
 
+
 FINISHED_COUNT = 0
 
 # 是否初始化车所在位置
@@ -105,32 +106,32 @@ def enter_game():
         Buttons.A,
         Buttons.A,
     ]
-    pro.press_group(buttons, 0.5, 0)
+    pro.press_group(buttons, 0.5)
 
 
 def enter_series():
     """进入多人赛事"""
-    pro.press_group([Buttons.B] * 5, 0.5, 0)
-    pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5, 0)
-    pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5, 0)
-    pro.press_group([Buttons.DPAD_RIGHT] * 3, 0.5, 0)
-    pro.press_group([Buttons.DPAD_UP] * 2, 0.5, 0)
+    pro.press_group([Buttons.B] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_RIGHT] * 3, 0.5)
+    pro.press_group([Buttons.DPAD_UP] * 2, 0.5)
     time.sleep(2)
-    pro.press_group([Buttons.A] * 1, 0.5, 0)
+    pro.press_group([Buttons.A] * 1, 0.5)
 
 
 def enter_carhunt():
     """进入寻车"""
-    pro.press_group([Buttons.B] * 5, 0.5, 0)
-    pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5, 0)
-    pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5, 0)
-    pro.press_group([Buttons.DPAD_RIGHT] * 2, 0.5, 0)
+    pro.press_group([Buttons.B] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_RIGHT] * 2, 0.5)
     time.sleep(2)
-    pro.press_group([Buttons.A] * 1, 0.5, 0)
+    pro.press_group([Buttons.A] * 1, 0.5)
     time.sleep(2)
-    pro.press_group([Buttons.DPAD_RIGHT] * 5, 0.5, 0)
+    pro.press_group([Buttons.DPAD_RIGHT] * 5, 0.5)
     time.sleep(2)
-    pro.press_group([Buttons.A] * 2, 0.5, 0)
+    pro.press_group([Buttons.A] * 2, 0.5)
 
 
 def play_game(select_car=1):
@@ -543,7 +544,7 @@ def main():
     G_RACE_QUIT_EVENT.set()
     G_RUN.set()
 
-    start_keep_alive()
+    # start_keep_alive()
     start_command_input()
 
     while G_RUN.is_set():

@@ -64,7 +64,7 @@ class ProController:
     def press_group(self, buttons, sleep=1):
         for b in buttons:
             logger.info(f"Press button {b}")
-            self.nx.press_buttons(b)
+            self.press_buttons(b)
             if sleep:
                 time.sleep(sleep)
 
