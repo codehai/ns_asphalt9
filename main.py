@@ -96,6 +96,20 @@ def wait_for(text, timeout=10):
             raise Exception(f"Wait for text = {text} timeout!")
 
 
+def wait_for_page(page_name, timeout=10):
+    """等待屏幕出现text"""
+    count = 0
+    logger.info(f"Wait for page = {page_name}")
+    while True:
+        page = ocr_screen()
+        if page.name == page_name:
+            return page
+        count += 1
+        time.sleep(1)
+        if count > timeout:
+            raise Exception(f"Wait for page = {page_name} timeout!")
+
+
 def enter_game():
     """进入游戏"""
     buttons = [
