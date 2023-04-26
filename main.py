@@ -327,6 +327,8 @@ def wait(seconds=3):
 def process_screen(text):
     """根据显示内容执行动作"""
 
+    global NO_OPERATION_COUNT
+
     page_mapping = {
         "loading_game": {
             "identity": "LOADING RACE",
@@ -438,6 +440,12 @@ def process_screen(text):
         action(*args)
     else:
         logger.info("Match none page. Sleep 3 seconds and try again.")
+        NO_OPERATION_COUNT += 1
+        if NO_OPERATION_COUNT > 30:
+            logger.info("Keep alive press button y")
+            pro.press_buttons(Buttons.Y)
+            NO_OPERATION_COUNT = 0
+
         time.sleep(3)
 
 
@@ -470,24 +478,6 @@ def event_loop():
             # enter_series()
 
     G_RACE_QUIT_EVENT.set()
-
-
-def keep_alive():
-    """每60秒检测一次是否是活跃状态"""
-    global NO_OPERATION_COUNT
-    while G_RUN.is_set():
-        NO_OPERATION_COUNT += 1
-        time.sleep(1)
-        if NO_OPERATION_COUNT > 60:
-            # 如果退出了event loop并且没有指令输入， 按一下y键防止断开手柄连接
-            logger.info("Keep alive press button y")
-            pro.press_buttons(Buttons.Y)
-            NO_OPERATION_COUNT = 0
-
-
-def start_keep_alive():
-    t = threading.Thread(target=keep_alive, args=())
-    t.start()
 
 
 def command_input():
@@ -544,7 +534,6 @@ def main():
     G_RACE_QUIT_EVENT.set()
     G_RUN.set()
 
-    # start_keep_alive()
     start_command_input()
 
     while G_RUN.is_set():
