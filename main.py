@@ -5,7 +5,7 @@ import threading
 import time
 import traceback
 
-from ocr import ocr
+from ocr import ocr, Page
 from screenshot import screenshot
 from utils.controller import Buttons, pro
 from utils.log import logger
@@ -78,8 +78,8 @@ def has_text(identity, page_text):
 def ocr_screen():
     """截图并识别"""
     screenshot()
-    text = ocr()
-    return text
+    page = ocr()
+    return page
 
 
 def wait_for(text, timeout=10):
@@ -87,9 +87,9 @@ def wait_for(text, timeout=10):
     count = 0
     logger.info(f"Wait for text = {text}")
     while True:
-        screen_text = ocr_screen()
-        if has_text(text, screen_text):
-            return screen_text
+        page = ocr_screen()
+        if has_text(text, page.text):
+            return page
         count += 1
         time.sleep(1)
         if count > timeout:
@@ -140,8 +140,8 @@ def play_game(select_car=1):
     if select_car:
         for i in range(20):
             time.sleep(1)
-            text = ocr_screen()
-            if has_text("CAR SELECTION", text):
+            page = ocr_screen()
+            if page.name == Page.select_car:
                 break
 
 
@@ -201,17 +201,17 @@ def auto_select_car(reverse=False):
             pro.press_a()
 
         pro.press_a(5)
-        text = ocr_screen()
+        page = ocr_screen()
         # 点两下a能开始比赛说明车可用
-        if has_text("SEARCHING", text):
+        if page.name == Page.searching:
             return
 
         for i in range(2):
-            if has_text("TOP SPEED|HANDLING", text):
+            if page.name == Page.car_info:
                 pro.press_b(3)
-            if has_text("CAR SELECTION", text):
+            if page.name == Page.select_car:
                 break
-            text = ocr_screen()
+            page = ocr_screen()
 
         SELECT_COUNT += 1
         pro.press_button(select_action[SELECT_COUNT], 2)
@@ -256,32 +256,27 @@ def confirm_and_play():
 def process_race(race_mode=0):
     global FINISHED_COUNT
     for i in range(100):
-        text = ocr_screen()
-        position = re.findall(r"\d/\d", text)
-        position = position[0] if position else ""
-        progress = re.findall(r"\d+%", text)
-        progress = progress[0] if progress else ""
-        logger.info(f"Current position {position}, progress {progress}")
-
-        if race_mode == 1:
-            progress = int(progress.replace("%", ""))
-            if progress > 0 and progress < 22:
-                pro.press_buttons(Buttons.Y)
-                time.sleep(0.4)
-                pro.press_buttons(Buttons.Y)
-                pro.press_buttons(Buttons.DPAD_LEFT)
-            if progress >= 22:
-                pro.press_buttons(Buttons.ZL, 23)
-                for _ in range(10):
+        page = ocr_screen()
+        if page.name == Page.racing:
+            if race_mode == 1:
+                progress = page.data["progress"]
+                if progress > 0 and progress < 22:
                     pro.press_buttons(Buttons.Y)
+                    time.sleep(0.4)
                     pro.press_buttons(Buttons.Y)
-            time.sleep(1)
-        else:
-            pro.press_button(Buttons.Y, 0.7)
-            pro.press_button(Buttons.Y, 0)
-            time.sleep(3)
+                    pro.press_buttons(Buttons.DPAD_LEFT)
+                if progress >= 22:
+                    pro.press_buttons(Buttons.ZL, 23)
+                    for _ in range(10):
+                        pro.press_buttons(Buttons.Y)
+                        pro.press_buttons(Buttons.Y)
+                time.sleep(1)
+            else:
+                pro.press_button(Buttons.Y, 0.7)
+                pro.press_button(Buttons.Y, 0)
+                time.sleep(3)
 
-        if has_text("NEXT|RATING|WINNER|YOUR", text):
+        if page.name == Page.race_score:
             break
     FINISHED_COUNT += 1
     logger.info(f"Already finished {FINISHED_COUNT} times.")
@@ -302,8 +297,8 @@ def car_hunt(race_mode=0):
     logger.info("Press play button")
     pro.press_a(3)
     logger.info("OCR screen")
-    text = ocr_screen()
-    if "TICKETS" in text:
+    page = ocr_screen()
+    if page.name == Page.tickets:
         pro.press_button(Buttons.DPAD_DOWN, 2)
         pro.press_a(2)
         pro.press_b(2)
@@ -320,68 +315,36 @@ def connect_controller():
     pro.press_buttons([Buttons.A], down=0.5)
 
 
-def wait(seconds=3):
-    time.sleep(3)
-
-
-def process_screen(text):
+def process_screen(page):
     """根据显示内容执行动作"""
 
     global NO_OPERATION_COUNT
 
-    page_mapping = {
-        "loading_game": {
-            "identity": "LOADING RACE",
+    pages_action = [
+        {
+            "pages": [Page.loading_race],
             "action": process_race,
-            "args": (),
         },
-        "connect_controller": {
-            "identity": "Press.*on the controller",
+        {
+            "pages": [Page.connect_controller],
             "action": connect_controller,
-            "args": (),
         },
-        "enter_game": {
-            "identity": "Controllers",
+        {
+            "pages": [Page.connected_controller],
             "action": enter_game,
-            "args": (),
         },
-        # "play_game": {
-        #     "identity": "WORLD|LIMITED|TRIAL|CLASSIC",
-        #     "action": play_game,
-        #     "args": (0,),
-        # },
-        "enter_series": {
-            "identity": "WORLD.*(TRIAL)",
-            "action": enter_series,
-            "args": (),
-        },
-        "enter_carhunt": {
-            "identity": "PLAY LIMITED.*TIME EVENTS",
-            "action": enter_carhunt,
-            "args": (),
-        },
-        "play_trial": {
-            "identity": "TRIAL",
-            "action": play_game,
-            "args": (0,),
-        },
-        "play_classic": {
-            "identity": "CLASSIC|WORLD SERIES",
+        {
+            "pages": [Page.series],
             "action": play_game,
             "args": (1,),
         },
-        "car_hunt": {
-            "identity": "CAR HUNT.*PORSCHE 718 CAYMAN GT4",
-            "action": car_hunt,
-            "args": (),
-        },
-        "car_hunt_mkx": {
-            "identity": "CAR HUNT.*BOLWELL",
+        {
+            "pages": [Page.carhunt],
             "action": car_hunt,
             "args": (1,),
         },
-        "select_cat": {
-            "identity": "CAR SELECTION",
+        {
+            "pages": [Page.select_car],
             "action": select_car,
             "args": (1, 4),
         },
@@ -390,54 +353,56 @@ def process_screen(text):
         #     "action": auto_select_car,
         #     "args": (1,),
         # },
-        "confirm_car": {
-            "identity": "TOP SPEED|HANDLING|NITRO",
+        {
+            "pages": [Page.car_info],
             "action": pro.press_button,
             "args": (Buttons.A, 3),
         },
-        "search_game": {
-            "identity": "SEARCHING",
+        {
+            "pages": [Page.searching],
             "action": pro.press_button,
             "args": (Buttons.Y, 3),
         },
-        "back": {
-            "identity": "DEMOTED|DISCONNECTED|NO CONNECTION|YOUR CLUB ACHIEVED|CONGRATULATIONS.*IMPROVE|TIER",
+        {
+            "pages": [
+                Page.demoted,
+                Page.disconnected,
+                Page.no_connection,
+                Page.club_reward,
+                Page.vip_reward,
+            ],
             "action": pro.press_button,
             "args": (Buttons.B,),
         },
-        "next_page": {
-            "identity": "NEXT|RATING|WINNER|YOUR|CONGRATULATIONS|CONNECTION ERROR|STAR UP",
-            "not_in": "YOUR CAR",
+        {
+            "pages": [
+                Page.race_score,
+                Page.race_reward,
+                Page.milestone_reward,
+                Page.connect_error,
+                Page.star_up,
+            ],
             "action": pro.press_button,
             "args": (Buttons.A,),
         },
-        "offline_mode_no": {
-            "identity": "OFFLINE MODE",
+        {
+            "pages": [Page.offline_mode],
             "action": pro.press_button,
             "args": ([Buttons.DPAD_LEFT, Buttons.B], 1),
         },
-        "system_error": {
-            "identity": "software.*closed",
+        {
+            "pages": [Page.system_error],
             "action": pro.press_button,
             "args": ([Buttons.A] * 3, 1),
         },
-    }
-    match_page = []
-    for page in page_mapping:
-        if has_text(page_mapping[page]["identity"], text):
-            if "not_in" in page_mapping[page]:
-                if not has_text(page_mapping[page]["not_in"], text):
-                    logger.info(f"match identity: {page_mapping[page]['identity']}")
-                    match_page.append(page)
-            else:
-                logger.info(f"match identity: {page_mapping[page]['identity']}")
-                match_page.append(page)
-    logger.info(f"match results: {match_page}")
-    if len(match_page) >= 1:
-        page_data = page_mapping[match_page[0]]
-        action = page_data["action"]
-        args = page_data["args"]
-        action(*args)
+    ]
+
+    for p in pages_action:
+        if page.name in p["pages"]:
+            action = p["action"]
+            args = p["args"] if "args" in p else ()
+            action(*args)
+            break
     else:
         logger.info("Match none page. Sleep 3 seconds and try again.")
         NO_OPERATION_COUNT += 1
@@ -461,18 +426,14 @@ def event_loop():
 
     while G_RACE_RUN_EVENT.is_set() and G_RUN.is_set():
         try:
-            text = ocr_screen()
-            has_words = re.findall("\w", text)
-            if has_words:
-                process_screen(text)
-            else:
-                logger.info(f"Detect nothing, continue.")
-                time.sleep(2)
+            page = ocr_screen()
+            process_screen(page)
+
         except Exception as err:
             filename = capture()
             logger.error(
                 f"Caught exception, err = {err}, traceback = {traceback.format_exc()}, \
-                  page text = {text}, filename = {filename}"
+                  page dict = {page.dict}, filename = {filename}"
             )
             # 出错重新进多人
             # enter_series()

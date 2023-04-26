@@ -20,6 +20,8 @@ class Page:
     series = "series"
     # 寻车
     carhunt = "carhunt"
+    # 购买票
+    tickets = "tickets"
     # 选车
     select_car = "select_car"
     # 车辆详情
@@ -59,6 +61,7 @@ class Page:
         connected_controller: "Controllers",
         series: "WORLD SERIES",
         carhunt: "CAR HUNT",
+        tickets: "TICKETS",
         select_car: "CAR SELECTION",
         car_info: "TOP SPEED|HANDLING|NITRO",
         searching: "SEARCHING",
@@ -78,61 +81,94 @@ class Page:
         system_error: "software.*closed",
     }
 
-    @classmethod
-    def parse_racing(cls, text):
-        pass
+    text = None
+    name = None
+    data = None
 
-    @classmethod
-    def has_text(cls, identity, page_text):
+    mode = None
+    division = None
+
+    def prepare(self):
+        self.text = self.text.replace("\n", " ")
+        self.name = None
+        self.data = None
+
+    def parse_common(self):
+        divisions = re.findall("SILVER", self.text)
+        self.division = divisions[0]
+
+        modes = re.findall("CAR HUNT|WORLD SERIES", self.text)
+        self.mode = modes[0]
+
+    def parse_racing(self):
+        position = re.findall(r"\d/\d", self.text)
+        position = position[0] if position else None
+        progress = re.findall(r"(\d+)%", self.text)
+        progress = int(progress[0]) if progress else None
+
+        self.data = {
+            "position": position,
+            "progress": progress,
+        }
+
+    def has_text(self, identity):
         """page_text中是否包含identity"""
-        if re.findall(identity, page_text):
+        if re.findall(identity, self.text):
             return True
         return False
 
-    @classmethod
-    def parse_page(cls, text):
-        data = {
-            "raw": text,
-            "page": {},
-        }
+    def parse_page(self, text):
+        self.text = text
+        self.prepare()
         match_pages = []
-        for name in cls.features:
-            if cls.has_text(cls.features[name], text):
+        for name in self.features:
+            if self.has_text(self.features[name], self.text):
                 match_pages.append(name)
 
         match_page = None
-        if not match_pages and text:
-            cls.capture()
-            return data
-        if len(match_pages) > 1:
-            cls.capture()
-        match_page = match_pages[0]
-        data["page"]["name"] = match_page
+        if not match_pages and self.text:
+            self.capture()
+        else:
+            if len(match_pages) > 1:
+                self.capture()
+            match_page = match_pages[0]
+            self.name = match_page
 
-        if hasattr(cls, f"parse_{match_page}"):
-            func = getattr(cls, f"parse_{match_page}")
-            data["page"]["data"] = func(text)
+            self.parse_common()
 
-        return data
+            if hasattr(self, f"parse_{match_page}"):
+                func = getattr(self, f"parse_{match_page}")
+                func()
 
-    @classmethod
-    def capture():
+    def capture(self):
         filename = (
             "".join([str(d) for d in datetime.datetime.now().timetuple()]) + ".jpg"
         )
         shutil.copy("./images/output.jpg", f"./images/not_match_images/{filename}")
         return filename
 
+    @property
+    def dict(self):
+        return {
+            "name": self.name,
+            "text": self.text,
+            "data": self.data,
+            "mode": self.mode,
+            "division": self.division,
+        }
+
+
+page = Page()
+
 
 def ocr(name="output", path="./images"):
     image_path = os.path.join(path, f"{name}.jpg")
     im = Image.open(image_path)
-    string = pytesseract.image_to_string(im, lang="eng", config="--psm 11")
-    text = string.replace("\n", " ")
+    text = pytesseract.image_to_string(im, lang="eng", config="--psm 11")
     im.close()
-    page_data = Page.parse_page(text)
-    logger.info(f"ocr text = {text}, data = {page_data}")
-    return text
+    page.parse_page(text)
+    logger.info(f"ocr page dict = {page.dict}")
+    return page
 
 
 if __name__ == "__main__":
