@@ -271,24 +271,23 @@ def process_race(race_mode=0):
     global FINISHED_COUNT
     for i in range(100):
         page = ocr_screen()
-        if page.name == Page.racing:
-            if race_mode == 1:
-                progress = page.data["progress"]
-                if progress > 0 and progress < 22:
+        if race_mode == 1:
+            progress = page.data["progress"]
+            if progress > 0 and progress < 22:
+                pro.press_buttons(Buttons.Y)
+                time.sleep(0.4)
+                pro.press_buttons(Buttons.Y)
+                pro.press_buttons(Buttons.DPAD_LEFT)
+            if progress >= 22:
+                pro.press_buttons(Buttons.ZL, 23)
+                for _ in range(10):
                     pro.press_buttons(Buttons.Y)
-                    time.sleep(0.4)
                     pro.press_buttons(Buttons.Y)
-                    pro.press_buttons(Buttons.DPAD_LEFT)
-                if progress >= 22:
-                    pro.press_buttons(Buttons.ZL, 23)
-                    for _ in range(10):
-                        pro.press_buttons(Buttons.Y)
-                        pro.press_buttons(Buttons.Y)
-                time.sleep(1)
-            else:
-                pro.press_button(Buttons.Y, 0.7)
-                pro.press_button(Buttons.Y, 0)
-                time.sleep(3)
+            time.sleep(1)
+        else:
+            pro.press_button(Buttons.Y, 0.7)
+            pro.press_button(Buttons.Y, 0)
+            time.sleep(3)
 
         if page.name == Page.race_score:
             break
