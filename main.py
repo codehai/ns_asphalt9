@@ -349,8 +349,8 @@ def process_screen(page):
         },
         {
             "pages": [Page.series],
-            "action": play_game,
-            "args": (1,),
+            "action": pro.press_button,
+            "args": (Buttons.A, 3),
         },
         {
             "pages": [Page.carhunt],
