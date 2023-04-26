@@ -413,19 +413,18 @@ def process_screen(page):
 
     for p in pages_action:
         if page.name in p["pages"]:
+            logger.info(f"Match page {page.name}")
             action = p["action"]
             args = p["args"] if "args" in p else ()
             action(*args)
             break
     else:
-        logger.info("Match none page. Sleep 3 seconds and try again.")
+        logger.info("Match none page.")
         NO_OPERATION_COUNT += 1
         if NO_OPERATION_COUNT > 30:
             logger.info("Keep alive press button y")
             pro.press_buttons(Buttons.Y)
             NO_OPERATION_COUNT = 0
-
-        time.sleep(3)
 
 
 def capture():
@@ -442,6 +441,7 @@ def event_loop():
         try:
             page = ocr_screen()
             process_screen(page)
+            time.sleep(3)
 
         except Exception as err:
             filename = capture()
