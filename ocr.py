@@ -130,7 +130,7 @@ class Page:
         match_page = None
         if not match_pages and self.text:
             self.capture()
-        else:
+        if match_pages:
             if len(match_pages) > 1:
                 self.capture()
             match_page = match_pages[0]
