@@ -95,10 +95,12 @@ class Page:
 
     def parse_common(self):
         divisions = re.findall("SILVER", self.text)
-        self.division = divisions[0]
+        if divisions:
+            self.division = divisions[0]
 
         modes = re.findall("CAR HUNT|WORLD SERIES", self.text)
-        self.mode = modes[0]
+        if modes:
+            self.mode = modes[0]
 
     def parse_racing(self):
         position = re.findall(r"\d/\d", self.text)
