@@ -8,7 +8,7 @@ def init_logger(
     file_log_level=logging.DEBUG,
     console_log_level=logging.ERROR,
     size_in_mb=3,
-    log_count=1,
+    log_count=5,
 ):
     """
     Initialize logger
