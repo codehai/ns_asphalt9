@@ -269,7 +269,7 @@ def confirm_and_play():
 
 def process_race(race_mode=0):
     global FINISHED_COUNT
-    for i in range(100):
+    for i in range(60):
         page = ocr_screen()
         if race_mode == 1:
             progress = page.data["progress"]
@@ -289,7 +289,9 @@ def process_race(race_mode=0):
             pro.press_button(Buttons.Y, 0)
             time.sleep(3)
 
-        if page.name in [Page.race_score, Page.system_error]:
+        if page.name in [Page.racing, Page.loading_race]:
+            continue
+        if page.name:
             break
 
     FINISHED_COUNT += 1
@@ -348,7 +350,7 @@ def process_screen(page):
             "action": enter_game,
         },
         {
-            "pages": [Page.series],
+            "pages": [Page.multi_player, Page.series],
             "action": pro.press_button,
             "args": (Buttons.A, 3),
         },
@@ -384,6 +386,7 @@ def process_screen(page):
                 Page.no_connection,
                 Page.club_reward,
                 Page.vip_reward,
+                Page.server_error
             ],
             "action": pro.press_button,
             "args": (Buttons.B,),
@@ -395,19 +398,25 @@ def process_screen(page):
                 Page.milestone_reward,
                 Page.connect_error,
                 Page.star_up,
+                Page.game_menu,
             ],
             "action": pro.press_button,
             "args": (Buttons.A,),
         },
         {
             "pages": [Page.offline_mode],
-            "action": pro.press_button,
+            "action": pro.press_group,
             "args": ([Buttons.DPAD_LEFT, Buttons.B], 1),
         },
         {
             "pages": [Page.system_error],
-            "action": pro.press_button,
-            "args": ([Buttons.A] * 3, 1),
+            "action": pro.press_group,
+            "args": ([Buttons.A] * 3, 3),
+        },
+        {
+            "pages": [Page.card_pack],
+            "action": pro.press_group,
+            "args": ([Buttons.B] * 2, 3),
         },
     ]
 
