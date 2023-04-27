@@ -271,24 +271,23 @@ def process_race(race_mode=0):
     global FINISHED_COUNT
     for i in range(100):
         page = ocr_screen()
-        if page.name == Page.racing:
-            if race_mode == 1:
-                progress = page.data["progress"]
-                if progress > 0 and progress < 22:
+        if race_mode == 1:
+            progress = page.data["progress"]
+            if progress > 0 and progress < 22:
+                pro.press_buttons(Buttons.Y)
+                time.sleep(0.4)
+                pro.press_buttons(Buttons.Y)
+                pro.press_buttons(Buttons.DPAD_LEFT)
+            if progress >= 22:
+                pro.press_buttons(Buttons.ZL, 23)
+                for _ in range(10):
                     pro.press_buttons(Buttons.Y)
-                    time.sleep(0.4)
                     pro.press_buttons(Buttons.Y)
-                    pro.press_buttons(Buttons.DPAD_LEFT)
-                if progress >= 22:
-                    pro.press_buttons(Buttons.ZL, 23)
-                    for _ in range(10):
-                        pro.press_buttons(Buttons.Y)
-                        pro.press_buttons(Buttons.Y)
-                time.sleep(1)
-            else:
-                pro.press_button(Buttons.Y, 0.7)
-                pro.press_button(Buttons.Y, 0)
-                time.sleep(3)
+            time.sleep(1)
+        else:
+            pro.press_button(Buttons.Y, 0.7)
+            pro.press_button(Buttons.Y, 0)
+            time.sleep(3)
 
         if page.name in [Page.race_score, Page.system_error]:
             break
@@ -350,8 +349,8 @@ def process_screen(page):
         },
         {
             "pages": [Page.series],
-            "action": play_game,
-            "args": (1,),
+            "action": pro.press_button,
+            "args": (Buttons.A, 3),
         },
         {
             "pages": [Page.carhunt],
@@ -414,19 +413,18 @@ def process_screen(page):
 
     for p in pages_action:
         if page.name in p["pages"]:
+            logger.info(f"Match page {page.name}")
             action = p["action"]
             args = p["args"] if "args" in p else ()
             action(*args)
             break
     else:
-        logger.info("Match none page. Sleep 3 seconds and try again.")
+        logger.info("Match none page.")
         NO_OPERATION_COUNT += 1
         if NO_OPERATION_COUNT > 30:
             logger.info("Keep alive press button y")
             pro.press_buttons(Buttons.Y)
             NO_OPERATION_COUNT = 0
-
-        time.sleep(3)
 
 
 def capture():
@@ -443,6 +441,7 @@ def event_loop():
         try:
             page = ocr_screen()
             process_screen(page)
+            time.sleep(3)
 
         except Exception as err:
             filename = capture()

@@ -95,10 +95,12 @@ class Page:
 
     def parse_common(self):
         divisions = re.findall("SILVER", self.text)
-        self.division = divisions[0]
+        if divisions:
+            self.division = divisions[0]
 
         modes = re.findall("CAR HUNT|WORLD SERIES", self.text)
-        self.mode = modes[0]
+        if modes:
+            self.mode = modes[0]
 
     def parse_racing(self):
         position = re.findall(r"\d/\d", self.text)
@@ -122,13 +124,13 @@ class Page:
         self.prepare()
         match_pages = []
         for name in self.features:
-            if self.has_text(self.features[name], self.text):
+            if self.has_text(self.features[name]):
                 match_pages.append(name)
 
         match_page = None
         if not match_pages and self.text:
             self.capture()
-        else:
+        if match_pages:
             if len(match_pages) > 1:
                 self.capture()
             match_page = match_pages[0]

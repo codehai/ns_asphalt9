@@ -52,8 +52,6 @@ class ProController:
         self.press_buttons(Buttons.A)
 
     def press_buttons(self, button, down=0.1, up=0.1, block=True):
-        global NO_OPERATION_COUNT
-        NO_OPERATION_COUNT = 0
         buttons = []
         if isinstance(button, str):
             buttons.append(button)
