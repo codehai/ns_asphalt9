@@ -152,11 +152,10 @@ class Page:
         if last_page_name in [self.loading_race, self.racing] and not match_pages:
             match_pages.append(last_page_name)
 
-        if not match_pages and self.text:
+        if not match_pages and self.text or len(match_pages) > 1:
+            logger.info(f"match_pages = {match_pages}")
             self.capture()
         if match_pages:
-            if len(match_pages) > 1:
-                self.capture()
             self.name = match_pages[0]
 
             self.parse_common()
