@@ -290,10 +290,11 @@ def process_race(race_mode=0):
                 pro.press_button(Buttons.Y, 0)
                 time.sleep(3)
 
-        if page.name == Page.race_score:
+        if page.name in [Page.race_score, Page.system_error]:
             break
+
     FINISHED_COUNT += 1
-    logger.info(f"Already finished {FINISHED_COUNT} times.")
+    logger.info(f"Already finished {FINISHED_COUNT} times loop count = {i}.")
 
 
 def car_hunt(race_mode=0):
@@ -492,7 +493,8 @@ def command_input():
                 logger.info("Please stop event loop first.")
             else:
                 control_data = KEY_MAPPING.get(command)
-                pro.press_button(control_data, 0.5)
+                pro.press_buttons(control_data)
+                screenshot()
         else:
             logger.info(f"{command} command not support!")
 
