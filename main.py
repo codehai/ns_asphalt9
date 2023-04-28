@@ -391,7 +391,7 @@ def process_screen(page):
                 Page.no_connection,
                 Page.club_reward,
                 Page.vip_reward,
-                Page.server_error
+                Page.server_error,
             ],
             "action": pro.press_button,
             "args": (Buttons.B,),
@@ -404,7 +404,6 @@ def process_screen(page):
                 Page.connect_error,
                 Page.star_up,
                 Page.game_menu,
-                Page.button_next
             ],
             "action": pro.press_button,
             "args": (Buttons.A,),
