@@ -170,7 +170,7 @@ class Page:
             self.capture()
 
         if match_pages:
-            self.name = match_pages[0][1]
+            self.name = match_pages[0][0]
 
             self.parse_common()
 
