@@ -70,7 +70,7 @@ class Page:
     button_next = "button_next"
 
     features = {
-        loading_race: "LOADING RACE|LOADING|RACE|WAITING|FOR|OTHER|PLAYERS",
+        loading_race: "LOADING RACE",
         connect_controller: "Press.*on the controller",
         connected_controller: "Controllers",
         multi_player: "WORLD SERIES.*SERIES",
@@ -143,6 +143,8 @@ class Page:
     def has_text(self, identity):
         """page_text中是否包含identity"""
         match_count = len(re.findall(identity, self.text))
+        if "|" not in identity and match_count > 0:
+            match_count = 10
         return match_count
 
     def parse_page(self, text):
