@@ -87,7 +87,7 @@ class Page:
         club_reward: "YOUR CLUB ACHIEVED",
         vip_reward: "TIER",
         # CONGRATULATIONS.*IMPROVE,
-        racing: "POS\.|\d/\d|DIST|\d+%|NITRO|\d+:\d+\.\d+|TOUCHORIVE",
+        racing: "POS\.|\d/\d|DIST|\d+%|NITRO|\d+:\d+\.\d+|TOUCHORIVE|SURFING|PERFECT",
         race_score: "WINNER|\d+:\d+\.\d+|YOUR POSITION|YOUR TIME|RATING|NEXT",
         race_reward: "RACE|REWARDS|REPUTATION|TOTAL|CREDITS|NEXT",
         milestone_reward: "CONGRATULATIONS",
@@ -153,6 +153,8 @@ class Page:
         for name in self.features:
             match_count = self.has_text(self.features[name])
             if match_count > 0:
+                if last_page_name == self.racing:
+                    match_count += 1
                 match_pages.append((name, match_count))
 
         match_pages.sort(key=lambda pages: pages[1], reverse=True)
