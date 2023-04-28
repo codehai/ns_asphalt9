@@ -231,7 +231,7 @@ def auto_select_car(reverse=False):
         pro.press_button(select_action[SELECT_COUNT], 2)
 
 
-def select_car(row, column, confirm=1):
+def select_car(row, column, confirm=1, reset_count=25):
     """开始比赛并选择车
     row 第几行
     column 第几列
@@ -239,7 +239,7 @@ def select_car(row, column, confirm=1):
     """
     logger.info("Start select car.")
     # 车库重置到第一辆车
-    for i in range(25):
+    for i in range(reset_count):
         pro.press_button(Buttons.DPAD_LEFT, 0)
 
     for i in range(3):
@@ -322,6 +322,12 @@ def car_hunt(race_mode=0):
     logger.info("Finished car hunt")
 
 
+def limited_series():
+    pro.press_a(3)
+    wait_for("CAR SELECTION")
+    logger.info("Start select car")
+    select_car(2, 5, confirm=1, reset_count=0)
+
 def connect_controller():
     """连接手柄"""
     pro.press_buttons([Buttons.L, Buttons.R], down=1)
@@ -351,6 +357,11 @@ def process_screen(page):
             "pages": [Page.multi_player, Page.series],
             "action": pro.press_button,
             "args": (Buttons.A, 3),
+        },
+        {
+            "pages": [Page.limited_series],
+            "action": limited_series,
+            "args": (),
         },
         {
             "pages": [Page.trial_series],

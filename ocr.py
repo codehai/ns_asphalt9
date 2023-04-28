@@ -66,6 +66,8 @@ class Page:
     game_menu = "game_menu"
     # 抽卡页面
     card_pack = "card_pack"
+    # 限时赛事
+    limited_series = "limited_series"
 
     features = {
         loading_race: "LOADING RACE",
@@ -73,6 +75,7 @@ class Page:
         connected_controller: "Controllers",
         multi_player: "WORLD SERIES.*SERIES",
         series: "WORLD SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
+        limited_series: "LIMITED SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
         trial_series: "TRIAL SERIES",
         carhunt: "CAR HUNT",
         tickets: "TICKETS",
