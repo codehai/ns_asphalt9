@@ -20,6 +20,8 @@ class Page:
     multi_player = "multi_player"
     # 多人一
     series = "series"
+    # 多人二
+    trial_series = "trial_series"
     # 寻车
     carhunt = "carhunt"
     # 购买票
@@ -71,6 +73,7 @@ class Page:
         connected_controller: "Controllers",
         multi_player: "WORLD SERIES.*SERIES",
         series: "WORLD SERIES",
+        trial_series: "TRIAL SERIES",
         carhunt: "CAR HUNT",
         tickets: "TICKETS",
         select_car: "CAR SELECTION",

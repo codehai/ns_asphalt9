@@ -355,6 +355,11 @@ def process_screen(page):
             "args": (Buttons.A, 3),
         },
         {
+            "pages": [Page.trial_series],
+            "action": pro.press_group,
+            "args": ([Buttons.A, Buttons.A], 3),
+        },
+        {
             "pages": [Page.carhunt],
             "action": car_hunt,
             "args": (1,),
