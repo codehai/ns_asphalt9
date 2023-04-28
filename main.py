@@ -326,7 +326,7 @@ def limited_series():
     pro.press_a(3)
     wait_for("CAR SELECTION")
     logger.info("Start select car")
-    select_car(2, 5, confirm=1, reset_count=0)
+    select_car(2, 5, confirm=1, reset_count=5)
 
 def connect_controller():
     """连接手柄"""
