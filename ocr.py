@@ -66,6 +66,8 @@ class Page:
     game_menu = "game_menu"
     # 抽卡页面
     card_pack = "card_pack"
+    # NEXT
+    button_next = "button_next"
 
     features = {
         loading_race: "LOADING RACE|WAITING FOR OTHER PLAYERS",
@@ -97,6 +99,7 @@ class Page:
         switch_home: "Asphalt 9: Legends.*ASPHALT",
         racing: "POS\.|DIST|\d+%",
         card_pack: "CARD PACK LEVEL INFO",
+        button_next: "NEXT",
     }
 
     text = None

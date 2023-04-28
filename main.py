@@ -404,6 +404,7 @@ def process_screen(page):
                 Page.connect_error,
                 Page.star_up,
                 Page.game_menu,
+                Page.button_next
             ],
             "action": pro.press_button,
             "args": (Buttons.A,),
