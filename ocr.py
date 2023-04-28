@@ -87,7 +87,7 @@ class Page:
         club_reward: "YOUR CLUB ACHIEVED",
         vip_reward: "TIER",
         # CONGRATULATIONS.*IMPROVE,
-        racing: "POS\.|DIST|\d+%|NITRO|\d+:\d+\.\d+|TOUCHORIVE",
+        racing: "POS\.|\d/\d|DIST|\d+%|NITRO|\d+:\d+\.\d+|TOUCHORIVE",
         race_score: "WINNER|\d+:\d+\.\d+|YOUR POSITION|YOUR TIME|RATING|NEXT",
         race_reward: "RACE|REWARDS|REPUTATION|TOTAL|CREDITS|NEXT",
         milestone_reward: "CONGRATULATIONS",
