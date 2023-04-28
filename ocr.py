@@ -70,7 +70,7 @@ class Page:
     button_next = "button_next"
 
     features = {
-        loading_race: "LOADING|RACE|WAITING|FOR|OTHER|PLAYERS",
+        loading_race: "LOADING RACE|LOADING|RACE|WAITING|FOR|OTHER|PLAYERS",
         connect_controller: "Press.*on the controller",
         connected_controller: "Controllers",
         multi_player: "WORLD SERIES.*SERIES",
@@ -87,7 +87,7 @@ class Page:
         club_reward: "YOUR CLUB ACHIEVED",
         vip_reward: "TIER",
         # CONGRATULATIONS.*IMPROVE,
-        racing: "POS\.|\d/\d|DIST|\d+%|NITRO|\d+:\d+\.\d+|TOUCHORIVE|SURFING|PERFECT",
+        racing: "POS\.| \d/\d|DIST|\d+%|NITRO|\d+:\d+\.\d+|TOUCHORIVE|SURFING|PERFECT",
         race_score: "WINNER|\d+:\d+\.\d+|YOUR POSITION|YOUR TIME|RATING|NEXT",
         race_reward: "RACE|REWARDS|REPUTATION|TOTAL|CREDITS|NEXT",
         milestone_reward: "CONGRATULATIONS",
