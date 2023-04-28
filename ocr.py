@@ -86,7 +86,7 @@ class Page:
         vip_reward: "TIER",
         # CONGRATULATIONS.*IMPROVE,
         racing: "POS\.| \d/\d|DIST|\d+%|NITRO|\d+:\d+\.\d+|TOUCHORIVE|SURFING|PERFECT",
-        race_score: "WINNER|\d+:\d+\.\d+|YOUR POSITION|YOUR TIME|RATING|NEXT",
+        race_score: "WINNER|YOUR POSITION|YOUR TIME|RATING|NEXT",
         race_reward: "RACE|REWARDS|REPUTATION|TOTAL|CREDITS|NEXT",
         milestone_reward: "CONGRATULATIONS",
         connect_error: "CONNECTION ERROR",

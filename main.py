@@ -287,11 +287,9 @@ def process_race(race_mode=0):
         else:
             pro.press_button(Buttons.Y, 0.7)
             pro.press_button(Buttons.Y, 0)
-            time.sleep(3)
+            time.sleep(2)
 
-        if page.name in [Page.racing, Page.loading_race, Page.searching]:
-            continue
-        if page.name:
+        if page.name == Page.race_score:
             break
 
     FINISHED_COUNT += 1
