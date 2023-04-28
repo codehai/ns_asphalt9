@@ -70,7 +70,7 @@ class Page:
     button_next = "button_next"
 
     features = {
-        loading_race: "LOADING RACE|WAITING FOR OTHER PLAYERS",
+        loading_race: "LOADING|RACE|WAITING|FOR|OTHER|PLAYERS",
         connect_controller: "Press.*on the controller",
         connected_controller: "Controllers",
         multi_player: "WORLD SERIES.*SERIES",
@@ -79,16 +79,17 @@ class Page:
         carhunt: "CAR HUNT",
         tickets: "TICKETS",
         select_car: "CAR SELECTION",
-        car_info: "TOP SPEED|HANDLING|NITRO",
-        searching: "SEARCHING",
+        car_info: "TOP|SPEED|ACCELERATION|HANDLING|NITRO|TOUCH|PLAY",
+        searching: "SEARCHING|FOR|OTHER|PLAYERS|AND|LOCATION",
         demoted: "DEMOTED",
         disconnected: "DISCONNECTED",
         no_connection: "NO CONNECTION",
         club_reward: "YOUR CLUB ACHIEVED",
         vip_reward: "TIER",
         # CONGRATULATIONS.*IMPROVE,
-        race_score: "RATING|WINNER",
-        race_reward: "REPUTATION|RACE REWARDS",
+        racing: "POS\.|DIST|\d+%|NITRO",
+        race_score: "WINNER|\d+:\d+\.\d+|YOUR POSITION|YOUR TIME|RATING|NEXT",
+        race_reward: "RACE|REWARDS|REPUTATION|TOTAL|CREDITS|NEXT",
         milestone_reward: "CONGRATULATIONS",
         connect_error: "CONNECTION ERROR",
         star_up: "STAR UP",
@@ -97,7 +98,6 @@ class Page:
         server_error: "ERROR.*ACTION",
         game_menu: "GAME MENU",
         switch_home: "Asphalt 9: Legends.*ASPHALT",
-        racing: "POS\.|DIST|\d+%",
         card_pack: "CARD PACK LEVEL INFO",
         button_next: "NEXT",
     }
