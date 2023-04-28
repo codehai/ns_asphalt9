@@ -289,7 +289,7 @@ def process_race(race_mode=0):
             pro.press_button(Buttons.Y, 0)
             time.sleep(3)
 
-        if page.name in [Page.racing, Page.loading_race]:
+        if page.name in [Page.racing, Page.loading_race, Page.searching]:
             continue
         if page.name:
             break
