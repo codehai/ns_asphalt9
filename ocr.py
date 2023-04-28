@@ -142,9 +142,8 @@ class Page:
 
     def has_text(self, identity):
         """page_text中是否包含identity"""
-        if re.findall(identity, self.text):
-            return True
-        return False
+        match_count = len(re.findall(identity, self.text))
+        return match_count
 
     def parse_page(self, text):
         self.text = text
@@ -152,17 +151,26 @@ class Page:
         self.prepare()
         match_pages = []
         for name in self.features:
-            if self.has_text(self.features[name]):
-                match_pages.append(name)
-        
-        if last_page_name in [self.loading_race, self.racing] and not match_pages:
-            match_pages.append(last_page_name)
+            match_count = self.has_text(self.features[name])
+            if match_count > 0:
+                match_pages.append((name, match_count))
 
-        if not match_pages and self.text or len(match_pages) > 1:
+        match_pages.sort(key=lambda pages: pages[1], reverse=True)
+
+        if last_page_name in [self.loading_race, self.racing] and not match_pages:
+            match_pages.append((last_page_name, 1))
+
+        if (
+            not match_pages
+            and self.text
+            or len(match_pages) >= 2
+            and match_pages[0][1] == match_pages[1][1]
+        ):
             logger.info(f"match_pages = {match_pages}")
             self.capture()
+
         if match_pages:
-            self.name = match_pages[0]
+            self.name = match_pages[0][1]
 
             self.parse_common()
 
@@ -185,7 +193,7 @@ class Page:
             "data": self.data,
             "mode": self.mode,
             "division": self.division,
-            "touchdriver": self.touchdriver
+            "touchdriver": self.touchdriver,
         }
 
 
