@@ -44,6 +44,8 @@ class Page:
     club_reward = "club_reward"
     # 通行证任务完成
     vip_reward = "vip_reward"
+    # 比赛结果
+    race_results = "race_results"
     # 比赛成绩
     race_score = "race_score"
     # 比赛奖励
@@ -89,6 +91,7 @@ class Page:
         vip_reward: "TIER",
         # CONGRATULATIONS.*IMPROVE,
         racing: "POS\.| \d/\d|DIST|\d+%|NITRO|\d+:\d+\.\d+|TOUCHORIVE|SURFING|PERFECT",
+        race_results: "RACE RESULTS|POS\.|PLAYER|CAR NAME|TIME|NEXT",
         race_score: "WINNER|YOUR POSITION|YOUR TIME|RATING|NEXT",
         race_reward: "RACE|REWARDS|REPUTATION|TOTAL|CREDITS|NEXT",
         milestone_reward: "CONGRATULATIONS",
