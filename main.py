@@ -371,7 +371,7 @@ def process_screen(page):
         {
             "pages": [Page.carhunt],
             "action": car_hunt,
-            "args": (1,),
+            "args": (0,),
         },
         {
             "pages": [Page.select_car],
