@@ -289,7 +289,7 @@ def process_race(race_mode=0):
             pro.press_button(Buttons.Y, 0)
             time.sleep(2)
 
-        if page.name == Page.race_score:
+        if page.name in [Page.race_score, Page.race_results]:
             break
 
     FINISHED_COUNT += 1
@@ -409,6 +409,7 @@ def process_screen(page):
             "pages": [
                 Page.race_score,
                 Page.race_reward,
+                Page.race_results,
                 Page.milestone_reward,
                 Page.connect_error,
                 Page.star_up,
