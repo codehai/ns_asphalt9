@@ -272,7 +272,7 @@ def process_race(race_mode=0):
     for i in range(60):
         page = ocr_screen()
         if "progress" in page.data:
-            progress = page.data["progress"]
+            progress = page.data["progress"] if page.data["progress"] else 0
         else:
             progress = 0
         if race_mode == 1:
