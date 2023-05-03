@@ -271,13 +271,11 @@ def confirm_and_play():
 def process_race(race_mode=0):
     global FINISHED_COUNT
     timer = Timer()
-    shot = True
     for i in range(60):
         progress = 0
-        if shot:
-            page = ocr_screen()
-            if page.data and "progress" in page.data:
-                progress = page.data["progress"] if page.data["progress"] else 0
+        page = ocr_screen()
+        if page.data and "progress" in page.data:
+            progress = page.data["progress"] if page.data["progress"] else 0
         if race_mode == 1:
             if progress > 0 and progress < 22:
                 pro.press_buttons(Buttons.Y)
@@ -294,21 +292,20 @@ def process_race(race_mode=0):
             if progress > 0 and not timer.running:
                 timer.start()
                 timer.reset(progress * 0.55)
-                shot = False
-            if timer.running:
-                logger.info(f"timer.ctime = {timer.ctime}")
-                if timer.ctime >= 14.5 and timer.ctime <= 15.5:
-                    pro.press_buttons(Buttons.B, 6, block=False)
-                elif timer.ctime >= 17 and timer.ctime <= 19:
-                    pro.press_buttons(Buttons.DPAD_LEFT)
-                elif timer.ctime >=21 and timer.ctime <= 22:
-                    pro.press_buttons(Buttons.Y)
-                    pro.press_buttons(Buttons.Y)
-                elif timer.ctime > 60:
-                    shot = True
-                else:
-                    pro.press_button(Buttons.Y, 0.7)
-                    pro.press_button(Buttons.Y, 0)
+                while True:
+                    logger.info(f"timer.ctime = {timer.ctime}")
+                    if timer.ctime >= 14.5 and timer.ctime <= 15.5:
+                        pro.press_buttons(Buttons.B, 6, block=False)
+                    elif timer.ctime >= 17 and timer.ctime <= 19:
+                        pro.press_buttons(Buttons.DPAD_LEFT)
+                    elif timer.ctime >=21 and timer.ctime <= 22:
+                        pro.press_buttons(Buttons.Y)
+                        pro.press_buttons(Buttons.Y)
+                    elif timer.ctime > 60:
+                        break
+                    else:
+                        pro.press_button(Buttons.Y, 0.7)
+                        pro.press_button(Buttons.Y, 0)
         else:
             pro.press_button(Buttons.Y, 0.7)
             pro.press_button(Buttons.Y, 0)
