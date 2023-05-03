@@ -289,7 +289,8 @@ def process_race(race_mode=0):
                     pro.press_buttons(Buttons.Y)
             time.sleep(1)
         elif race_mode == 2:
-            logger.info(f"timer.ctime = {timer.ctime}")
+            if timer.running:
+                logger.info(f"timer.ctime = {timer.ctime}")
             if progress > 0 and not timer.running:
                 timer.start()
                 timer.reset(progress * 0.55)
