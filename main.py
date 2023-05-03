@@ -271,13 +271,11 @@ def confirm_and_play():
 def process_race(race_mode=0):
     global FINISHED_COUNT
     timer = Timer()
-    screen = True
     for i in range(60):
         progress = 0
-        if screen:
-            page = ocr_screen()
-            if page.data and "progress" in page.data:
-                progress = page.data["progress"] if page.data["progress"] else 0
+        page = ocr_screen()
+        if page.data and "progress" in page.data:
+            progress = page.data["progress"] if page.data["progress"] else 0
         if race_mode == 1:
             if progress > 0 and progress < 22:
                 pro.press_buttons(Buttons.Y)
@@ -291,10 +289,10 @@ def process_race(race_mode=0):
                     pro.press_buttons(Buttons.Y)
             time.sleep(1)
         elif race_mode == 2:
+            logger.info(f"timer.elapsed = {timer.elapsed}")
             if progress > 0 and not timer.running:
                 timer.start()
                 timer.reset(progress * 0.55)
-                screen = False
             else:
                 if timer.elapsed >= 14.5 and timer.elapsed <= 15.5:
                     pro.press_buttons([Buttons.B, Buttons.DPAD_LEFT], 6)
