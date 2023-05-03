@@ -310,7 +310,7 @@ def process_race(race_mode=0):
                         pro.press_buttons(Buttons.Y)
                     elif elapsed > 60:
                         break
-                    elif elapsed > 24 and elapsed < 46 or elapsed < 10:
+                    elif elapsed > 24 and elapsed < 43 or elapsed < 10:
                         pro.press_button(Buttons.Y, 0.7)
                         pro.press_button(Buttons.Y, 0)
                         time.sleep(3)
