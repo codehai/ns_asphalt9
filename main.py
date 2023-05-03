@@ -271,7 +271,7 @@ def process_race(race_mode=0):
     global FINISHED_COUNT
     for i in range(60):
         page = ocr_screen()
-        if "progress" in page.data:
+        if page.data and "progress" in page.data:
             progress = page.data["progress"] if page.data["progress"] else 0
         else:
             progress = 0
@@ -289,22 +289,19 @@ def process_race(race_mode=0):
             time.sleep(1)
         elif race_mode == 2:
             if progress > 0 and progress < 18:
-                pro.press_buttons(Buttons.Y)
-                time.sleep(0.4)
-                pro.press_buttons(Buttons.Y)
                 pro.press_buttons(Buttons.DPAD_RIGHT)
+                pro.press_buttons(Buttons.Y)
+                pro.press_buttons(Buttons.Y)
             elif progress >= 18 and progress < 35:
-                pro.press_buttons([Buttons.ZL, Buttons.DPAD_LEFT], 5)
+                pro.press_buttons(Buttons.DPAD_LEFT)
                 pro.press_buttons(Buttons.Y)
                 pro.press_buttons(Buttons.Y)
             else:
                 pro.press_button(Buttons.Y, 0.7)
                 pro.press_button(Buttons.Y, 0)
-                time.sleep(2)
         else:
             pro.press_button(Buttons.Y, 0.7)
             pro.press_button(Buttons.Y, 0)
-            time.sleep(2)
 
         if page.name in [Page.race_score, Page.race_results]:
             break
