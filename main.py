@@ -271,8 +271,11 @@ def process_race(race_mode=0):
     global FINISHED_COUNT
     for i in range(60):
         page = ocr_screen()
-        if race_mode == 1:
+        if "progress" in page.data:
             progress = page.data["progress"]
+        else:
+            progress = 0
+        if race_mode == 1:
             if progress > 0 and progress < 22:
                 pro.press_buttons(Buttons.Y)
                 time.sleep(0.4)
@@ -284,6 +287,20 @@ def process_race(race_mode=0):
                     pro.press_buttons(Buttons.Y)
                     pro.press_buttons(Buttons.Y)
             time.sleep(1)
+        elif race_mode == 2:
+            if progress > 0 and progress < 18:
+                pro.press_buttons(Buttons.Y)
+                time.sleep(0.4)
+                pro.press_buttons(Buttons.Y)
+                pro.press_buttons(Buttons.DPAD_RIGHT)
+            elif progress >= 18 and progress < 35:
+                pro.press_buttons([Buttons.ZL, Buttons.DPAD_LEFT], 5)
+                pro.press_buttons(Buttons.Y)
+                pro.press_buttons(Buttons.Y)
+            else:
+                pro.press_button(Buttons.Y, 0.7)
+                pro.press_button(Buttons.Y, 0)
+                time.sleep(2)
         else:
             pro.press_button(Buttons.Y, 0.7)
             pro.press_button(Buttons.Y, 0)
@@ -371,7 +388,7 @@ def process_screen(page):
         {
             "pages": [Page.carhunt],
             "action": car_hunt,
-            "args": (0,),
+            "args": (2,),
         },
         {
             "pages": [Page.select_car],
