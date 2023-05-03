@@ -295,14 +295,13 @@ def process_race(race_mode=0):
                     elapsed = end - start + delta
                     logger.info(f"elapsed = {elapsed}")
                     if elapsed >= 14 and elapsed <= 15.5:
-                        pro.press_buttons(Buttons.B, 5)
-                        pro.press_buttons(Buttons.DPAD_LEFT)
+                        pro.press_buttons([Buttons.B, Buttons.DPAD_LEFT], 5.5)
                     elif elapsed >=21 and elapsed <= 22:
                         pro.press_buttons(Buttons.Y)
                         pro.press_buttons(Buttons.Y)
                     elif elapsed > 60:
                         break
-                    elif elapsed > 22 and elapsed < 60:
+                    elif elapsed > 22 and elapsed < 60 or elapsed < 14:
                         pro.press_button(Buttons.Y, 0.7)
                         pro.press_button(Buttons.Y, 0)
                         time.sleep(4)
