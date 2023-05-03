@@ -289,7 +289,7 @@ def process_race(race_mode=0):
         elif race_mode == 2:
             if progress > 0:
                 start = time.perf_counter()
-                delta = progress * 0.55
+                delta = progress * 0.55 + 4
                 while True:
                     end = time.perf_counter()
                     elapsed = end - start + delta
