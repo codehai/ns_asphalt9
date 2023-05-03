@@ -294,9 +294,8 @@ def process_race(race_mode=0):
                     end = time.perf_counter()
                     elapsed = end - start + delta
                     logger.info(f"elapsed = {elapsed}")
-                    if elapsed >= 14.5 and elapsed <= 15.5:
+                    if elapsed >= 14 and elapsed <= 15.5:
                         pro.press_buttons(Buttons.B, 5)
-                    elif elapsed >= 17 and elapsed <= 19:
                         pro.press_buttons(Buttons.DPAD_LEFT)
                     elif elapsed >=21 and elapsed <= 22:
                         pro.press_buttons(Buttons.Y)
