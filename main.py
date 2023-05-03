@@ -303,6 +303,7 @@ def process_race(race_mode=0):
                     elif elapsed > 60:
                         break
                     elif elapsed > 22 and elapsed < 60 or elapsed < 10:
+                        pro.press_buttons(Buttons.DPAD_LEFT)
                         pro.press_button(Buttons.Y, 0.7)
                         pro.press_button(Buttons.Y, 0)
                         time.sleep(3)
