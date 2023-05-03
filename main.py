@@ -295,7 +295,10 @@ def process_race(race_mode=0):
                 timer.reset(progress * 0.55)
             else:
                 if timer.ctime >= 14.5 and timer.ctime <= 15.5:
-                    pro.press_buttons([Buttons.B, Buttons.DPAD_LEFT], 6)
+                    pro.press_buttons(Buttons.B, 6, block=False)
+                elif timer.ctime >= 17 and timer.ctime <= 19:
+                    pro.press_buttons(Buttons.DPAD_LEFT)
+                elif timer.ctime >=21 and timer.ctime <= 22:
                     pro.press_buttons(Buttons.Y)
                     pro.press_buttons(Buttons.Y)
                 else:
