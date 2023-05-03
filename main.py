@@ -304,7 +304,7 @@ def process_race(race_mode=0):
                         pro.press_buttons(Buttons.Y)
                     elif elapsed > 22 and elapsed < 24:
                         pro.press_buttons(Buttons.DPAD_LEFT)
-                    elif elapsed >= 46 and elapsed < 48:
+                    elif elapsed >= 43 and elapsed < 48:
                         pro.press_buttons(Buttons.B, 5)
                         pro.press_buttons(Buttons.Y)
                         pro.press_buttons(Buttons.Y)
