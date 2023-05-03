@@ -22,6 +22,11 @@ class Timer:
         self.elapsed = start
 
     @property
+    def ctime(self):
+        end = self._func()
+        return end - self._start + self.elapsed
+
+    @property
     def running(self):
         return self._start is not None
 

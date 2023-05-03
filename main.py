@@ -289,12 +289,12 @@ def process_race(race_mode=0):
                     pro.press_buttons(Buttons.Y)
             time.sleep(1)
         elif race_mode == 2:
-            logger.info(f"timer.elapsed = {timer.elapsed}")
+            logger.info(f"timer.ctime = {timer.ctime}")
             if progress > 0 and not timer.running:
                 timer.start()
                 timer.reset(progress * 0.55)
             else:
-                if timer.elapsed >= 14.5 and timer.elapsed <= 15.5:
+                if timer.ctime >= 14.5 and timer.ctime <= 15.5:
                     pro.press_buttons([Buttons.B, Buttons.DPAD_LEFT], 6)
                     pro.press_buttons(Buttons.Y)
                     pro.press_buttons(Buttons.Y)
