@@ -9,7 +9,6 @@ from ocr import ocr, Page
 from screenshot import screenshot
 from utils.controller import Buttons, pro
 from utils.log import logger
-from utils.timer import Timer
 
 
 FINISHED_COUNT = 0
@@ -270,7 +269,6 @@ def confirm_and_play():
 
 def process_race(race_mode=0):
     global FINISHED_COUNT
-    timer = Timer()
     for i in range(60):
         progress = 0
         page = ocr_screen()
@@ -289,19 +287,21 @@ def process_race(race_mode=0):
                     pro.press_buttons(Buttons.Y)
             time.sleep(1)
         elif race_mode == 2:
-            if progress > 0 and not timer.running:
-                timer.start()
-                timer.reset(progress * 0.55)
+            if progress > 0:
+                start = time.perf_counter()
+                delta = progress * 0.55
                 while True:
-                    logger.info(f"timer.ctime = {timer.ctime}")
-                    if timer.ctime >= 14.5 and timer.ctime <= 15.5:
+                    end = time.perf_counter()
+                    elapsed = end - start + delta
+                    logger.info(f"elapsed = {elapsed}")
+                    if elapsed >= 14.5 and elapsed <= 15.5:
                         pro.press_buttons(Buttons.B, 6, block=False)
-                    elif timer.ctime >= 17 and timer.ctime <= 19:
+                    elif elapsed >= 17 and elapsed <= 19:
                         pro.press_buttons(Buttons.DPAD_LEFT)
-                    elif timer.ctime >=21 and timer.ctime <= 22:
+                    elif elapsed >=21 and elapsed <= 22:
                         pro.press_buttons(Buttons.Y)
                         pro.press_buttons(Buttons.Y)
-                    elif timer.ctime > 60:
+                    elif elapsed > 60:
                         break
                     else:
                         pro.press_button(Buttons.Y, 0.7)
