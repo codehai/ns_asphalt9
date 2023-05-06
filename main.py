@@ -548,12 +548,9 @@ def command_input():
 
         elif command in KEY_MAPPING:
             # 手柄操作
-            if G_RACE_RUN_EVENT.is_set():
-                logger.info("Please stop event loop first.")
-            else:
-                control_data = KEY_MAPPING.get(command)
-                pro.press_buttons(control_data)
-                screenshot()
+            control_data = KEY_MAPPING.get(command)
+            pro.press_buttons(control_data)
+            screenshot()
         else:
             logger.info(f"{command} command not support!")
 
