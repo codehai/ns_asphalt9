@@ -327,14 +327,14 @@ def process_race(race_mode=0):
     logger.info(f"Already finished {FINISHED_COUNT} times loop count = {i}.")
 
 
-def car_hunt(race_mode=0):
+def car_hunt(race_mode=0, row=2, column=5):
     """寻车"""
     logger.info("Start process car hunt.")
     pro.press_a(3)
     logger.info("Wait for select car")
     wait_for("CAR SELECTION")
     logger.info("Start select car")
-    select_car(2, 5, confirm=0)
+    select_car(row, column, confirm=0)
     logger.info("Start confirm car")
     pro.press_a(3)
     logger.info("Wait for Play button")
@@ -403,6 +403,11 @@ def process_screen(page):
             "pages": [Page.carhunt],
             "action": car_hunt,
             "args": (2,),
+        },
+        {
+            "pages": [Page.legendary_hunt],
+            "action": car_hunt,
+            "args": (0, 1, 4),
         },
         {
             "pages": [Page.select_car],

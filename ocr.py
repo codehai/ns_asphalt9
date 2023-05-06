@@ -24,6 +24,8 @@ class Page:
     trial_series = "trial_series"
     # 寻车
     carhunt = "carhunt"
+    # 通行证寻车
+    legendary_hunt = "legendary_hunt"
     # 购买票
     tickets = "tickets"
     # 选车
@@ -80,6 +82,7 @@ class Page:
         limited_series: "LIMITED SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
         trial_series: "TRIAL SERIES",
         carhunt: "CAR HUNT.*NSX GT3",
+        legendary_hunt: "LEGENDARY HUNT",
         tickets: "TICKETS",
         select_car: "CAR SELECTION",
         car_info: "TOP SPEED|ACCELERATION|HANDLING|NITRO|TOUCH|PLAY",
