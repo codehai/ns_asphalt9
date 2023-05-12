@@ -190,7 +190,7 @@ def auto_select_car(reverse=False):
         # 检查车辆是否可用
         pro.press_a()
         page = wait_for("TOP SPEED|HANDLING")
-        if has_text("GET KEY", page["text"]):
+        if has_text("GET KEY", page.text):
             pro.press_b()
             wait_for("CAR SELECTION")
             SELECT_COUNT += 1
@@ -198,7 +198,7 @@ def auto_select_car(reverse=False):
             continue
 
         # 处理跳到第一辆车的情况, 重置车的位置
-        if has_text("EMIRA|FORD", page["text"]):
+        if has_text("EMIRA|FORD", page.text):
             pro.press_b(3)
             wait_for("CAR SELECTION")
 
