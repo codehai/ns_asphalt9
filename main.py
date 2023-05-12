@@ -358,7 +358,7 @@ def limited_series(mode=1):
     wait_for("CAR SELECTION")
     logger.info("Start select car")
     if mode == 1:
-        auto_select_car()
+        auto_select_car(reverse=True)
     else:
         select_car(2, 5, confirm=1, reset_count=5)
 
