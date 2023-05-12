@@ -198,7 +198,7 @@ def auto_select_car(reverse=False):
             continue
 
         # 处理跳到第一辆车的情况, 重置车的位置
-        if has_text("EMIRA", text):
+        if has_text("EMIRA|FORD", text):
             pro.press_b(3)
             wait_for("CAR SELECTION")
 
@@ -353,11 +353,14 @@ def car_hunt(race_mode=0, row=2, column=5):
     logger.info("Finished car hunt")
 
 
-def limited_series():
+def limited_series(mode=1):
     pro.press_a(3)
     wait_for("CAR SELECTION")
     logger.info("Start select car")
-    select_car(2, 5, confirm=1, reset_count=5)
+    if mode == 1:
+        auto_select_car()
+    else:
+        select_car(2, 5, confirm=1, reset_count=5)
 
 def connect_controller():
     """连接手柄"""
