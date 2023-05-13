@@ -164,6 +164,13 @@ def play_game(select_car=1):
             if page.name == Page.select_car:
                 break
 
+
+def world_series_reset():
+    pro.press_group([Buttons.DPAD_UP] * 4, 0)
+    pro.press_group([Buttons.DPAD_RIGHT] * 6, 0)
+    pro.press_group([Buttons.DPAD_LEFT] * 1, 0)
+    pro.press_group([Buttons.DPAD_DOWN] * 1, 0)
+
 def world_series_select():
     global SELECT_COUNT
     # 重置
@@ -178,10 +185,7 @@ def world_series_select():
         "SILVER": [(1, 5), (2, 5), (2, 6), (1, 7), (2, 7), (1, 8), (2, 8), (2, 10), (1, 11), (2, 11)],
         "GOLD": [(2, 7), (2, 8), (2, 9), (2, 10), (2, 12)],
     }
-    pro.press_group([Buttons.DPAD_UP] * 4, 0)
-    pro.press_group([Buttons.DPAD_RIGHT] * 6, 0)
-    pro.press_group([Buttons.DPAD_LEFT] * 1, 0)
-    pro.press_group([Buttons.DPAD_DOWN] * 1, 0)
+    world_series_reset()
     division = DIVISION
     if not division:
         division = "BRONZE"
@@ -212,6 +216,8 @@ def world_series_select():
 
         SELECT_COUNT += 1
 
+        world_series_reset()
+
 
 def limited_series_select():
     global SELECT_COUNT
@@ -239,8 +245,9 @@ def limited_series_select():
 
         SELECT_COUNT += 1
 
-        
+        pro.press_button(Buttons.ZL, 0)
 
+        
 def auto_select_car(reverse=False):
     """自动选车"""
     global INITED_CAR_POSITION
