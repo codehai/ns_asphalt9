@@ -205,6 +205,8 @@ def world_series_select():
         for i in range(column - 1):
             pro.press_button(Buttons.DPAD_RIGHT, 0)
 
+        time.sleep(2)
+
         pro.press_group([Buttons.A] * 2, 2)
 
         page = ocr_screen()
@@ -233,6 +235,8 @@ def limited_series_select():
 
         for i in range(column - 1):
             pro.press_button(Buttons.DPAD_RIGHT, 0)
+        
+        time.sleep(2)
 
         pro.press_group([Buttons.A] * 2, 2)
 
