@@ -215,7 +215,7 @@ def world_series_select():
 
 def limited_series_select():
     global SELECT_COUNT
-    positions = [(1, 5), (1, 4), (2, 4), (1, 3), (2, 3)],
+    positions = [(1, 5), (1, 4), (2, 4), (1, 3), (2, 3)]
     pro.press_button(Buttons.ZL, 0)
     while True:
         if SELECT_COUNT >= len(positions):
