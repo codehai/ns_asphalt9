@@ -477,14 +477,9 @@ def process_screen(page):
             "action": enter_game,
         },
         {
-            "pages": [Page.multi_player, Page.series],
+            "pages": [Page.multi_player, Page.series, Page.limited_series],
             "action": pro.press_button,
             "args": (Buttons.A, 3),
-        },
-        {
-            "pages": [Page.limited_series],
-            "action": limited_series,
-            "args": (),
         },
         {
             "pages": [Page.trial_series],
