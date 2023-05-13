@@ -175,7 +175,8 @@ def world_series_select():
     }
     car_positions = {
         "BRONZE": [(1, 4)],
-        "SILVER": [(1, 5), (2, 5), (2, 6), (1, 7), (2, 7), (1, 8), (2, 8), (2, 10), (1, 11), (2, 11)]
+        "SILVER": [(1, 5), (2, 5), (2, 6), (1, 7), (2, 7), (1, 8), (2, 8), (2, 10), (1, 11), (2, 11)],
+        "GOLD": [(2, 7), (2, 8), (2, 9), (2, 10), (2, 12)],
     }
     pro.press_group([Buttons.DPAD_UP] * 4, 0)
     pro.press_group([Buttons.DPAD_RIGHT] * 6, 0)
@@ -210,6 +211,34 @@ def world_series_select():
         pro.press_group([Buttons.B] * 2, 2)
 
         SELECT_COUNT += 1
+
+
+def limited_series_select():
+    global SELECT_COUNT
+    positions = [(1, 5), (1, 4), (2, 4), (1, 3), (2, 3)],
+    pro.press_button(Buttons.ZL, 0)
+    while True:
+        if SELECT_COUNT >= len(positions):
+            SELECT_COUNT = 0
+        row, column = positions[SELECT_COUNT]
+
+        for i in range(row - 1):
+            pro.press_button(Buttons.DPAD_DOWN, 0)
+
+        for i in range(column - 1):
+            pro.press_button(Buttons.DPAD_RIGHT, 0)
+
+        pro.press_group([Buttons.A] * 2, 2)
+
+        page = ocr_screen()
+
+        if page.name in [Page.loading_race, Page.searching]:
+            break
+
+        pro.press_group([Buttons.B] * 2, 2)
+
+        SELECT_COUNT += 1
+
         
 
 def auto_select_car(reverse=False):
@@ -323,6 +352,8 @@ def confirm_and_play():
 def select_car():
     if MODE == "WORLD SERIES":
         world_series_select()
+    if MODE == "LIMITED SERIES":
+        limited_series_select()
 
 
 def process_race(race_mode=0):
