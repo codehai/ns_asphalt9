@@ -26,6 +26,12 @@ G_RACE_QUIT_EVENT = threading.Event()
 # 是否活跃状态
 NO_OPERATION_COUNT = 0
 
+# 游戏模式
+MODE = ""
+
+# 段位
+DIVISION = ""
+
 # 正序选车
 SELECT_CAR_ACTION = [
     Buttons.DPAD_DOWN,
@@ -47,7 +53,7 @@ SELECT_REVERSE = [
     Buttons.DPAD_RIGHT,
 ] * 10
 # 选车次数
-SELECT_COUNT = -1
+SELECT_COUNT = 0
 # 最多切换车次数(起始值0)
 MAX_SELECT_COUNT = 5
 
@@ -158,6 +164,53 @@ def play_game(select_car=1):
             if page.name == Page.select_car:
                 break
 
+def world_series_select():
+    global SELECT_COUNT
+    # 重置
+    left_count_mapping = {
+        "BRONZE": 4,
+        "SILVER": 3,
+        "GOLD": 2,
+        "PLATINUM": 1
+    }
+    car_positions = {
+        "BRONZE": [(1, 4)],
+        "SILVER": [(1, 5), (2, 5), (2, 6), (1, 7), (2, 7), (1, 8), (2, 8), (2, 10), (1, 11), (2, 11)]
+    }
+    pro.press_group([Buttons.DPAD_UP] * 4, 0)
+    pro.press_group([Buttons.DPAD_RIGHT] * 6, 0)
+    pro.press_group([Buttons.DPAD_LEFT] * 1, 0)
+    pro.press_group([Buttons.DPAD_DOWN] * 1, 0)
+    division = DIVISION
+    if not division:
+        division = "BRONZE"
+    pro.press_group([Buttons.DPAD_LEFT]*left_count_mapping.get(division), 0)
+    pro.press_a(2)
+
+    # 选车
+    while True:
+        positions = car_positions.get(division)
+        if SELECT_COUNT >= len(positions):
+            SELECT_COUNT = 0
+        row, column = positions[SELECT_COUNT]
+
+        for i in range(row - 1):
+            pro.press_button(Buttons.DPAD_DOWN, 0)
+
+        for i in range(column - 1):
+            pro.press_button(Buttons.DPAD_RIGHT, 0)
+
+        pro.press_group([Buttons.A] * 2, 2)
+
+        page = ocr_screen()
+
+        if page.name in [Page.loading_race, Page.searching]:
+            break
+
+        pro.press_group([Buttons.B] * 2, 2)
+
+        SELECT_COUNT += 1
+        
 
 def auto_select_car(reverse=False):
     """自动选车"""
@@ -265,6 +318,11 @@ def confirm_and_play():
     # 开始比赛
     logger.info("Start race")
     pro.press_a(3)
+
+
+def select_car():
+    if MODE == "WORLD SERIES":
+        world_series_select()
 
 
 def process_race(race_mode=0):
@@ -415,7 +473,7 @@ def process_screen(page):
         {
             "pages": [Page.select_car],
             "action": select_car,
-            "args": (1, 4),
+            "args": (),
         },
         # "auto_select_cat": {
         #     "identity": "CAR SELECTION",
@@ -499,10 +557,16 @@ def capture():
 def event_loop():
     global G_RACE_QUIT_EVENT
     global G_RACE_RUN_EVENT
+    global MODE
+    global DIVISION
 
     while G_RACE_RUN_EVENT.is_set() and G_RUN.is_set():
         try:
             page = ocr_screen()
+            if page.division:
+                DIVISION = page.division
+            if page.mode:
+                MODE = page.mode
             process_screen(page)
             time.sleep(3)
 

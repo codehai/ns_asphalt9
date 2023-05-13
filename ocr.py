@@ -122,7 +122,7 @@ class Page:
         self.data = None
 
     def parse_common(self):
-        divisions = re.findall("SILVER", self.text)
+        divisions = re.findall("BRONZE|SILVER|GOLD|PLATINUM", self.text)
         if divisions:
             self.division = divisions[0]
 
