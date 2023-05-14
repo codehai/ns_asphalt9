@@ -72,6 +72,8 @@ class Page:
     card_pack = "card_pack"
     # 限时赛事
     limited_series = "limited_series"
+    # 俱乐部申请
+    club = "club"
 
     features = {
         loading_race: "LOADING RACE",
@@ -106,6 +108,7 @@ class Page:
         game_menu: "GAME MENU",
         switch_home: "Asphalt 9: Legends.*ASPHALT",
         card_pack: "CARD PACK LEVEL INFO",
+        club: "YOUR CLUB"
     }
 
     text = None

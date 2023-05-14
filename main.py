@@ -430,6 +430,7 @@ def process_screen(page):
                 Page.club_reward,
                 Page.vip_reward,
                 Page.server_error,
+                Page.club
             ],
             "action": pro.press_button,
             "args": (Buttons.B,),
