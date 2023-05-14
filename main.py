@@ -242,7 +242,7 @@ def limited_series_select():
 
         page = ocr_screen()
 
-        if page.name in [Page.loading_race, Page.searching]:
+        if page.name in [Page.loading_race, Page.searching, Page.racing]:
             break
 
         pro.press_group([Buttons.B] * 2, 2)
