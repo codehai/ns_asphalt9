@@ -171,6 +171,7 @@ def world_series_reset():
     pro.press_group([Buttons.DPAD_LEFT] * 1, 0)
     pro.press_group([Buttons.DPAD_DOWN] * 1, 0)
 
+
 def world_series_select():
     global SELECT_COUNT
     # 重置
@@ -211,14 +212,14 @@ def world_series_select():
 
         page = ocr_screen()
 
-        if page.name in [Page.loading_race, Page.searching]:
+        if page.name in [Page.loading_race, Page.searching, Page.racing]:
             break
-
-        pro.press_group([Buttons.B] * 2, 2)
-
-        SELECT_COUNT += 1
-
-        world_series_reset()
+        elif page.name in [Page.car_info]:
+            pro.press_group([Buttons.B] * 2, 2)
+            SELECT_COUNT += 1
+            world_series_reset()
+        else:
+            raise Exception("Not support page in world_series_select.")
 
 
 def limited_series_select():
@@ -235,7 +236,7 @@ def limited_series_select():
 
         for i in range(column - 1):
             pro.press_button(Buttons.DPAD_RIGHT, 0)
-        
+
         time.sleep(2)
 
         pro.press_group([Buttons.A] * 2, 2)
@@ -244,14 +245,14 @@ def limited_series_select():
 
         if page.name in [Page.loading_race, Page.searching, Page.racing]:
             break
+        elif page.name in [Page.car_info]:
+            pro.press_group([Buttons.B] * 2, 2)
+            SELECT_COUNT += 1
+            pro.press_button(Buttons.ZL, 0)
+        else:
+            raise Exception("Not support page in limited_series_select.")
 
-        pro.press_group([Buttons.B] * 2, 2)
 
-        SELECT_COUNT += 1
-
-        pro.press_button(Buttons.ZL, 0)
-
-        
 def auto_select_car(reverse=False):
     """自动选车"""
     global INITED_CAR_POSITION
@@ -399,7 +400,7 @@ def process_race(race_mode=0):
                     elif elapsed >= 17 and elapsed <= 18.5:
                         pro.press_buttons(Buttons.DPAD_LEFT)
                         pro.press_buttons(Buttons.B, 3)
-                    elif elapsed >=21 and elapsed <= 22:
+                    elif elapsed >= 21 and elapsed <= 22:
                         pro.press_buttons(Buttons.Y)
                         pro.press_buttons(Buttons.Y)
                     elif elapsed > 22 and elapsed < 24:
@@ -461,6 +462,7 @@ def limited_series(mode=1):
         auto_select_car(reverse=True)
     else:
         select_car(2, 5, confirm=1, reset_count=5)
+
 
 def connect_controller():
     """连接手柄"""
@@ -586,7 +588,8 @@ def process_screen(page):
 
 
 def capture():
-    filename = "".join([str(d) for d in datetime.datetime.now().timetuple()]) + ".jpg"
+    filename = "".join([str(d)
+                       for d in datetime.datetime.now().timetuple()]) + ".jpg"
     shutil.copy("./images/output.jpg", f"./images/{filename}")
     return filename
 
