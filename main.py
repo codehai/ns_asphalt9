@@ -13,9 +13,6 @@ from utils.log import logger
 
 FINISHED_COUNT = 0
 
-# 是否初始化车所在位置
-INITED_CAR_POSITION = False
-
 # 程序运行
 G_RUN = threading.Event()
 
@@ -32,30 +29,8 @@ MODE = ""
 # 段位
 DIVISION = ""
 
-# 正序选车
-SELECT_CAR_ACTION = [
-    Buttons.DPAD_DOWN,
-    Buttons.DPAD_RIGHT,
-    Buttons.DPAD_UP,
-    Buttons.DPAD_RIGHT,
-] * 10
-# 反序选车
-SELECT_CAR_REVERSE_ACTION = [
-    Buttons.DPAD_DOWN,
-    Buttons.DPAD_LEFT,
-    Buttons.DPAD_UP,
-    Buttons.DPAD_LEFT,
-] * 10
-SELECT_REVERSE = [
-    Buttons.DPAD_UP,
-    Buttons.DPAD_RIGHT,
-    Buttons.DPAD_DOWN,
-    Buttons.DPAD_RIGHT,
-] * 10
 # 选车次数
 SELECT_COUNT = 0
-# 最多切换车次数(起始值0)
-MAX_SELECT_COUNT = 5
 
 # 键盘与手柄映射
 KEY_MAPPING = {
@@ -253,78 +228,6 @@ def limited_series_select():
             raise Exception("Not support page in limited_series_select.")
 
 
-def auto_select_car(reverse=False):
-    """自动选车"""
-    global INITED_CAR_POSITION
-    global SELECT_COUNT
-    logger.info("Auto select car.")
-    # 车库重置到第一辆车
-    if reverse and not INITED_CAR_POSITION:
-        for i in range(5):
-            pro.press_button(Buttons.DPAD_RIGHT, 0.1)
-        INITED_CAR_POSITION = True
-
-    # 选车
-    if reverse:
-        select_action = SELECT_CAR_REVERSE_ACTION
-    else:
-        select_action = SELECT_CAR_ACTION
-
-    while True:
-        logger.info(f"select_count = {SELECT_COUNT}")
-        # SELECT_COUNT 判断重置 使用过5辆车
-        if SELECT_COUNT >= MAX_SELECT_COUNT:
-            actions = SELECT_REVERSE[: SELECT_COUNT + 1]
-            actions.reverse()
-            for action in actions:
-                pro.press_button(action, 0.2)
-            time.sleep(2)
-            SELECT_COUNT = -1
-
-        # 检查车辆是否可用
-        pro.press_a()
-        page = wait_for("TOP SPEED|HANDLING")
-        if has_text("GET KEY", page.text):
-            pro.press_b()
-            wait_for("CAR SELECTION")
-            SELECT_COUNT += 1
-            pro.press_button(select_action[SELECT_COUNT], 2)
-            continue
-
-        # 处理跳到第一辆车的情况, 重置车的位置
-        if has_text("EMIRA|FORD", page.text):
-            pro.press_b(3)
-            wait_for("CAR SELECTION")
-
-            # 重置
-            action = Buttons.DPAD_RIGHT if reverse else Buttons.DPAD_LEFT
-            for i in range(5):
-                pro.press_button(action, 0.2)
-            time.sleep(2)
-
-            # 快进select
-            for step in range(SELECT_COUNT + 1):
-                pro.press_button(select_action[step], 0.2)
-            time.sleep(2)
-            pro.press_a()
-
-        pro.press_a(5)
-        page = ocr_screen()
-        # 点两下a能开始比赛说明车可用
-        if page.name == Page.searching:
-            return
-
-        for i in range(2):
-            if page.name == Page.car_info:
-                pro.press_b(3)
-            if page.name == Page.select_car:
-                break
-            page = ocr_screen()
-
-        SELECT_COUNT += 1
-        pro.press_button(select_action[SELECT_COUNT], 2)
-
-
 def select_car(row, column, confirm=1, reset_count=25):
     """开始比赛并选择车
     row 第几行
@@ -452,16 +355,6 @@ def car_hunt(race_mode=0, row=2, column=5):
     logger.info("Start process race")
     process_race(race_mode)
     logger.info("Finished car hunt")
-
-
-def limited_series(mode=1):
-    pro.press_a(3)
-    wait_for("CAR SELECTION")
-    logger.info("Start select car")
-    if mode == 1:
-        auto_select_car(reverse=True)
-    else:
-        select_car(2, 5, confirm=1, reset_count=5)
 
 
 def connect_controller():
