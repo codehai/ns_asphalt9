@@ -1,0 +1,834 @@
+[
+  {
+    "name": "Mitsubishi Lancer Evolution",
+    "class": "D"
+  },
+  {
+    "name": "BMW Z4 LCI E89",
+    "class": "D"
+  },
+  {
+    "name": "Chevrolet Camaro LT",
+    "class": "D"
+  },
+  {
+    "name": "Nissan Leaf Nismo RC",
+    "class": "D"
+  },
+  {
+    "name": "Nissan 370Z NISMO",
+    "class": "D"
+  },
+  {
+    "name": "KTM X-Bow GTX",
+    "class": "D"
+  },
+  {
+    "name": "Volkswagen XL Sport Concept",
+    "class": "D"
+  },
+  {
+    "name": "DS Automobiles DS E-TENSE",
+    "class": "D"
+  },
+  {
+    "name": "Dodge Challenger 392 Hemi Scat Pack",
+    "class": "D"
+  },
+  {
+    "name": "Renault Dezir",
+    "class": "D"
+  },
+  {
+    "name": "Italdesign Davinci",
+    "class": "D"
+  },
+  {
+    "name": "BMW i8 Roadster",
+    "class": "D"
+  },
+  {
+    "name": "Peugeot SR1",
+    "class": "D"
+  },
+  {
+    "name": "Porsche 718 Cayman",
+    "class": "D"
+  },
+  {
+    "name": "Infiniti Project Black S",
+    "class": "D"
+  },
+  {
+    "name": "Lotus Elise Sprint 220",
+    "class": "D"
+  },
+  {
+    "name": "Lamborghini Countach 25th Anniversary",
+    "class": "D"
+  },
+  {
+    "name": "Ford Shelby GT350R",
+    "class": "D"
+  },
+  {
+    "name": "Porsche 911 Targa 4S",
+    "class": "D"
+  },
+  {
+    "name": "Lotus Emira",
+    "class": "D"
+  },
+  {
+    "name": "Praga R1",
+    "class": "D"
+  },
+  {
+    "name": "Ginetta G60",
+    "class": "D"
+  },
+  {
+    "name": "Renault TreZor",
+    "class": "D"
+  },
+  {
+    "name": "Honda Civic Type-R",
+    "class": "D"
+  },
+  {
+    "name": "Porsche Taycan Turbo S",
+    "class": "D"
+  },
+  {
+    "name": "TVR Griffith",
+    "class": "D"
+  },
+  {
+    "name": "Bentley Continental GT3",
+    "class": "D"
+  },
+  {
+    "name": "Mazda Furai",
+    "class": "D"
+  },
+  {
+    "name": "Chevrolet Corvette C7.R",
+    "class": "D"
+  },
+  {
+    "name": "Lamborghini Huracan Super Trofeo Evo",
+    "class": "D"
+  },
+  {
+    "name": "Volkswagen Electric R",
+    "class": "D"
+  },
+  {
+    "name": "Glickenhaus 004C",
+    "class": "D"
+  },
+  {
+    "name": "Dodge Challenger SRT8",
+    "class": "C"
+  },
+  {
+    "name": "BMW 3.0 CSL Hommage",
+    "class": "C"
+  },
+  {
+    "name": "Porsche Boxster 25th",
+    "class": "C"
+  },
+  {
+    "name": "Chevrolet Camaro ZL1 50th Ed.",
+    "class": "C"
+  },
+  {
+    "name": "Lotus Evora Sport 410",
+    "class": "C"
+  },
+  {
+    "name": "Mercedes-Benz AMG GT S",
+    "class": "C"
+  },
+  {
+    "name": "BMW M4 GTS",
+    "class": "C"
+  },
+  {
+    "name": "Rezvani Beast X",
+    "class": "C"
+  },
+  {
+    "name": "Aston Martin V12 Speedster",
+    "class": "C"
+  },
+  {
+    "name": "Donkervoort D8 GTO Individual Series",
+    "class": "C"
+  },
+  {
+    "name": "Dodge Viper ACR",
+    "class": "C"
+  },
+  {
+    "name": "Bolwell MK X Nagari 500",
+    "class": "C"
+  },
+  {
+    "name": "Ford Shelby GR-1",
+    "class": "C"
+  },
+  {
+    "name": "Pininfarina H2 Speed",
+    "class": "C"
+  },
+  {
+    "name": "Artega Scalo Superelletra",
+    "class": "C"
+  },
+  {
+    "name": "Saleen S1",
+    "class": "C"
+  },
+  {
+    "name": "Acura NSX (2017)",
+    "class": "C"
+  },
+  {
+    "name": "Maserati Alfieri",
+    "class": "C"
+  },
+  {
+    "name": "ATS Automobili Corsa RRTurbo",
+    "class": "C"
+  },
+  {
+    "name": "Ferrari Monza SP1",
+    "class": "C"
+  },
+  {
+    "name": "Vencer Sarthe",
+    "class": "C"
+  },
+  {
+    "name": "Maserati MC12",
+    "class": "C"
+  },
+  {
+    "name": "Jaguar XE SV Project 8",
+    "class": "C"
+  },
+  {
+    "name": "Ferrari F40",
+    "class": "C"
+  },
+  {
+    "name": "Renault R.S. 01",
+    "class": "C"
+  },
+  {
+    "name": "Acura NSX GT3 Evo",
+    "class": "C"
+  },
+  {
+    "name": "Bentley Mulliner Bacalar",
+    "class": "C"
+  },
+  {
+    "name": "Porsche 718 Cayman GT4 Clubsport",
+    "class": "C"
+  },
+  {
+    "name": "Brabham BT62",
+    "class": "C"
+  },
+  {
+    "name": "Ares S1",
+    "class": "C"
+  },
+  {
+    "name": "Chevrolet Corvette Stingray",
+    "class": "C"
+  },
+  {
+    "name": "Ferrari 599XX Evo",
+    "class": "C"
+  },
+  {
+    "name": "Lamborghini Diablo GT",
+    "class": "C"
+  },
+  {
+    "name": "Arrinera Hussarya 33",
+    "class": "C"
+  },
+  {
+    "name": "Bugatti EB110",
+    "class": "C"
+  },
+  {
+    "name": "Lamborghini Gallardo LP560-4",
+    "class": "C"
+  },
+  {
+    "name": "McLaren GT",
+    "class": "C"
+  },
+  {
+    "name": "Lamborghini Miura Concept",
+    "class": "C"
+  },
+  {
+    "name": "Mercedes-Benz Mercedes-AMG GT Black Series",
+    "class": "C"
+  },
+  {
+    "name": "Porsche 911 GTS Coupe",
+    "class": "B"
+  },
+  {
+    "name": "Aston Martin DB11",
+    "class": "B"
+  },
+  {
+    "name": "Exotic Rides W70",
+    "class": "B"
+  },
+  {
+    "name": "Jaguar F-Type SVR",
+    "class": "B"
+  },
+  {
+    "name": "Ferrari F50",
+    "class": "B"
+  },
+  {
+    "name": "Porsche 911 GT1 Evolution",
+    "class": "B"
+  },
+  {
+    "name": "Ford GT",
+    "class": "B"
+  },
+  {
+    "name": "Lamborghini Asterion",
+    "class": "B"
+  },
+  {
+    "name": "Ferrari Roma",
+    "class": "B"
+  },
+  {
+    "name": "Arash AF10",
+    "class": "B"
+  },
+  {
+    "name": "Cadillac Cien Concept",
+    "class": "B"
+  },
+  {
+    "name": "Ford GT MK II",
+    "class": "B"
+  },
+  {
+    "name": "Italdesign Zerouno",
+    "class": "B"
+  },
+  {
+    "name": "Arash AF8 Falcon Edition",
+    "class": "B"
+  },
+  {
+    "name": "Ferrari 488 GTB",
+    "class": "B"
+  },
+  {
+    "name": "Kepler Motion",
+    "class": "B"
+  },
+  {
+    "name": "Drako GTE",
+    "class": "B"
+  },
+  {
+    "name": "SCG 003S",
+    "class": "B"
+  },
+  {
+    "name": "McLaren Elva",
+    "class": "B"
+  },
+  {
+    "name": "Nissan R390 GT1",
+    "class": "B"
+  },
+  {
+    "name": "Ferrari F12tdf",
+    "class": "B"
+  },
+  {
+    "name": "Lamborghini Murcielago LP 640 Roadster",
+    "class": "B"
+  },
+  {
+    "name": "McLaren 765LT",
+    "class": "B"
+  },
+  {
+    "name": "Chevrolet Corvette Grand Sport",
+    "class": "B"
+  },
+  {
+    "name": "Apex AP-0",
+    "class": "B"
+  },
+  {
+    "name": "Aston Martin Vantage GT12",
+    "class": "B"
+  },
+  {
+    "name": "Apollo IE",
+    "class": "B"
+  },
+  {
+    "name": "Sin R1 550",
+    "class": "B"
+  },
+  {
+    "name": "Lamborghini Reventon Roadster",
+    "class": "B"
+  },
+  {
+    "name": "Ferrari Enzo Ferrari",
+    "class": "B"
+  },
+  {
+    "name": "Apollo N",
+    "class": "B"
+  },
+  {
+    "name": "Aston Martin One77",
+    "class": "B"
+  },
+  {
+    "name": "Mercedes-Benz SLR McLaren",
+    "class": "B"
+  },
+  {
+    "name": "Aston Martin DBS Superleggera",
+    "class": "B"
+  },
+  {
+    "name": "Lamborghini Essenza SCV12",
+    "class": "B"
+  },
+  {
+    "name": "McLaren 600LT Spider",
+    "class": "B"
+  },
+  {
+    "name": "Puritalia Berlinetta",
+    "class": "B"
+  },
+  {
+    "name": "Lamborghini Huracan Evo Spyder",
+    "class": "B"
+  },
+  {
+    "name": "Porsche Carrera GT",
+    "class": "B"
+  },
+  {
+    "name": "Nissan GTR-50 Italdesign",
+    "class": "B"
+  },
+  {
+    "name": "Zenvo TSR-S",
+    "class": "B"
+  },
+  {
+    "name": "Lamborghini Sesto Elemento",
+    "class": "B"
+  },
+  {
+    "name": "Porsche 911 GT3 RS",
+    "class": "B"
+  },
+  {
+    "name": "Ferrari 488 GTB Challenge Evo",
+    "class": "B"
+  },
+  {
+    "name": "Lotus Evija",
+    "class": "B"
+  },
+  {
+    "name": "McLaren F1 LM",
+    "class": "B"
+  },
+  {
+    "name": "Volkswagen W12 Coupe",
+    "class": "B"
+  },
+  {
+    "name": "Pagani Huayra R",
+    "class": "B"
+  },
+  {
+    "name": "Lamborghini Revuelto",
+    "class": "B"
+  },
+  {
+    "name": "Aston Martin Vulcan",
+    "class": "A"
+  },
+  {
+    "name": "Nissan GT-R NISMO",
+    "class": "A"
+  },
+  {
+    "name": "NIO EP9",
+    "class": "A"
+  },
+  {
+    "name": "Ferrari J50",
+    "class": "A"
+  },
+  {
+    "name": "Dodge Viper GTS",
+    "class": "A"
+  },
+  {
+    "name": "Bentley Continental GT Speed",
+    "class": "A"
+  },
+  {
+    "name": "Ferrari LaFerrari",
+    "class": "A"
+  },
+  {
+    "name": "McLaren P1",
+    "class": "A"
+  },
+  {
+    "name": "Pagani Zonda HP Barchetta",
+    "class": "A"
+  },
+  {
+    "name": "SCG 007S",
+    "class": "A"
+  },
+  {
+    "name": "Lamborghini Aventador SV Coupe",
+    "class": "A"
+  },
+  {
+    "name": "Ferrari 812 Superfast",
+    "class": "A"
+  },
+  {
+    "name": "Chevrolet Corvette ZR1",
+    "class": "A"
+  },
+  {
+    "name": "Jaguar C-X75",
+    "class": "A"
+  },
+  {
+    "name": "VLF Force 1 V10",
+    "class": "A"
+  },
+  {
+    "name": "McLaren Senna GTR",
+    "class": "A"
+  },
+  {
+    "name": "Lamborghini Aventador SVJ Roadster",
+    "class": "A"
+  },
+  {
+    "name": "Porsche 918 Spyder",
+    "class": "A"
+  },
+  {
+    "name": "Peugeot 9x8",
+    "class": "A"
+  },
+  {
+    "name": "Vanda Electrics Dendrobium",
+    "class": "A"
+  },
+  {
+    "name": "McLaren 570s Spider",
+    "class": "A"
+  },
+  {
+    "name": "Lamborghini Aventador J",
+    "class": "A"
+  },
+  {
+    "name": "Peugeot Onyx",
+    "class": "A"
+  },
+  {
+    "name": "Pagani Zonda R",
+    "class": "A"
+  },
+  {
+    "name": "Citroen GT by Citroen",
+    "class": "A"
+  },
+  {
+    "name": "Aston Martin Victor",
+    "class": "A"
+  },
+  {
+    "name": "Porsche 911 GT2 RS Clubsport",
+    "class": "A"
+  },
+  {
+    "name": "Pagani Huayra BC",
+    "class": "A"
+  },
+  {
+    "name": "McLaren 650S GT3",
+    "class": "A"
+  },
+  {
+    "name": "Lamborghini SC18",
+    "class": "A"
+  },
+  {
+    "name": "Ferrari LaFerrari Aperta",
+    "class": "A"
+  },
+  {
+    "name": "Ferrari F8 Tributo",
+    "class": "A"
+  },
+  {
+    "name": "Lamborghini SC20",
+    "class": "A"
+  },
+  {
+    "name": "Genty Akylone",
+    "class": "A"
+  },
+  {
+    "name": "Techrules AT96 Track Version",
+    "class": "A"
+  },
+  {
+    "name": "Rimac Concept_One",
+    "class": "A"
+  },
+  {
+    "name": "Aston Martin Valhalla Concept Car",
+    "class": "A"
+  },
+  {
+    "name": "Jaguar XJR-9",
+    "class": "A"
+  },
+  {
+    "name": "Pagani Imola",
+    "class": "A"
+  },
+  {
+    "name": "Lamborghini Countach LPI 800-4",
+    "class": "A"
+  },
+  {
+    "name": "Lamborghini Centenario",
+    "class": "S"
+  },
+  {
+    "name": "Ferrari FXX K",
+    "class": "S"
+  },
+  {
+    "name": "Icona Vulcano Titanium",
+    "class": "S"
+  },
+  {
+    "name": "W Motors Lykan HyperSport",
+    "class": "S"
+  },
+  {
+    "name": "Raesr Tachyon Speed",
+    "class": "S"
+  },
+  {
+    "name": "Jaguar XJ220S TWR",
+    "class": "S"
+  },
+  {
+    "name": "Lamborghini Veneno",
+    "class": "S"
+  },
+  {
+    "name": "Lamborghini Egoista",
+    "class": "S"
+  },
+  {
+    "name": "Chrysler ME412",
+    "class": "S"
+  },
+  {
+    "name": "TRION Nemesis",
+    "class": "S"
+  },
+  {
+    "name": "Spania GTA 2015 GTA Spano",
+    "class": "S"
+  },
+  {
+    "name": "Ferrari SF90 Stradale",
+    "class": "S"
+  },
+  {
+    "name": "FV Frangivento Sorpasso GT3",
+    "class": "S"
+  },
+  {
+    "name": "McLaren Senna",
+    "class": "S"
+  },
+  {
+    "name": "Bugatti Veyron 16.4 Grand Sport Vitesse",
+    "class": "S"
+  },
+  {
+    "name": "Lamborghini Terzo Millennio",
+    "class": "S"
+  },
+  {
+    "name": "Vision 1789",
+    "class": "S"
+  },
+  {
+    "name": "W Motors Fenyr Supersport",
+    "class": "S"
+  },
+  {
+    "name": "Aston Martin Valkyrie",
+    "class": "S"
+  },
+  {
+    "name": "Zenvo TS1 GT Anniversary",
+    "class": "S"
+  },
+  {
+    "name": "Automobili Pininfarina Battista",
+    "class": "S"
+  },
+  {
+    "name": "Naran Hyper Coupe",
+    "class": "S"
+  },
+  {
+    "name": "McLaren Speedtail",
+    "class": "S"
+  },
+  {
+    "name": "Faraday FFZero1",
+    "class": "S"
+  },
+  {
+    "name": "Koenigsegg Regera",
+    "class": "S"
+  },
+  {
+    "name": "Ultima RS",
+    "class": "S"
+  },
+  {
+    "name": "Lamborghini Sian FKP 37",
+    "class": "S"
+  },
+  {
+    "name": "Ajlani Drakuma",
+    "class": "S"
+  },
+  {
+    "name": "Inferno Automobili Inferno",
+    "class": "S"
+  },
+  {
+    "name": "Torino Design Super Sport",
+    "class": "S"
+  },
+  {
+    "name": "Bugatti Chiron",
+    "class": "S"
+  },
+  {
+    "name": "BXR Bailey Blade GT1",
+    "class": "S"
+  },
+  {
+    "name": "Bugatti Divo",
+    "class": "S"
+  },
+  {
+    "name": "Tushek TS 900 Racer Pro",
+    "class": "S"
+  },
+  {
+    "name": "Mazzanti Evantra Millecavalli",
+    "class": "S"
+  },
+  {
+    "name": "Toroidion 1MW",
+    "class": "S"
+  },
+  {
+    "name": "Inferno Automobili Settimo Cerchio",
+    "class": "S"
+  },
+  {
+    "name": "Koenigsegg Jesko",
+    "class": "S"
+  },
+  {
+    "name": "Bugatti Centodieci",
+    "class": "S"
+  },
+  {
+    "name": "Aspark Owl",
+    "class": "S"
+  },
+  {
+    "name": "Rimac Nevera",
+    "class": "S"
+  },
+  {
+    "name": "Koenigsegg Agera RS",
+    "class": "S"
+  },
+  {
+    "name": "SSC Tuatara",
+    "class": "S"
+  },
+  {
+    "name": "Koenigsegg CCXR",
+    "class": "S"
+  },
+  {
+    "name": "Bugatti La Voiture Noire",
+    "class": "S"
+  },
+  {
+    "name": "Hennessey Venom F5",
+    "class": "S"
+  },
+  {
+    "name": "Koenigsegg Gemera",
+    "class": "S"
+  },
+  {
+    "name": "Bugatti Bolide",
+    "class": "S"
+  }
+]
