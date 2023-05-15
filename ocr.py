@@ -101,14 +101,14 @@ class Page:
         race_reward: "RACE|REWARDS|REPUTATION|TOTAL|CREDITS|NEXT",
         milestone_reward: "CONGRATULATIONS",
         connect_error: "CONNECTION ERROR",
-        star_up: "STAR UP",
+        star_up: "STAR|UP",
         offline_mode: "OFFLINE MODE",
         system_error: "software.*closed",
         server_error: "ERROR.*ACTION",
         game_menu: "GAME MENU",
         switch_home: "Asphalt 9: Legends.*ASPHALT",
         card_pack: "CARD PACK LEVEL INFO",
-        club: "YOUR CLUB"
+        club: "YOUR CLUB",
     }
 
     text = None
