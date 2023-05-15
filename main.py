@@ -156,6 +156,7 @@ def world_series_reset():
     pro.press_group([Buttons.DPAD_LEFT] * 1, 0)
     pro.press_group([Buttons.DPAD_DOWN] * 1, 0)
     pro.press_group([Buttons.DPAD_LEFT] * left_count_mapping.get(level), 0)
+    time.sleep(1)
     pro.press_a(2)
 
 
