@@ -1,15 +1,19 @@
+import argparse
 import datetime
 import re
 import shutil
 import threading
 import time
 import traceback
+import yaml
 
-from ocr import ocr, Page
+from ocr import Page, ocr
 from screenshot import screenshot
 from utils.controller import Buttons, pro
 from utils.log import logger
 
+
+CONFIG = None
 
 FINISHED_COUNT = 0
 
@@ -141,134 +145,75 @@ def play_game(select_car=1):
 
 
 def world_series_reset():
+    division = DIVISION
+    if not division:
+        division = "BRONZE"
+    config = CONFIG["多人一"][division]
+    level = config["车库等级"]
+    left_count_mapping = {"BRONZE": 4, "SILVER": 3, "GOLD": 2, "PLATINUM": 1}
     pro.press_group([Buttons.DPAD_UP] * 4, 0)
     pro.press_group([Buttons.DPAD_RIGHT] * 6, 0)
     pro.press_group([Buttons.DPAD_LEFT] * 1, 0)
     pro.press_group([Buttons.DPAD_DOWN] * 1, 0)
+    pro.press_group([Buttons.DPAD_LEFT] * left_count_mapping.get(level), 0)
+    pro.press_a(2)
 
 
-def world_series_select():
-    global SELECT_COUNT
-    # 重置
-    left_count_mapping = {
-        "BRONZE": 4,
-        "SILVER": 3,
-        "GOLD": 2,
-        "PLATINUM": 1
-    }
-    car_positions = {
-        "BRONZE": [(1, 4)],
-        "SILVER": [(1, 5), (2, 5), (2, 6), (1, 7), (2, 7), (1, 8), (2, 8), (2, 10), (1, 11), (2, 11)],
-        "GOLD": [(2, 7), (2, 8), (2, 9), (2, 10), (2, 12)],
-    }
-    world_series_reset()
+def limited_series_reset():
+    pro.press_button(Buttons.ZL, 0)
+
+
+def world_series_positions():
     division = DIVISION
     if not division:
         division = "BRONZE"
-    pro.press_group([Buttons.DPAD_LEFT]*left_count_mapping.get(division), 0)
-    pro.press_a(2)
-
-    # 选车
-    while True:
-        positions = car_positions.get(division)
-        if SELECT_COUNT >= len(positions):
-            SELECT_COUNT = 0
-        row, column = positions[SELECT_COUNT]
-
-        for i in range(row - 1):
-            pro.press_button(Buttons.DPAD_DOWN, 0)
-
-        for i in range(column - 1):
-            pro.press_button(Buttons.DPAD_RIGHT, 0)
-
-        time.sleep(2)
-
-        pro.press_group([Buttons.A] * 2, 2)
-
-        page = ocr_screen()
-
-        if page.name in [Page.loading_race, Page.searching, Page.racing]:
-            break
-        elif page.name in [Page.car_info]:
-            pro.press_group([Buttons.B] * 2, 2)
-            SELECT_COUNT += 1
-            world_series_reset()
-        else:
-            raise Exception("Not support page in world_series_select.")
+    config = CONFIG["多人一"][division]
+    return config["车库位置"]
 
 
-def limited_series_select():
-    global SELECT_COUNT
-    positions = [(1, 5), (1, 4), (2, 4), (1, 3), (2, 3)]
-    pro.press_button(Buttons.ZL, 0)
-    while True:
-        if SELECT_COUNT >= len(positions):
-            SELECT_COUNT = 0
-        row, column = positions[SELECT_COUNT]
-
-        for i in range(row - 1):
-            pro.press_button(Buttons.DPAD_DOWN, 0)
-
-        for i in range(column - 1):
-            pro.press_button(Buttons.DPAD_RIGHT, 0)
-
-        time.sleep(2)
-
-        pro.press_group([Buttons.A] * 2, 2)
-
-        page = ocr_screen()
-
-        if page.name in [Page.loading_race, Page.searching, Page.racing]:
-            break
-        elif page.name in [Page.car_info]:
-            pro.press_group([Buttons.B] * 2, 2)
-            SELECT_COUNT += 1
-            pro.press_button(Buttons.ZL, 0)
-        else:
-            raise Exception("Not support page in limited_series_select.")
+def limited_series_position():
+    return CONFIG["多人二"]["车库位置"]
 
 
-def select_car(row, column, confirm=1, reset_count=25):
-    """开始比赛并选择车
-    row 第几行
-    column 第几列
-    row: 1 column: 4 选择第1行第4列那辆车
-    """
-    logger.info("Start select car.")
-    # 车库重置到第一辆车
-    for i in range(reset_count):
-        pro.press_button(Buttons.DPAD_LEFT, 0)
-
-    for i in range(3):
-        pro.press_button(Buttons.DPAD_UP, 0)
-
-    # 选车
-    for i in range(row):
-        pro.press_button(Buttons.DPAD_DOWN, 0)
-
-    for i in range(column - 1):
-        pro.press_button(Buttons.DPAD_RIGHT, 0)
-
-    time.sleep(2)
-
-    if confirm:
-        confirm_and_play()
-
-
-def confirm_and_play():
-    # 确认车辆
-    logger.info("Confirm car")
-    pro.press_a(2)
-    # 开始比赛
-    logger.info("Start race")
-    pro.press_a(3)
+def get_series_config():
+    if MODE == "WORLD SERIES":
+        return world_series_positions(), world_series_reset
+    elif MODE == "LIMITED SERIES":
+        return limited_series_position(), limited_series_reset
+    else:
+        raise Exception("Not support mode in series_select.")
 
 
 def select_car():
-    if MODE == "WORLD SERIES":
-        world_series_select()
-    if MODE == "LIMITED SERIES":
-        limited_series_select()
+    global SELECT_COUNT
+    positions, reset = get_series_config()
+    # 选车
+    while True:
+        reset()
+        if SELECT_COUNT >= len(positions):
+            SELECT_COUNT = 0
+        position = positions[SELECT_COUNT]
+
+        for i in range(position["row"] - 1):
+            pro.press_button(Buttons.DPAD_DOWN, 0)
+
+        for i in range(position["col"] - 1):
+            pro.press_button(Buttons.DPAD_RIGHT, 0)
+
+        time.sleep(2)
+
+        pro.press_group([Buttons.A] * 2, 2)
+
+        page = ocr_screen()
+
+        if page.name in [Page.loading_race, Page.searching, Page.racing]:
+            break
+        elif page.name in [Page.car_info]:
+            pro.press_group([Buttons.B] * 2, 2)
+            SELECT_COUNT += 1
+            continue
+        else:
+            raise Exception("Not support page in world_series_select.")
 
 
 def process_race(race_mode=0):
@@ -407,11 +352,6 @@ def process_screen(page):
             "action": select_car,
             "args": (),
         },
-        # "auto_select_cat": {
-        #     "identity": "CAR SELECTION",
-        #     "action": auto_select_car,
-        #     "args": (1,),
-        # },
         {
             "pages": [Page.car_info],
             "action": pro.press_button,
@@ -430,7 +370,7 @@ def process_screen(page):
                 Page.club_reward,
                 Page.vip_reward,
                 Page.server_error,
-                Page.club
+                Page.club,
             ],
             "action": pro.press_button,
             "args": (Buttons.B,),
@@ -482,8 +422,7 @@ def process_screen(page):
 
 
 def capture():
-    filename = "".join([str(d)
-                       for d in datetime.datetime.now().timetuple()]) + ".jpg"
+    filename = "".join([str(d) for d in datetime.datetime.now().timetuple()]) + ".jpg"
     shutil.copy("./images/output.jpg", f"./images/{filename}")
     return filename
 
@@ -561,12 +500,31 @@ def start_command_input():
     t.start()
 
 
+def init_config():
+    global CONFIG
+    parser = argparse.ArgumentParser(description="NS Asphalt9 Tool.")
+    parser.add_argument("-c", action="store_true", help="使用自定义配置")
+
+    args = parser.parse_args()
+
+    with open("default.yaml") as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+
+    if args.c:
+        with open("custom.yaml") as f:
+            custom_config = yaml.load(f, Loader=yaml.FullLoader)
+        config.update(custom_config)
+    CONFIG = config
+
+
 def main():
     global G_RACE_RUN_EVENT
     global G_RACE_QUIT_EVENT
 
     G_RACE_QUIT_EVENT.set()
     G_RUN.set()
+
+    init_config()
 
     start_command_input()
 

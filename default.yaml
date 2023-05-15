@@ -1,0 +1,33 @@
+多人一:
+  BRONZE:
+    车库等级: BRONZE
+    车库位置:
+      - row: 1
+        col: 4
+  SILVER:
+    车库等级: BRONZE
+    车库位置:
+      - row: 1
+        col: 4
+  GOLD:
+    车库等级: BRONZE
+    车库位置:
+      - row: 1
+        col: 4
+  PLATINUM:
+    车库等级: BRONZE
+    车库位置:
+      - row: 1
+        col: 4
+多人二:
+  车库位置:
+    - row: 1
+      col: 5
+    - row: 1
+      col: 4
+    - row: 2
+      col: 4
+    - row: 1
+      col: 3
+    - row: 2
+      col: 3
