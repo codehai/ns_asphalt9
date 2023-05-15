@@ -13,9 +13,6 @@ from utils.log import logger
 
 FINISHED_COUNT = 0
 
-# 是否初始化车所在位置
-INITED_CAR_POSITION = False
-
 # 程序运行
 G_RUN = threading.Event()
 
@@ -26,30 +23,14 @@ G_RACE_QUIT_EVENT = threading.Event()
 # 是否活跃状态
 NO_OPERATION_COUNT = 0
 
-# 正序选车
-SELECT_CAR_ACTION = [
-    Buttons.DPAD_DOWN,
-    Buttons.DPAD_RIGHT,
-    Buttons.DPAD_UP,
-    Buttons.DPAD_RIGHT,
-] * 10
-# 反序选车
-SELECT_CAR_REVERSE_ACTION = [
-    Buttons.DPAD_DOWN,
-    Buttons.DPAD_LEFT,
-    Buttons.DPAD_UP,
-    Buttons.DPAD_LEFT,
-] * 10
-SELECT_REVERSE = [
-    Buttons.DPAD_UP,
-    Buttons.DPAD_RIGHT,
-    Buttons.DPAD_DOWN,
-    Buttons.DPAD_RIGHT,
-] * 10
+# 游戏模式
+MODE = ""
+
+# 段位
+DIVISION = ""
+
 # 选车次数
-SELECT_COUNT = -1
-# 最多切换车次数(起始值0)
-MAX_SELECT_COUNT = 5
+SELECT_COUNT = 0
 
 # 键盘与手柄映射
 KEY_MAPPING = {
@@ -159,76 +140,92 @@ def play_game(select_car=1):
                 break
 
 
-def auto_select_car(reverse=False):
-    """自动选车"""
-    global INITED_CAR_POSITION
+def world_series_reset():
+    pro.press_group([Buttons.DPAD_UP] * 4, 0)
+    pro.press_group([Buttons.DPAD_RIGHT] * 6, 0)
+    pro.press_group([Buttons.DPAD_LEFT] * 1, 0)
+    pro.press_group([Buttons.DPAD_DOWN] * 1, 0)
+
+
+def world_series_select():
     global SELECT_COUNT
-    logger.info("Auto select car.")
-    # 车库重置到第一辆车
-    if reverse and not INITED_CAR_POSITION:
-        for i in range(5):
-            pro.press_button(Buttons.DPAD_RIGHT, 0.1)
-        INITED_CAR_POSITION = True
+    # 重置
+    left_count_mapping = {
+        "BRONZE": 4,
+        "SILVER": 3,
+        "GOLD": 2,
+        "PLATINUM": 1
+    }
+    car_positions = {
+        "BRONZE": [(1, 4)],
+        "SILVER": [(1, 5), (2, 5), (2, 6), (1, 7), (2, 7), (1, 8), (2, 8), (2, 10), (1, 11), (2, 11)],
+        "GOLD": [(2, 7), (2, 8), (2, 9), (2, 10), (2, 12)],
+    }
+    world_series_reset()
+    division = DIVISION
+    if not division:
+        division = "BRONZE"
+    pro.press_group([Buttons.DPAD_LEFT]*left_count_mapping.get(division), 0)
+    pro.press_a(2)
 
     # 选车
-    if reverse:
-        select_action = SELECT_CAR_REVERSE_ACTION
-    else:
-        select_action = SELECT_CAR_ACTION
-
     while True:
-        logger.info(f"select_count = {SELECT_COUNT}")
-        # SELECT_COUNT 判断重置 使用过5辆车
-        if SELECT_COUNT >= MAX_SELECT_COUNT:
-            actions = SELECT_REVERSE[: SELECT_COUNT + 1]
-            actions.reverse()
-            for action in actions:
-                pro.press_button(action, 0.2)
-            time.sleep(2)
-            SELECT_COUNT = -1
+        positions = car_positions.get(division)
+        if SELECT_COUNT >= len(positions):
+            SELECT_COUNT = 0
+        row, column = positions[SELECT_COUNT]
 
-        # 检查车辆是否可用
-        pro.press_a()
-        text = wait_for("TOP SPEED|HANDLING")
-        if has_text("GET KEY", text):
-            pro.press_b()
-            wait_for("CAR SELECTION")
-            SELECT_COUNT += 1
-            pro.press_button(select_action[SELECT_COUNT], 2)
-            continue
+        for i in range(row - 1):
+            pro.press_button(Buttons.DPAD_DOWN, 0)
 
-        # 处理跳到第一辆车的情况, 重置车的位置
-        if has_text("EMIRA", text):
-            pro.press_b(3)
-            wait_for("CAR SELECTION")
+        for i in range(column - 1):
+            pro.press_button(Buttons.DPAD_RIGHT, 0)
 
-            # 重置
-            action = Buttons.DPAD_RIGHT if reverse else Buttons.DPAD_LEFT
-            for i in range(5):
-                pro.press_button(action, 0.2)
-            time.sleep(2)
+        time.sleep(2)
 
-            # 快进select
-            for step in range(SELECT_COUNT + 1):
-                pro.press_button(select_action[step], 0.2)
-            time.sleep(2)
-            pro.press_a()
+        pro.press_group([Buttons.A] * 2, 2)
 
-        pro.press_a(5)
         page = ocr_screen()
-        # 点两下a能开始比赛说明车可用
-        if page.name == Page.searching:
-            return
 
-        for i in range(2):
-            if page.name == Page.car_info:
-                pro.press_b(3)
-            if page.name == Page.select_car:
-                break
-            page = ocr_screen()
+        if page.name in [Page.loading_race, Page.searching, Page.racing]:
+            break
+        elif page.name in [Page.car_info]:
+            pro.press_group([Buttons.B] * 2, 2)
+            SELECT_COUNT += 1
+            world_series_reset()
+        else:
+            raise Exception("Not support page in world_series_select.")
 
-        SELECT_COUNT += 1
-        pro.press_button(select_action[SELECT_COUNT], 2)
+
+def limited_series_select():
+    global SELECT_COUNT
+    positions = [(1, 5), (1, 4), (2, 4), (1, 3), (2, 3)]
+    pro.press_button(Buttons.ZL, 0)
+    while True:
+        if SELECT_COUNT >= len(positions):
+            SELECT_COUNT = 0
+        row, column = positions[SELECT_COUNT]
+
+        for i in range(row - 1):
+            pro.press_button(Buttons.DPAD_DOWN, 0)
+
+        for i in range(column - 1):
+            pro.press_button(Buttons.DPAD_RIGHT, 0)
+
+        time.sleep(2)
+
+        pro.press_group([Buttons.A] * 2, 2)
+
+        page = ocr_screen()
+
+        if page.name in [Page.loading_race, Page.searching, Page.racing]:
+            break
+        elif page.name in [Page.car_info]:
+            pro.press_group([Buttons.B] * 2, 2)
+            SELECT_COUNT += 1
+            pro.press_button(Buttons.ZL, 0)
+        else:
+            raise Exception("Not support page in limited_series_select.")
 
 
 def select_car(row, column, confirm=1, reset_count=25):
@@ -267,6 +264,13 @@ def confirm_and_play():
     pro.press_a(3)
 
 
+def select_car():
+    if MODE == "WORLD SERIES":
+        world_series_select()
+    if MODE == "LIMITED SERIES":
+        limited_series_select()
+
+
 def process_race(race_mode=0):
     global FINISHED_COUNT
     for i in range(60):
@@ -299,7 +303,7 @@ def process_race(race_mode=0):
                     elif elapsed >= 17 and elapsed <= 18.5:
                         pro.press_buttons(Buttons.DPAD_LEFT)
                         pro.press_buttons(Buttons.B, 3)
-                    elif elapsed >=21 and elapsed <= 22:
+                    elif elapsed >= 21 and elapsed <= 22:
                         pro.press_buttons(Buttons.Y)
                         pro.press_buttons(Buttons.Y)
                     elif elapsed > 22 and elapsed < 24:
@@ -327,14 +331,14 @@ def process_race(race_mode=0):
     logger.info(f"Already finished {FINISHED_COUNT} times loop count = {i}.")
 
 
-def car_hunt(race_mode=0):
+def car_hunt(race_mode=0, row=2, column=5):
     """寻车"""
     logger.info("Start process car hunt.")
     pro.press_a(3)
     logger.info("Wait for select car")
     wait_for("CAR SELECTION")
     logger.info("Start select car")
-    select_car(2, 5, confirm=0)
+    select_car(row, column, confirm=0)
     logger.info("Start confirm car")
     pro.press_a(3)
     logger.info("Wait for Play button")
@@ -352,12 +356,6 @@ def car_hunt(race_mode=0):
     process_race(race_mode)
     logger.info("Finished car hunt")
 
-
-def limited_series():
-    pro.press_a(3)
-    wait_for("CAR SELECTION")
-    logger.info("Start select car")
-    select_car(2, 5, confirm=1, reset_count=5)
 
 def connect_controller():
     """连接手柄"""
@@ -385,14 +383,9 @@ def process_screen(page):
             "action": enter_game,
         },
         {
-            "pages": [Page.multi_player, Page.series],
+            "pages": [Page.multi_player, Page.series, Page.limited_series],
             "action": pro.press_button,
             "args": (Buttons.A, 3),
-        },
-        {
-            "pages": [Page.limited_series],
-            "action": limited_series,
-            "args": (),
         },
         {
             "pages": [Page.trial_series],
@@ -405,9 +398,14 @@ def process_screen(page):
             "args": (2,),
         },
         {
+            "pages": [Page.legendary_hunt],
+            "action": car_hunt,
+            "args": (0, 1, 4),
+        },
+        {
             "pages": [Page.select_car],
             "action": select_car,
-            "args": (1, 4),
+            "args": (),
         },
         # "auto_select_cat": {
         #     "identity": "CAR SELECTION",
@@ -432,6 +430,7 @@ def process_screen(page):
                 Page.club_reward,
                 Page.vip_reward,
                 Page.server_error,
+                Page.club
             ],
             "action": pro.press_button,
             "args": (Buttons.B,),
@@ -483,7 +482,8 @@ def process_screen(page):
 
 
 def capture():
-    filename = "".join([str(d) for d in datetime.datetime.now().timetuple()]) + ".jpg"
+    filename = "".join([str(d)
+                       for d in datetime.datetime.now().timetuple()]) + ".jpg"
     shutil.copy("./images/output.jpg", f"./images/{filename}")
     return filename
 
@@ -491,10 +491,16 @@ def capture():
 def event_loop():
     global G_RACE_QUIT_EVENT
     global G_RACE_RUN_EVENT
+    global MODE
+    global DIVISION
 
     while G_RACE_RUN_EVENT.is_set() and G_RUN.is_set():
         try:
             page = ocr_screen()
+            if page.division:
+                DIVISION = page.division
+            if page.mode:
+                MODE = page.mode
             process_screen(page)
             time.sleep(3)
 
@@ -543,12 +549,9 @@ def command_input():
 
         elif command in KEY_MAPPING:
             # 手柄操作
-            if G_RACE_RUN_EVENT.is_set():
-                logger.info("Please stop event loop first.")
-            else:
-                control_data = KEY_MAPPING.get(command)
-                pro.press_buttons(control_data)
-                screenshot()
+            control_data = KEY_MAPPING.get(command)
+            pro.press_buttons(control_data)
+            screenshot()
         else:
             logger.info(f"{command} command not support!")
 

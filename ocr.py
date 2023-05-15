@@ -24,6 +24,8 @@ class Page:
     trial_series = "trial_series"
     # 寻车
     carhunt = "carhunt"
+    # 通行证寻车
+    legendary_hunt = "legendary_hunt"
     # 购买票
     tickets = "tickets"
     # 选车
@@ -70,6 +72,8 @@ class Page:
     card_pack = "card_pack"
     # 限时赛事
     limited_series = "limited_series"
+    # 俱乐部申请
+    club = "club"
 
     features = {
         loading_race: "LOADING RACE",
@@ -80,6 +84,7 @@ class Page:
         limited_series: "LIMITED SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
         trial_series: "TRIAL SERIES",
         carhunt: "CAR HUNT.*NSX GT3",
+        legendary_hunt: "LEGENDARY HUNT",
         tickets: "TICKETS",
         select_car: "CAR SELECTION",
         car_info: "TOP SPEED|ACCELERATION|HANDLING|NITRO|TOUCH|PLAY",
@@ -103,6 +108,7 @@ class Page:
         game_menu: "GAME MENU",
         switch_home: "Asphalt 9: Legends.*ASPHALT",
         card_pack: "CARD PACK LEVEL INFO",
+        club: "YOUR CLUB"
     }
 
     text = None
@@ -119,11 +125,11 @@ class Page:
         self.data = None
 
     def parse_common(self):
-        divisions = re.findall("SILVER", self.text)
+        divisions = re.findall("BRONZE|SILVER|GOLD|PLATINUM", self.text)
         if divisions:
             self.division = divisions[0]
 
-        modes = re.findall("CAR HUNT|WORLD SERIES", self.text)
+        modes = re.findall("CAR HUNT|WORLD SERIES|LIMITED SERIES", self.text)
         if modes:
             self.mode = modes[0]
 
