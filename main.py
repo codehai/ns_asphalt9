@@ -210,7 +210,6 @@ def select_car():
         if page.name in [Page.loading_race, Page.searching, Page.racing]:
             break
         elif page.name in [Page.car_info]:
-            pro.press_group([Buttons.B] * 2, 2)
             for i in range(2):
                 pro.press_b()
                 page = ocr_screen()
