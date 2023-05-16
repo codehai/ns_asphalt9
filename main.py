@@ -388,7 +388,7 @@ def process_screen(page):
                 Page.race_results,
                 Page.milestone_reward,
                 Page.connect_error,
-                Page.g,
+                Page.star_up,
                 Page.game_menu,
             ],
             "action": pro.press_button,
