@@ -211,6 +211,11 @@ def select_car():
             break
         elif page.name in [Page.car_info]:
             pro.press_group([Buttons.B] * 2, 2)
+            for i in range(2):
+                pro.press_b()
+                page = ocr_screen()
+                if page.name == Page.select_car:
+                    break
             SELECT_COUNT += 1
             continue
         else:
@@ -383,7 +388,7 @@ def process_screen(page):
                 Page.race_results,
                 Page.milestone_reward,
                 Page.connect_error,
-                Page.star_up,
+                Page.g,
                 Page.game_menu,
             ],
             "action": pro.press_button,
