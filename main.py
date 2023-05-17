@@ -209,7 +209,7 @@ def select_car():
 
         if page.name in [Page.loading_race, Page.searching, Page.racing]:
             break
-        elif page.name in [Page.car_info]:
+        else:
             for i in range(2):
                 pro.press_b()
                 page = ocr_screen()
@@ -217,8 +217,6 @@ def select_car():
                     break
             SELECT_COUNT += 1
             continue
-        else:
-            raise Exception("Not support page in world_series_select.")
 
 
 def process_race(race_mode=0):
