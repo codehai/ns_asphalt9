@@ -178,12 +178,10 @@ def limited_series_position():
 
 
 def get_series_config():
-    if MODE == "WORLD SERIES":
-        return world_series_positions(), world_series_reset
-    elif MODE == "LIMITED SERIES":
+    if MODE == "LIMITED SERIES":
         return limited_series_position(), limited_series_reset
     else:
-        raise Exception("Not support mode in series_select.")
+        return world_series_positions(), world_series_reset
 
 
 def select_car():
