@@ -355,7 +355,7 @@ def process_screen(page):
 
     pages_action = [
         {
-            "pages": [Page.loading_race],
+            "pages": [Page.loading_race, Page.racing],
             "action": process_race,
         },
         {
