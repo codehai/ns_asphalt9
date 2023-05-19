@@ -494,7 +494,7 @@ def command_input():
             if isinstance(control_data, str):
                 pro.press_buttons(control_data)
                 screenshot()
-            if isinstance(control_data, callable):
+            if isinstance(control_data, function):
                 control_data()
 
         else:
