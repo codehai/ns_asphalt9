@@ -220,6 +220,11 @@ def select_car():
 
         if page.name in [Page.loading_race, Page.searching, Page.racing]:
             break
+        elif page.name == Page.tickets:
+            pro.press_button(Buttons.DPAD_DOWN, 2)
+            pro.press_a(2)
+            pro.press_b(2)
+            pro.press_a(2)
         else:
             for i in range(2):
                 pro.press_b()
@@ -228,6 +233,7 @@ def select_car():
                     break
             SELECT_COUNT += 1
             continue
+    process_race()
 
 
 def process_race(race_mode=0):
@@ -355,7 +361,7 @@ def process_screen(page):
 
     pages_action = [
         {
-            "pages": [Page.loading_race, Page.racing],
+            "pages": [Page.loading_race],
             "action": process_race,
         },
         {
