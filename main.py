@@ -50,6 +50,7 @@ KEY_MAPPING = {
     "w": "DPAD_UP",
     "a": "DPAD_LEFT",
     "d": "DPAD_RIGHT",
+    "c": screenshot,
 }
 
 
@@ -492,8 +493,12 @@ def command_input():
         elif command in KEY_MAPPING:
             # 手柄操作
             control_data = KEY_MAPPING.get(command)
-            pro.press_buttons(control_data)
-            screenshot()
+            if isinstance(control_data, str):
+                pro.press_buttons(control_data)
+                screenshot()
+            if isinstance(control_data, callable):
+                control_data()
+
         else:
             logger.info(f"{command} command not support!")
 
