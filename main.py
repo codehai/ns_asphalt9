@@ -164,6 +164,11 @@ def limited_series_reset():
     pro.press_button(Buttons.ZL, 0)
 
 
+def carhunt_reset():
+    pro.press_button(Buttons.ZR, 0)
+    pro.press_button(Buttons.ZL, 1)
+
+
 def world_series_positions():
     division = DIVISION
     if not division:
@@ -176,9 +181,15 @@ def limited_series_position():
     return CONFIG["多人二"]["车库位置"]
 
 
+def carhunt_position():
+    return CONFIG["AP0寻车"]["车库位置"]
+
+
 def get_series_config():
     if MODE == "LIMITED SERIES":
         return limited_series_position(), limited_series_reset
+    if MODE == "CAR_HUNT_APEX_AP0":
+        return carhunt_position(), carhunt_reset
     else:
         return world_series_positions(), world_series_reset
 
@@ -266,6 +277,31 @@ def process_race(race_mode=0):
                         time.sleep(3)
                     else:
                         time.sleep(0.5)
+        elif MODE == "CAR_HUNT_APEX_AP0":
+            if progress > 0:
+                start = time.perf_counter()
+                delta = progress * 0.55 + 4.5
+                while True:
+                    end = time.perf_counter()
+                    elapsed = end - start + delta
+                    logger.info(f"elapsed = {elapsed}")
+                    if elapsed < 5 and elapsed >=3.5:
+                        pro.press_button(Buttons.DPAD_LEFT, 0)
+                    elif elapsed >= 7.5 and elapsed <= 9:
+                        pro.press_buttons(Buttons.DPAD_RIGHT, 3)
+                    elif elapsed >= 39 and elapsed < 41:
+                        pro.press_buttons(Buttons.B, 3)
+                        pro.press_buttons(Buttons.Y)
+                        pro.press_buttons(Buttons.Y)
+                    elif elapsed > 60:
+                        break
+                    elif elapsed > 9 and elapsed < 36:
+                        pro.press_button(Buttons.Y, 0.7)
+                        pro.press_button(Buttons.Y, 0)
+                        time.sleep(3)
+                    else:
+                        time.sleep(0.5)
+        
         else:
             pro.press_button(Buttons.Y, 0.7)
             pro.press_button(Buttons.Y, 0)
