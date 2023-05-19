@@ -6,6 +6,7 @@ import threading
 import time
 import traceback
 import yaml
+import types
 
 from ocr import Page, ocr
 from screenshot import screenshot
@@ -494,7 +495,7 @@ def command_input():
             if isinstance(control_data, str):
                 pro.press_buttons(control_data)
                 screenshot()
-            if isinstance(control_data, function):
+            if isinstance(control_data, types.FunctionType):
                 control_data()
 
         else:
