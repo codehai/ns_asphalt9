@@ -306,7 +306,7 @@ def process_race(race_mode=0):
                     elif elapsed > 9 and elapsed < 35:
                         pro.press_button(Buttons.Y, 0.7)
                         pro.press_button(Buttons.Y, 0)
-                        time.sleep(3)
+                        time.sleep(2)
                     else:
                         time.sleep(0.5)
         
