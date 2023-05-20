@@ -314,7 +314,7 @@ def process_race(race_mode=0):
             pro.press_button(Buttons.Y, 0.7)
             pro.press_button(Buttons.Y, 0)
 
-        if page.name in [Page.race_score, Page.race_results]:
+        if page.name in [Page.race_score, Page.race_results, Page.race_reward]:
             break
 
     FINISHED_COUNT += 1
