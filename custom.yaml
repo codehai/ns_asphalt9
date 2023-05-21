@@ -8,21 +8,15 @@
     车库等级: SILVER
     车库位置:
       - row: 1
-        col: 5
+        col: 11
+      - row: 1
+        col: 10
       - row: 2
-        col: 5
-      - row: 2
-        col: 6
-      - row: 2
-        col: 7
+        col: 10
       - row: 1
         col: 8
-      - row: 1
-        col: 10
       - row: 2
-        col: 10
-      - row: 1
-        col: 11
+        col: 7
   GOLD:
     车库等级: GOLD
     车库位置:
