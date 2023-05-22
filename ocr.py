@@ -126,7 +126,7 @@ class Page:
 
     def parse_common(self):
         divisions = re.findall("BRONZE|SILVER|GOLD|PLATINUM", self.text)
-        if divisions and self.name in [self.series, self.multi_player]:
+        if divisions and self.name in [self.series, self.multi_player, self.searching, self.loading_race]:
             self.division = divisions[0]
 
         modes = re.findall("CAR HUNT|WORLD SERIES|LIMITED SERIES", self.text)
