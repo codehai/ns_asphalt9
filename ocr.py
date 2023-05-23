@@ -19,7 +19,7 @@ class Page:
     # 多人主页
     multi_player = "multi_player"
     # 多人一
-    series = "series"
+    world_series = "series"
     # 多人二
     trial_series = "trial_series"
     # 寻车
@@ -79,8 +79,8 @@ class Page:
         loading_race: "LOADING RACE",
         connect_controller: "Press.*on the controller",
         connected_controller: "Controllers",
-        multi_player: "WORLD SERIES.*SERIES",
-        series: "WORLD SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
+        multi_player: "WORLD SERIES.*(LIMITED|TRIAL) SERIES",
+        world_series: "WORLD SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
         limited_series: "LIMITED SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
         trial_series: "TRIAL SERIES",
         carhunt: "CAR HUNT.*NSX GT3",
@@ -126,7 +126,11 @@ class Page:
 
     def parse_common(self):
         divisions = re.findall("BRONZE|SILVER|GOLD|PLATINUM", self.text)
-        if divisions and self.name in [self.series, self.multi_player, self.searching, self.loading_race]:
+        if divisions and self.name in [
+            self.world_series,
+            self.searching,
+            self.loading_race,
+        ]:
             self.division = divisions[0]
 
         modes = re.findall("CAR HUNT|WORLD SERIES|LIMITED SERIES", self.text)

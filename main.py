@@ -116,7 +116,8 @@ def enter_series():
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
     pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * 3, 0.5)
-    pro.press_group([Buttons.DPAD_UP] * 2, 0.5)
+    upcount = 2 if MODE == "WORLD SERIES" else 1
+    pro.press_group([Buttons.DPAD_UP] * upcount, 0.5)
     time.sleep(2)
     pro.press_group([Buttons.A] * 1, 0.5)
 
@@ -293,7 +294,7 @@ def process_race(race_mode=0):
                     end = time.perf_counter()
                     elapsed = end - start + delta
                     logger.info(f"elapsed = {elapsed}")
-                    if elapsed < 5 and elapsed >=3.5:
+                    if elapsed < 5 and elapsed >= 3.5:
                         pro.press_button(Buttons.DPAD_LEFT, 0)
                     elif elapsed >= 7.5 and elapsed <= 9:
                         pro.press_buttons(Buttons.DPAD_RIGHT, 3)
@@ -309,7 +310,7 @@ def process_race(race_mode=0):
                         time.sleep(2)
                     else:
                         time.sleep(0.5)
-        
+
         else:
             pro.press_button(Buttons.Y, 0.7)
             pro.press_button(Buttons.Y, 0)
@@ -373,7 +374,12 @@ def process_screen(page):
             "action": enter_game,
         },
         {
-            "pages": [Page.multi_player, Page.series, Page.limited_series],
+            "pages": [Page.multi_player],
+            "action": enter_series,
+            "args": (),
+        },
+        {
+            "pages": [Page.world_series, Page.limited_series, Page.trial_series],
             "action": pro.press_button,
             "args": (Buttons.A, 3),
         },
