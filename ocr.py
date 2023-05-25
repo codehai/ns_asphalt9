@@ -82,7 +82,7 @@ class Page:
         multi_player: "WORLD SERIES.*(LIMITED|TRIAL) SERIES",
         world_series: "WORLD SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
         limited_series: "LIMITED SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
-        trial_series: "TRIAL SERIES",
+        trial_series: "TRIAL SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
         carhunt: "CAR HUNT.*NSX GT3",
         legendary_hunt: "LEGENDARY HUNT",
         tickets: "TICKETS",

@@ -359,6 +359,12 @@ def connect_controller():
     time.sleep(1)
     pro.press_buttons([Buttons.A], down=0.5)
 
+def demoted():
+    """降级"""
+    global DIVISION
+    DIVISION = ""
+    pro.press_button(Buttons.B, 3)
+
 
 def process_screen(page):
     """根据显示内容执行动作"""
@@ -419,8 +425,12 @@ def process_screen(page):
             "args": (Buttons.Y, 3),
         },
         {
+            "pages": [Page.demoted],
+            "action": demoted,
+            "args": (),
+        },
+        {
             "pages": [
-                Page.demoted,
                 Page.disconnected,
                 Page.no_connection,
                 Page.club_reward,
