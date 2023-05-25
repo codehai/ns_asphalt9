@@ -199,9 +199,10 @@ def get_series_config():
 
 def select_car():
     global SELECT_COUNT
-    positions, reset = get_series_config()
+    global DIVISION
     # 选车
     while True:
+        positions, reset = get_series_config()
         reset()
         if SELECT_COUNT >= len(positions):
             SELECT_COUNT = 0
@@ -227,6 +228,10 @@ def select_car():
             pro.press_b(2)
             pro.press_a(2)
         else:
+            if page.name == Page.car_info and page.has_text(
+                "BRONZE|SILVER|GOLD|PLATINUM"
+            ):
+                DIVISION = ""
             for i in range(2):
                 pro.press_b()
                 page = ocr_screen()
@@ -445,7 +450,7 @@ def process_screen(page):
             "args": ([Buttons.DPAD_LEFT, Buttons.B], 1),
         },
         {
-            "pages": [Page.system_error],
+            "pages": [Page.system_error, Page.switch_home],
             "action": pro.press_group,
             "args": ([Buttons.A] * 3, 3),
         },
