@@ -29,6 +29,8 @@
       - row: 1
         col: 10
       - row: 1
+        col: 11
+      - row: 1
         col: 12
       - row: 2
         col: 12
@@ -45,6 +47,8 @@
         col: 9
       - row: 1
         col: 10
+      - row: 1
+        col: 11
       - row: 1
         col: 12
       - row: 2
