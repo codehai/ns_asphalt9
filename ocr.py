@@ -133,7 +133,9 @@ class Page:
         ]:
             self.division = divisions[0]
 
-        modes = re.findall("CAR HUNT|WORLD SERIES|LIMITED SERIES", self.text)
+        modes = re.findall(
+            "CAR HUNT|WORLD SERIES|LIMITED SERIES|TRIAL SERIES", self.text
+        )
         if modes:
             self.mode = modes[0]
         if re.findall("CAR HUNT.*APEX AP", self.text):
