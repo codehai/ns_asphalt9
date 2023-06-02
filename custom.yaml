@@ -71,12 +71,12 @@
   位置: 6
   车库位置:
     - row: 1
-      col: 20
+      col: 21
     - row: 1
-      col: 18
+      col: 19
     - row: 2
-      col: 18
+      col: 19
+    - row: 1
+      col: 13
     - row: 1
       col: 12
-    - row: 1
-      col: 11
