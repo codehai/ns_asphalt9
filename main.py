@@ -379,16 +379,6 @@ def process_screen(page):
             "args": ([Buttons.A, Buttons.A], 3),
         },
         {
-            "pages": [Page.carhunt],
-            "action": car_hunt,
-            "args": (2,),
-        },
-        {
-            "pages": [Page.legendary_hunt],
-            "action": car_hunt,
-            "args": (0, 1, 4),
-        },
-        {
             "pages": [Page.select_car],
             "action": select_car,
             "args": (),
