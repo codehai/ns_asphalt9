@@ -67,15 +67,16 @@
       col: 3
     - row: 2
       col: 3
-AP0寻车:
+寻车:
+  位置: 6
   车库位置:
     - row: 1
-      col: 21
+      col: 20
+    - row: 1
+      col: 18
     - row: 2
-      col: 19
-    - row: 1
-      col: 19
-    - row: 1
-      col: 13
+      col: 18
     - row: 1
       col: 12
+    - row: 1
+      col: 11

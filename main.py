@@ -131,7 +131,7 @@ def enter_carhunt():
     time.sleep(2)
     pro.press_group([Buttons.A] * 1, 0.5)
     time.sleep(2)
-    pro.press_group([Buttons.DPAD_RIGHT] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_RIGHT] * CONFIG["寻车"]["位置"], 0.5)
     time.sleep(2)
     pro.press_group([Buttons.A] * 2, 0.5)
 
@@ -185,13 +185,13 @@ def limited_series_position():
 
 
 def carhunt_position():
-    return CONFIG["AP0寻车"]["车库位置"]
+    return CONFIG["寻车"]["车库位置"]
 
 
 def get_series_config():
     if MODE == "LIMITED SERIES":
         return limited_series_position(), limited_series_reset
-    if MODE == "CAR_HUNT_APEX_AP0":
+    if MODE == "CAR_HUNT":
         return carhunt_position(), carhunt_reset
     else:
         return world_series_positions(), world_series_reset
@@ -327,32 +327,6 @@ def process_race(race_mode=0):
     logger.info(f"Already finished {FINISHED_COUNT} times loop count = {i}.")
 
 
-def car_hunt(race_mode=0, row=2, column=5):
-    """寻车"""
-    logger.info("Start process car hunt.")
-    pro.press_a(3)
-    logger.info("Wait for select car")
-    wait_for("CAR SELECTION")
-    logger.info("Start select car")
-    select_car(row, column, confirm=0)
-    logger.info("Start confirm car")
-    pro.press_a(3)
-    logger.info("Wait for Play button")
-    wait_for("PLAY", 30)
-    logger.info("Press play button")
-    pro.press_a(3)
-    logger.info("OCR screen")
-    page = ocr_screen()
-    if page.name == Page.tickets:
-        pro.press_button(Buttons.DPAD_DOWN, 2)
-        pro.press_a(2)
-        pro.press_b(2)
-        pro.press_a(2)
-    logger.info("Start process race")
-    process_race(race_mode)
-    logger.info("Finished car hunt")
-
-
 def connect_controller():
     """连接手柄"""
     pro.press_buttons([Buttons.L, Buttons.R], down=1)
@@ -387,6 +361,11 @@ def process_screen(page):
         {
             "pages": [Page.multi_player],
             "action": enter_series,
+            "args": (),
+        },
+        {
+            "pages": [Page.daily_events],
+            "action": enter_carhunt,
             "args": (),
         },
         {

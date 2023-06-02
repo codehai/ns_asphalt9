@@ -74,12 +74,15 @@ class Page:
     limited_series = "limited_series"
     # 俱乐部申请
     club = "club"
+    # 每日赛事
+    daily_events = "daily_events"
 
     features = {
         loading_race: "LOADING RACE",
         connect_controller: "Press.*on the controller",
         connected_controller: "Controllers",
         multi_player: "WORLD SERIES.*(LIMITED|TRIAL) SERIES",
+        daily_events: "PLAY LIMITED.*BEST WAY TO EARN CREDITS FAST",
         world_series: "WORLD SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
         limited_series: "LIMITED SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
         trial_series: "TRIAL SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
@@ -138,8 +141,8 @@ class Page:
         )
         if modes:
             self.mode = modes[0]
-        if re.findall("CAR HUNT.*APEX AP", self.text):
-            self.mode = "CAR_HUNT_APEX_AP0"
+        if re.findall("CAR HUNT.*APEX AP|CAR HUNT.*APPOLLO IE", self.text):
+            self.mode = "CAR_HUNT"
 
         if "TOUCHDRIVE ON" in self.text:
             self.touchdriver = 1
