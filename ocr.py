@@ -141,7 +141,7 @@ class Page:
         )
         if modes:
             self.mode = modes[0]
-        if re.findall("CAR HUNT.*APEX AP|CAR HUNT.*APPOLLO IE", self.text):
+        if re.findall("CAR HUNT.*APEX AP|CAR HUNT.*APOLLO IE", self.text):
             self.mode = "CAR_HUNT"
 
         if "TOUCHDRIVE ON" in self.text:
