@@ -58,15 +58,7 @@
 多人二:
   车库位置:
     - row: 1
-      col: 5
-    - row: 1
-      col: 4
-    - row: 2
-      col: 4
-    - row: 1
-      col: 3
-    - row: 2
-      col: 3
+      col: 2
 寻车:
   位置: 6
   车库位置:
