@@ -76,6 +76,8 @@ class Page:
     club = "club"
     # 每日赛事
     daily_events = "daily_events"
+    # 
+    no_opponents = "no_opponents"
 
     features = {
         loading_race: "LOADING RACE",
@@ -112,6 +114,7 @@ class Page:
         switch_home: "Asphalt 9: Legends.*ASPHALT",
         card_pack: "CARD PACK LEVEL INFO",
         club: "YOUR CLUB",
+        no_opponents: "NO OPPONENTS WERE FOUND"
     }
 
     text = None

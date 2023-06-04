@@ -406,6 +406,7 @@ def process_screen(page):
                 Page.vip_reward,
                 Page.server_error,
                 Page.club,
+                Page.no_opponents
             ],
             "action": pro.press_button,
             "args": (Buttons.B,),
