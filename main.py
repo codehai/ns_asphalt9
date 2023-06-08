@@ -354,7 +354,7 @@ def demoted():
     pro.press_button(Buttons.B, 3)
 
 
-def process_screen(page):
+def process_screen():
     """根据显示内容执行动作"""
 
     global NO_OPERATION_COUNT
