@@ -72,3 +72,11 @@
       col: 13
     - row: 1
       col: 12
+
+任务:
+  - 名称: world_series
+    次数: 0
+  - 名称: other_series
+    次数: 5
+  - 名称: car_hunt
+    次数: 1

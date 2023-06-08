@@ -14,6 +14,12 @@ from utils.controller import Buttons, pro
 from utils.log import logger
 
 
+class TaskCount:
+    world_series = 0
+    other_series = 0
+    carhunt = 0
+
+
 CONFIG = None
 
 FINISHED_COUNT = 0
@@ -110,13 +116,14 @@ def enter_game():
     pro.press_group(buttons, 0.5)
 
 
-def enter_series():
+def enter_series(upcount=None):
     """进入多人赛事"""
     pro.press_group([Buttons.B] * 5, 0.5)
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
     pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * 3, 0.5)
-    upcount = 2 if MODE == "WORLD SERIES" else 1
+    if upcount is None:
+        upcount = 2 if MODE == "WORLD SERIES" else 1
     pro.press_group([Buttons.DPAD_UP] * upcount, 0.5)
     time.sleep(2)
     pro.press_group([Buttons.A] * 1, 0.5)
@@ -323,6 +330,12 @@ def process_race(race_mode=0):
         if page.name in [Page.race_score, Page.race_results, Page.race_reward]:
             break
 
+    if MODE == "WORLD SERIES":
+        TaskCount.world_series += 1
+    elif MODE == "CAR HUNT":
+        TaskCount.carhunt += 1
+    else:
+        TaskCount.other_series += 1
     FINISHED_COUNT += 1
     logger.info(f"Already finished {FINISHED_COUNT} times loop count = {i}.")
 
@@ -332,6 +345,7 @@ def connect_controller():
     pro.press_buttons([Buttons.L, Buttons.R], down=1)
     time.sleep(1)
     pro.press_buttons([Buttons.A], down=0.5)
+
 
 def demoted():
     """降级"""
@@ -344,6 +358,14 @@ def process_screen(page):
     """根据显示内容执行动作"""
 
     global NO_OPERATION_COUNT
+    global DIVISION
+    global MODE
+
+    page = ocr_screen()
+    if page.division:
+        DIVISION = page.division
+    if page.mode:
+        MODE = page.mode
 
     pages_action = [
         {
@@ -406,7 +428,7 @@ def process_screen(page):
                 Page.vip_reward,
                 Page.server_error,
                 Page.club,
-                Page.no_opponents
+                Page.no_opponents,
             ],
             "action": pro.press_button,
             "args": (Buttons.B,),
@@ -463,30 +485,70 @@ def capture():
     return filename
 
 
+class TaskManager:
+    current_task = None
+
+    @classmethod
+    def task_init(cls):
+        tasks = CONFIG["任务"]
+        for task in tasks:
+            if task["次数"] > 0:
+                cls.current_task = task["名称"]
+                if task["名称"] == "world_series":
+                    enter_series(upcount=2)
+                if task["名称"] == "other_series":
+                    enter_series(upcount=1)
+                if task["名称"] == "car_hunt":
+                    enter_carhunt()
+                break
+
+    @classmethod
+    def task_dispatch(cls):
+        tasks = CONFIG["任务"]
+        limited_task = None
+        limited_index = None
+        next_task = None
+        for index, task in enumerate(tasks):
+            task_name = task["名称"]
+            task_limit = task["次数"]
+            count = getattr(TaskCount, task_name)
+            if task_limit and count >= task_limit:
+                limited_task = task_name
+                limited_index = index
+                break
+
+        if limited_task:
+            for task in (tasks + tasks)[limited_index:]:
+                if task["次数"] > 0:
+                    next_task = task["名称"]
+                    break
+            setattr(TaskCount, limited_task, 0)
+            if next_task != limited_task:
+                cls.current_task = next_task
+                if next_task == "world_series":
+                    enter_series(upcount=2)
+                if next_task == "other_series":
+                    enter_series(upcount=1)
+                if next_task == "car_hunt":
+                    enter_carhunt()
+
+
 def event_loop():
     global G_RACE_QUIT_EVENT
-    global G_RACE_RUN_EVENT
-    global MODE
-    global DIVISION
+
+    TaskManager.task_init()
 
     while G_RACE_RUN_EVENT.is_set() and G_RUN.is_set():
         try:
-            page = ocr_screen()
-            if page.division:
-                DIVISION = page.division
-            if page.mode:
-                MODE = page.mode
-            process_screen(page)
+            TaskManager.task_dispatch()
+            process_screen()
             time.sleep(3)
-
         except Exception as err:
             filename = capture()
             logger.error(
                 f"Caught exception, err = {err}, traceback = {traceback.format_exc()}, \
-                  page dict = {page.dict}, filename = {filename}"
+                  filename = {filename}"
             )
-            # 出错重新进多人
-            # enter_series()
 
     G_RACE_QUIT_EVENT.set()
 
@@ -543,7 +605,7 @@ def start_command_input():
 def init_config():
     global CONFIG
     parser = argparse.ArgumentParser(description="NS Asphalt9 Tool.")
-    parser.add_argument("-c", action="store_true", help="使用自定义配置")
+    parser.add_argument("-c", "--config", type=str, help="自定义配置文件")
 
     args = parser.parse_args()
 
@@ -551,7 +613,7 @@ def init_config():
         config = yaml.load(f, Loader=yaml.FullLoader)
 
     if args.c:
-        with open("custom.yaml") as f:
+        with open(args.c) as f:
             custom_config = yaml.load(f, Loader=yaml.FullLoader)
         config.update(custom_config)
     CONFIG = config
