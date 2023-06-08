@@ -17,7 +17,7 @@ from utils.log import logger
 class TaskCount:
     world_series = 0
     other_series = 0
-    carhunt = 0
+    car_hunt = 0
 
 
 CONFIG = None
