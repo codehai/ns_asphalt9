@@ -612,8 +612,8 @@ def init_config():
     with open("default.yaml") as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
 
-    if args.c:
-        with open(args.c) as f:
+    if args.config:
+        with open(args.config) as f:
             custom_config = yaml.load(f, Loader=yaml.FullLoader)
         config.update(custom_config)
     CONFIG = config
