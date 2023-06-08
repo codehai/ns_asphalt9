@@ -521,16 +521,19 @@ class TaskManager:
             task_name = task["名称"]
             task_limit = task["次数"]
             count = getattr(TaskCount, task_name)
+            logger.info(f"task_name = {task_name}, task_limit = {task_limit}, current_count = {count}")
             if task_limit and count >= task_limit:
                 limited_task = task_name
                 limited_index = index
                 break
-
+        
+        logger.info(f"limited_task = {limited_task}")
         if limited_task:
             for task in (tasks + tasks)[limited_index:]:
                 if task["次数"] > 0:
                     next_task = task["名称"]
                     break
+            logger.info(f"next_task = {next_task}")
             setattr(TaskCount, limited_task, 0)
             if next_task != limited_task:
                 cls.current_task = next_task
