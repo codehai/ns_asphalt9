@@ -490,6 +490,8 @@ class TaskManager:
 
     @classmethod
     def task_init(cls):
+        if "任务" not in CONFIG:
+            return
         tasks = CONFIG["任务"]
         for task in tasks:
             if task["次数"] > 0:
@@ -504,6 +506,8 @@ class TaskManager:
 
     @classmethod
     def task_dispatch(cls):
+        if "任务" not in CONFIG:
+            return
         tasks = CONFIG["任务"]
         limited_task = None
         limited_index = None
