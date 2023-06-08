@@ -119,7 +119,7 @@ def enter_game():
 
 def enter_series(upcount=None):
     """进入多人赛事"""
-    pro.press_group([Buttons.B] * 5, 0.5)
+    pro.press_group([Buttons.B] * 5, 2)
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
     pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * 3, 0.5)
@@ -132,7 +132,7 @@ def enter_series(upcount=None):
 
 def enter_carhunt():
     """进入寻车"""
-    pro.press_group([Buttons.B] * 5, 0.5)
+    pro.press_group([Buttons.B] * 5, 2)
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
     pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * 2, 0.5)
