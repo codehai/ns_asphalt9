@@ -7,6 +7,7 @@ import time
 import traceback
 import yaml
 import types
+import json
 
 from ocr import Page, ocr
 from screenshot import screenshot
@@ -332,10 +333,13 @@ def process_race(race_mode=0):
 
     if MODE == "WORLD SERIES":
         TaskCount.world_series += 1
+        logger.info(f"world_series count = {TaskCount.world_series}")
     elif MODE == "CAR HUNT":
-        TaskCount.carhunt += 1
+        TaskCount.car_hunt += 1
+        logger.info(f"car_hunt count = {TaskCount.car_hunt}")
     else:
         TaskCount.other_series += 1
+        logger.info(f"other_series count = {TaskCount.other_series}")
     FINISHED_COUNT += 1
     logger.info(f"Already finished {FINISHED_COUNT} times loop count = {i}.")
 
@@ -512,6 +516,7 @@ class TaskManager:
         limited_task = None
         limited_index = None
         next_task = None
+        logger.info(f"TaskCount.__dict__ = {TaskCount.__dict__}")
         for index, task in enumerate(tasks):
             task_name = task["名称"]
             task_limit = task["次数"]
@@ -620,6 +625,7 @@ def init_config():
         with open(args.config) as f:
             custom_config = yaml.load(f, Loader=yaml.FullLoader)
         config.update(custom_config)
+    logger.info(f"config = {json.dumps(config, indent=2)}")
     CONFIG = config
 
 
