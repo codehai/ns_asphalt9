@@ -529,7 +529,7 @@ class TaskManager:
         
         logger.info(f"limited_task = {limited_task}")
         if limited_task:
-            for task in (tasks + tasks)[limited_index:]:
+            for task in (tasks + tasks)[limited_index + 1:]:
                 if task["次数"] > 0:
                     next_task = task["名称"]
                     break
