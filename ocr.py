@@ -76,9 +76,10 @@ class Page:
     club = "club"
     # 每日赛事
     daily_events = "daily_events"
-    # 
+    # 没匹配到对手
     no_opponents = "no_opponents"
 
+    # 页面特征
     features = {
         loading_race: "LOADING RACE",
         connect_controller: "Press.*on the controller",
@@ -114,8 +115,22 @@ class Page:
         switch_home: "Asphalt 9: Legends.*ASPHALT",
         card_pack: "CARD PACK LEVEL INFO",
         club: "YOUR CLUB",
-        no_opponents: "NO OPPONENTS WERE FOUND"
+        no_opponents: "NO OPPONENTS WERE FOUND",
     }
+
+    # 部分匹配的页面
+    part_match = [
+        world_series,
+        limited_series,
+        trial_series,
+        car_info,
+        searching,
+        racing,
+        race_results,
+        race_score,
+        race_reward,
+        star_up,
+    ]
 
     text = None
     name = None
@@ -163,10 +178,10 @@ class Page:
             "progress": progress,
         }
 
-    def has_text(self, identity):
+    def has_text(self, name):
         """page_text中是否包含identity"""
-        match_count = len(re.findall(identity, self.text))
-        if "|" not in identity and match_count > 0:
+        match_count = len(re.findall(self.features[name], self.text))
+        if name not in self.part_match and match_count > 0:
             match_count = 10
         return match_count
 
@@ -176,7 +191,7 @@ class Page:
         self.prepare()
         match_pages = []
         for name in self.features:
-            match_count = self.has_text(self.features[name])
+            match_count = self.has_text(name)
             if match_count > 0:
                 if last_page_name == self.racing:
                     match_count += 1
