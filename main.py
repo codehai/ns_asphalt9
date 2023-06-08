@@ -209,7 +209,7 @@ def select_car():
     global SELECT_COUNT
     global DIVISION
     # 选车
-    while True:
+    while G_RUN.is_set():
         positions, reset = get_series_config()
         reset()
         if SELECT_COUNT >= len(positions):
@@ -273,7 +273,7 @@ def process_race(race_mode=0):
             if progress > 0:
                 start = time.perf_counter()
                 delta = progress * 0.55 + 4.5
-                while True:
+                while G_RUN.is_set():
                     end = time.perf_counter()
                     elapsed = end - start + delta
                     logger.info(f"elapsed = {elapsed}")
@@ -303,7 +303,7 @@ def process_race(race_mode=0):
             if progress > 0:
                 start = time.perf_counter()
                 delta = progress * 0.55 + 4.5
-                while True:
+                while G_RUN.is_set():
                     end = time.perf_counter()
                     elapsed = end - start + delta
                     logger.info(f"elapsed = {elapsed}")
