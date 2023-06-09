@@ -122,6 +122,7 @@ def enter_series(upcount=None):
     pro.press_group([Buttons.B] * 5, 2)
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
     pro.press_group([Buttons.DPAD_LEFT] * 7, 0.5)
+    pro.press_group([Buttons.A] * 1, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * 3, 0.5)
     pro.press_group([Buttons.A] * 1, 0.5)
     if upcount is None:
@@ -136,6 +137,7 @@ def enter_carhunt():
     pro.press_group([Buttons.B] * 5, 2)
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
     pro.press_group([Buttons.DPAD_LEFT] * 7, 0.5)
+    pro.press_group([Buttons.A] * 1, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * 2, 0.5)
     time.sleep(2)
     pro.press_group([Buttons.A] * 1, 0.5)

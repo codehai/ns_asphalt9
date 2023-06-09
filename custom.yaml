@@ -56,9 +56,9 @@
       col: 5
 
 任务:
-  - 名称: other_series
-    次数: 5
   - 名称: world_series
     次数: 30
+  - 名称: other_series
+    次数: 5
   - 名称: car_hunt
     次数: 0
