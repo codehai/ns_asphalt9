@@ -123,6 +123,7 @@ def enter_series(upcount=None):
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
     pro.press_group([Buttons.DPAD_LEFT] * 7, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * 3, 0.5)
+    pro.press_group([Buttons.A] * 1, 0.5)
     if upcount is None:
         upcount = 2 if MODE == "WORLD SERIES" else 1
     pro.press_group([Buttons.DPAD_UP] * upcount, 0.5)
