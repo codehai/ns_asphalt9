@@ -121,7 +121,7 @@ def enter_series(upcount=None):
     """进入多人赛事"""
     pro.press_group([Buttons.B] * 5, 2)
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
-    pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_LEFT] * 7, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * 3, 0.5)
     if upcount is None:
         upcount = 2 if MODE == "WORLD SERIES" else 1
@@ -134,7 +134,7 @@ def enter_carhunt():
     """进入寻车"""
     pro.press_group([Buttons.B] * 5, 2)
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
-    pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_LEFT] * 7, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * 2, 0.5)
     time.sleep(2)
     pro.press_group([Buttons.A] * 1, 0.5)
