@@ -236,8 +236,8 @@ def select_car():
             pro.press_b(2)
             pro.press_a(2)
         else:
-            if page.name == Page.car_info and page.has_text(
-                "BRONZE|SILVER|GOLD|PLATINUM"
+            if page.name == Page.car_info and has_text(
+                "BRONZE|SILVER|GOLD|PLATINUM", page.text
             ):
                 DIVISION = ""
             for i in range(2):
