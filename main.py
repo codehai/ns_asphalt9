@@ -134,7 +134,7 @@ def enter_carhunt():
     pro.press_group([Buttons.A] * 1, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * 2, 0.5)
     time.sleep(2)
-    pro.press_group([Buttons.A] * 1, 0.5)
+    pro.press_group([Buttons.A] * 2, 0.5)
     time.sleep(2)
     pro.press_group([Buttons.DPAD_RIGHT] * CONFIG["寻车"]["位置"], 0.5)
     time.sleep(2)
