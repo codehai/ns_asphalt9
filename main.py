@@ -141,6 +141,18 @@ def enter_carhunt():
     pro.press_group([Buttons.A] * 2, 0.5)
 
 
+def free_pack():
+    """领卡"""
+    page = ocr_screen()
+    if has_text("FREE PACK", page.text):
+        pro.press_group([Buttons.DPAD_UP] * 5, 0.5)
+        pro.press_group([Buttons.DPAD_LEFT] * 7, 0.5)
+        pro.press_group([Buttons.DPAD_RIGHT] * 3, 0.5)
+        pro.press_a(4)
+        pro.press_group([Buttons.A] * 3, 2)
+        pro.press_group([Buttons.B] * 3, 0.5)
+
+
 def play_game(select_car=1):
     """点击play并等待进入到选车界面"""
     pro.press_a(0.1)
@@ -488,6 +500,8 @@ class TaskManager:
             enter_series(upcount=1)
         if task_name == "car_hunt":
             enter_carhunt()
+        if task_name == "free_pack":
+            free_pack()
         cls.current_task = task_name
 
 
