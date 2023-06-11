@@ -196,7 +196,7 @@ def carhunt_position():
 def get_series_config():
     if MODE == "LIMITED SERIES":
         return limited_series_position(), limited_series_reset
-    if MODE == "CAR_HUNT":
+    if MODE == "CAR HUNT":
         return carhunt_position(), carhunt_reset
     else:
         return world_series_positions(), world_series_reset
