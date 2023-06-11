@@ -530,7 +530,7 @@ def event_loop():
             if page.mode:
                 MODE = page.mode
             TaskManager.task_dispatch()
-            process_screen()
+            process_screen(page)
             time.sleep(3)
         except Exception as err:
             filename = capture()
