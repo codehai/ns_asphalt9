@@ -505,12 +505,14 @@ class TaskManager:
 
 
     @classmethod
-    def task_dispatch(cls):
+    def task_dispatch(cls, page):
         if "任务" not in CONFIG or FINISHED_COUNT == 0:
             return
+        if page.name not in [Page.limited_series, Page.trial_series, Page.carhunt, Page.world_series]:
+            return 
         current_index = FINISHED_COUNT % len(cls.task_queue) 
         current_task = cls.task_queue[current_index]
-        last_task = cls.task_queue[current_task - 1]
+        last_task = cls.task_queue[current_index - 1]
         if current_task != last_task:
             cls.task_enter(current_task)
 
@@ -529,7 +531,7 @@ def event_loop():
                 DIVISION = page.division
             if page.mode:
                 MODE = page.mode
-            TaskManager.task_dispatch()
+            TaskManager.task_dispatch(page)
             process_screen(page)
             time.sleep(3)
         except Exception as err:
