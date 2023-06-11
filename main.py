@@ -15,12 +15,6 @@ from utils.controller import Buttons, pro
 from utils.log import logger
 
 
-class TaskCount:
-    world_series = 0
-    other_series = 0
-    car_hunt = 0
-
-
 CONFIG = None
 
 FINISHED_COUNT = 0
@@ -334,15 +328,6 @@ def process_race(race_mode=0):
         if page.name in [Page.race_score, Page.race_results, Page.race_reward]:
             break
 
-    if MODE == "WORLD SERIES":
-        TaskCount.world_series += 1
-        logger.info(f"world_series count = {TaskCount.world_series}")
-    elif MODE == "CAR HUNT":
-        TaskCount.car_hunt += 1
-        logger.info(f"car_hunt count = {TaskCount.car_hunt}")
-    else:
-        TaskCount.other_series += 1
-        logger.info(f"other_series count = {TaskCount.other_series}")
     FINISHED_COUNT += 1
     logger.info(f"Already finished {FINISHED_COUNT} times loop count = {i}.")
 
@@ -361,19 +346,10 @@ def demoted():
     pro.press_button(Buttons.B, 3)
 
 
-def process_screen():
+def process_screen(page):
     """根据显示内容执行动作"""
 
     global NO_OPERATION_COUNT
-    global DIVISION
-    global MODE
-
-    page = ocr_screen()
-    if page.division:
-        DIVISION = page.division
-    if page.mode:
-        MODE = page.mode
-
     pages_action = [
         {
             "pages": [Page.loading_race],
@@ -494,67 +470,65 @@ def capture():
 
 class TaskManager:
     current_task = None
+    task_queue = None
 
     @classmethod
     def task_init(cls):
         if "任务" not in CONFIG:
             return
-        tasks = CONFIG["任务"]
-        for task in tasks:
-            if task["次数"] > 0:
-                cls.current_task = task["名称"]
-                if task["名称"] == "world_series":
-                    enter_series(upcount=2)
-                if task["名称"] == "other_series":
-                    enter_series(upcount=1)
-                if task["名称"] == "car_hunt":
-                    enter_carhunt()
-                break
+        cls.parse_task()
+        cls.task_enter(cls.task_queue[0])
+
+
+    @classmethod
+    def task_enter(cls, task_name):
+        if task_name == "world_series":
+            enter_series(upcount=2)
+        if task_name == "other_series":
+            enter_series(upcount=1)
+        if task_name == "car_hunt":
+            enter_carhunt()
+
+
+    @classmethod
+    def parse_task(cls):
+        flat_task = []
+        for task in CONFIG["任务"]:
+            if "组" in task:
+                sub_tasks = []
+                for sub_task in task["组"]:
+                    sub_tasks += [sub_task["名称"]] * sub_task["次数"]
+                flat_task += sub_tasks * task["次数"]
+            else:
+                flat_task += [task["名称"]] * task["次数"]
+        cls.task_queue = flat_task
+
 
     @classmethod
     def task_dispatch(cls):
-        if "任务" not in CONFIG:
+        if "任务" not in CONFIG or FINISHED_COUNT == 0:
             return
-        tasks = CONFIG["任务"]
-        limited_task = None
-        limited_index = None
-        next_task = None
-        logger.info(f"TaskCount.__dict__ = {TaskCount.__dict__}")
-        for index, task in enumerate(tasks):
-            task_name = task["名称"]
-            task_limit = task["次数"]
-            count = getattr(TaskCount, task_name)
-            logger.info(f"task_name = {task_name}, task_limit = {task_limit}, current_count = {count}")
-            if task_limit and count >= task_limit:
-                limited_task = task_name
-                limited_index = index
-                break
-        
-        logger.info(f"limited_task = {limited_task}")
-        if limited_task:
-            for task in (tasks + tasks)[limited_index + 1:]:
-                if task["次数"] > 0:
-                    next_task = task["名称"]
-                    break
-            logger.info(f"next_task = {next_task}")
-            setattr(TaskCount, limited_task, 0)
-            if next_task != limited_task:
-                cls.current_task = next_task
-                if next_task == "world_series":
-                    enter_series(upcount=2)
-                if next_task == "other_series":
-                    enter_series(upcount=1)
-                if next_task == "car_hunt":
-                    enter_carhunt()
+        current_index = FINISHED_COUNT % len(cls.task_queue) 
+        current_task = cls.task_queue[current_index]
+        last_task = cls.task_queue[current_task - 1]
+        if current_task != last_task:
+            cls.task_enter(current_task)
 
 
 def event_loop():
     global G_RACE_QUIT_EVENT
+    global DIVISION
+    global MODE
 
     TaskManager.task_init()
 
     while G_RACE_RUN_EVENT.is_set() and G_RUN.is_set():
         try:
+            page = ocr_screen()
+            if page.division:
+                DIVISION = page.division
+            if page.mode:
+                MODE = page.mode
             TaskManager.task_dispatch()
             process_screen()
             time.sleep(3)
@@ -631,7 +605,7 @@ def init_config():
         with open(args.config) as f:
             custom_config = yaml.load(f, Loader=yaml.FullLoader)
         config.update(custom_config)
-    logger.info(f"config = {json.dumps(config, indent=2)}")
+    logger.info(f"config = {json.dumps(config, indent=2, ensure_ascii=True)}")
     CONFIG = config
 
 
