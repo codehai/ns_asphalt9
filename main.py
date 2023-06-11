@@ -488,6 +488,7 @@ class TaskManager:
             enter_series(upcount=1)
         if task_name == "car_hunt":
             enter_carhunt()
+        cls.current_task = task_name
 
 
     @classmethod
@@ -510,11 +511,9 @@ class TaskManager:
             return
         if page.name not in [Page.limited_series, Page.trial_series, Page.carhunt, Page.world_series]:
             return 
-        current_index = FINISHED_COUNT % len(cls.task_queue) 
-        current_task = cls.task_queue[current_index]
-        last_task = cls.task_queue[current_index - 1]
-        if current_task != last_task:
-            cls.task_enter(current_task)
+        next_task = cls.task_queue[FINISHED_COUNT % len(cls.task_queue)]
+        if cls.current_task != next_task:
+            cls.task_enter(next_task)
 
 
 def event_loop():
