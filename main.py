@@ -514,6 +514,7 @@ class TaskManager:
         next_task = cls.task_queue[FINISHED_COUNT % len(cls.task_queue)]
         if cls.current_task != next_task:
             cls.task_enter(next_task)
+            return True
 
 
 def event_loop():
@@ -530,8 +531,9 @@ def event_loop():
                 DIVISION = page.division
             if page.mode:
                 MODE = page.mode
-            TaskManager.task_dispatch(page)
-            process_screen(page)
+            dispatched = TaskManager.task_dispatch(page)
+            if not dispatched:
+                process_screen(page)
             time.sleep(3)
         except Exception as err:
             filename = capture()
