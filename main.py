@@ -374,7 +374,7 @@ def process_screen(page):
             "args": (),
         },
         {
-            "pages": [Page.world_series, Page.limited_series, Page.trial_series],
+            "pages": [Page.world_series, Page.limited_series, Page.trial_series, Page.carhunt],
             "action": pro.press_button,
             "args": (Buttons.A, 3),
         },
