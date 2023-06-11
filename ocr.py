@@ -11,6 +11,8 @@ from utils.log import logger
 
 class Page:
     # 游戏加载
+    loading_game = "loading_game"
+    # 比赛加载
     loading_race = "loading_race"
     # 手柄激活
     connect_controller = "connect_controller"
@@ -81,6 +83,7 @@ class Page:
 
     # 页面特征
     features = {
+        loading_game: "GAMELOFT PLAYER ID.*ASPHALT",
         loading_race: "LOADING RACE",
         connect_controller: "Press.*on the controller",
         connected_controller: "Controllers",
