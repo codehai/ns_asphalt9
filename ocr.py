@@ -11,6 +11,8 @@ from utils.log import logger
 
 class Page:
     # 游戏加载
+    loading_game = "loading_game"
+    # 比赛加载
     loading_race = "loading_race"
     # 手柄激活
     connect_controller = "connect_controller"
@@ -19,7 +21,7 @@ class Page:
     # 多人主页
     multi_player = "multi_player"
     # 多人一
-    world_series = "series"
+    world_series = "world_series"
     # 多人二
     trial_series = "trial_series"
     # 寻车
@@ -81,6 +83,7 @@ class Page:
 
     # 页面特征
     features = {
+        loading_game: "GAMELOFT PLAYER ID.*ASPHALT",
         loading_race: "LOADING RACE",
         connect_controller: "Press.*on the controller",
         connected_controller: "Controllers",
@@ -89,7 +92,7 @@ class Page:
         world_series: "WORLD SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
         limited_series: "LIMITED SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
         trial_series: "TRIAL SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
-        carhunt: "CAR HUNT.*NSX GT3",
+        carhunt: "CAR HUNT:.*CAR HUNT EVENT PACK",
         legendary_hunt: "LEGENDARY HUNT",
         tickets: "TICKETS",
         select_car: "CAR SELECTION",
@@ -159,8 +162,6 @@ class Page:
         )
         if modes:
             self.mode = modes[0]
-        if re.findall("CAR HUNT.*APEX AP|CAR HUNT.*APOLLO IE", self.text):
-            self.mode = "CAR_HUNT"
 
         if "TOUCHDRIVE ON" in self.text:
             self.touchdriver = 1

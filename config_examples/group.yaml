@@ -50,16 +50,18 @@
     - row: 1
       col: 2
 寻车:
-  位置: 9
+  位置: 10
   车库位置:
     - row: 2
       col: 5
 
 任务:
-  - 名称: free_pack
-    次数: 1
-  - 名称: car_hunt
-    次数: 1
   - 名称: other_series
-    次数: 30
-
+    次数: 5
+  - 名称: group
+    次数: 6
+    组:
+      - 名称: world_series
+        次数: 5
+      - 名称: car_hunt
+        次数: 1
