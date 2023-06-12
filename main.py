@@ -642,7 +642,7 @@ def init_config():
         with open(args.config) as f:
             custom_config = yaml.load(f, Loader=yaml.FullLoader)
         config.update(custom_config)
-    logger.info(f"config = {json.dumps(config, indent=2, ensure_ascii=True)}")
+    logger.info(f"config = {json.dumps(config, indent=2, ensure_ascii=False)}")
     CONFIG = config
 
 
