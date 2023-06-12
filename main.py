@@ -509,6 +509,7 @@ class TaskManager:
 
     @classmethod
     def task_enter(cls, task_name):
+        logger.info(f"Enter {task_name} task.")
         if task_name == "world_series":
             enter_series(upcount=2)
         if task_name == "other_series":
@@ -545,6 +546,7 @@ class TaskManager:
             return
         next_task = cls.task_queue[FINISHED_COUNT % len(cls.task_queue)]
         if cls.current_task != next_task:
+            logger.info(f"Start process task {next_task}, last task is {cls.current_task}")
             cls.task_enter(next_task)
             return True
 
