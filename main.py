@@ -208,12 +208,15 @@ def carhunt_position():
 
 
 def get_series_config():
-    if MODE == "LIMITED SERIES":
+    current_task = TaskManager.current_task
+    if current_task == TaskManager.other_series:
         return limited_series_position(), limited_series_reset
-    if MODE == "CAR HUNT":
+    elif current_task == TaskManager.car_hunt:
         return carhunt_position(), carhunt_reset
-    else:
+    elif current_task == TaskManager.world_series:
         return world_series_positions(), world_series_reset
+    else:
+        raise Exception("Not support task.")
 
 
 def select_car():
@@ -388,7 +391,12 @@ def process_screen(page):
             "args": (),
         },
         {
-            "pages": [Page.world_series, Page.limited_series, Page.trial_series, Page.carhunt],
+            "pages": [
+                Page.world_series,
+                Page.limited_series,
+                Page.trial_series,
+                Page.carhunt,
+            ],
             "action": pro.press_button,
             "args": (Buttons.A, 3),
         },
@@ -483,6 +491,11 @@ def capture():
 
 
 class TaskManager:
+    world_series = "world_series"
+    other_series = "other_series"
+    car_hunt = "car_hunt"
+    free_pack = "free_pack"
+
     current_task = None
     task_queue = None
 
@@ -492,7 +505,6 @@ class TaskManager:
             return
         cls.parse_task()
         cls.task_enter(cls.task_queue[0])
-
 
     @classmethod
     def task_enter(cls, task_name):
@@ -505,7 +517,6 @@ class TaskManager:
         if task_name == "free_pack":
             free_pack()
         cls.current_task = task_name
-
 
     @classmethod
     def parse_task(cls):
@@ -520,13 +531,17 @@ class TaskManager:
                 flat_task += [task["名称"]] * task["次数"]
         cls.task_queue = flat_task
 
-
     @classmethod
     def task_dispatch(cls, page):
         if "任务" not in CONFIG or FINISHED_COUNT == 0:
             return
-        if page.name not in [Page.limited_series, Page.trial_series, Page.carhunt, Page.world_series]:
-            return 
+        if page.name not in [
+            Page.limited_series,
+            Page.trial_series,
+            Page.carhunt,
+            Page.world_series,
+        ]:
+            return
         next_task = cls.task_queue[FINISHED_COUNT % len(cls.task_queue)]
         if cls.current_task != next_task:
             cls.task_enter(next_task)
