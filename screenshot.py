@@ -1,4 +1,4 @@
-from .v4l2 import capture
+from v4l2 import capture
 
 
 def screenshot():
