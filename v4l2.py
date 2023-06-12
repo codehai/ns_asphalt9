@@ -27,7 +27,7 @@ class Capture:
         cmd = f"v4l2-ctl --device /dev/video0 --set-fmt-video=width=1920,height=1080,pixelformat={format} --stream-mmap --stream-to=./source.{file_type} --stream-count=1"
         p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, cwd="./images")
         p.wait()
-        cmd = f"ffmpeg -loglevel quiet -y -s 1920*1080 -i ./source.{file_type} ./output.jpg"
+        cmd = f"ffmpeg -loglevel quiet -y -s 1920*1080 -pix_fmt yuyv422 -i ./source.{file_type} ./output.jpg"
         p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, cwd="./images")
         p.wait()
 
