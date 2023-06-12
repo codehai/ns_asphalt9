@@ -13,10 +13,10 @@ class Capture:
         output, error = p.communicate()
         if output:
             result = output.decode("utf-8")
-            if "MJPG" in result:
-                return "MJPG", "jpeg"
-            elif "YUYV" in result:
+            if "YUYV" in result:
                 return "YUYV", "yuv"
+            elif "MJPG" in result:
+                return "MJPG", "jpeg"
             else:
                 raise Exception("Not support formats type")
         if error:
@@ -24,7 +24,7 @@ class Capture:
 
     def screen(self):
         format, file_type = self.format, self.file_type
-        cmd = f"v4l2-ctl --device /dev/video0 --set-fmt-video=width=1920,height=1080,pixelformat={format} --stream-mmap --stream-to=./source.{file_type} --stream-count=1 --stream-skip=1"
+        cmd = f"v4l2-ctl --device /dev/video0 --set-fmt-video=width=1920,height=1080,pixelformat={format} --stream-mmap --stream-to=./source.{file_type} --stream-count=1"
         p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, cwd="./images")
         p.wait()
         cmd = f"ffmpeg -loglevel quiet -y -s 1920*1080 -i ./source.{file_type} ./output.jpg"
