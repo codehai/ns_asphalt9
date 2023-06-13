@@ -275,7 +275,7 @@ def select_car():
 
         page = ocr_screen()
 
-        if page.name in [Page.loading_race, Page.searching, Page.racing]:
+        if page.name in [Page.loading_race, Page.searching, Page.racing, Page.loading_carhunt]:
             break
         elif page.name == Page.tickets:
             pro.press_button(Buttons.DPAD_DOWN, 2)
