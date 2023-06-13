@@ -116,16 +116,15 @@ def enter_game():
     pro.press_group(buttons, 0.5)
 
 
-def enter_series(upcount=None):
+def enter_series(mode="WORLD SERIES"):
     """进入多人赛事"""
     pro.press_group([Buttons.B] * 5, 2)
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * 7, 0.5)
     pro.press_group([Buttons.A] * 1, 0.5)
     pro.press_group([Buttons.ZL] * 4, 0.5)
-    if upcount is None:
-        upcount = 2 if MODE == "WORLD SERIES" else 1
-    pro.press_group([Buttons.DPAD_UP] * upcount, 0.5)
+    if MODE != "WORLD SERIES":
+        pro.press_group([Buttons.DPAD_DOWN], 0.5)
     time.sleep(2)
     pro.press_group([Buttons.A] * 1, 0.5)
 
@@ -576,9 +575,9 @@ class TaskManager:
         if not task_name:
             task_name = CONFIG["mode"]
         if task_name == "world_series":
-            enter_series(upcount=2)
+            enter_series()
         if task_name == "other_series":
-            enter_series(upcount=1)
+            enter_series(mode="OTHER_SERIES")
         if task_name == "car_hunt":
             enter_carhunt()
         if task_name == "free_pack":
