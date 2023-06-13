@@ -530,6 +530,7 @@ class TaskManager:
         self.task_init()
 
     def task_init(self):
+        global CONFIG
         if "任务" not in CONFIG:
             return
         for task in CONFIG["任务"]:
@@ -548,6 +549,7 @@ class TaskManager:
         timer.start()
 
     def task_dispatch(self, page):
+        global CONFIG
         if "任务" not in CONFIG:
             return False
 
@@ -597,6 +599,8 @@ def event_loop():
     global G_RACE_QUIT_EVENT
     global DIVISION
     global MODE
+
+    manager.task_enter(CONFIG["mode"])
 
     while G_RACE_RUN_EVENT.is_set() and G_RUN.is_set():
         try:
@@ -672,6 +676,7 @@ def init_config():
     global CONFIG
     parser = argparse.ArgumentParser(description="NS Asphalt9 Tool.")
     parser.add_argument("-c", "--config", type=str, help="自定义配置文件")
+    parser.add_argument("-m", "--mode", type=int, default=1, help="1 多人一 2 多人二 3 寻车")
 
     args = parser.parse_args()
 
@@ -682,6 +687,8 @@ def init_config():
         with open(args.config) as f:
             custom_config = yaml.load(f, Loader=yaml.FullLoader)
         config.update(custom_config)
+    mode_mapping = {1: "world_series", 2: "other_series", 3: "car_hunt"}
+    config.update({"mode": mode_mapping.get(args.mode)})
     logger.info(f"config = {json.dumps(config, indent=2, ensure_ascii=False)}")
     CONFIG = config
 
