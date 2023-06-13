@@ -147,18 +147,16 @@ def enter_carhunt():
     # time.sleep(3)
     pro.press_group([Buttons.DPAD_RIGHT] * 1, 0.5)
     pro.press_a(2)
-    pro.press_group([Buttons.DPAD_LEFT] * 1, 0.5)
-    pro.press_group([Buttons.DPAD_RIGHT] * CONFIG["寻车"]["位置"], 0.5)
+    pro.press_group([Buttons.ZL] * 1, 0.5)
+    pro.press_group([Buttons.ZR] * CONFIG["寻车"]["位置"], 0.5)
     time.sleep(2)
-    pro.press_a()
     page = ocr_screen()
     if page.name == Page.carhunt:
         pro.press_a()
     else:
-        pro.press_group([Buttons.DPAD_LEFT] * 12, 0)
-        pro.press_a(0)
+        pro.press_group([Buttons.ZL] * 12, 0)
         for i in range(12):
-            pro.press_buttons([Buttons.DPAD_RIGHT, Buttons.A], 1)
+            pro.press_buttons([Buttons.ZR], 1)
             page = ocr_screen()
             if page.name == Page.carhunt:
                 CONFIG["寻车"]["位置"] = i
