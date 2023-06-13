@@ -14,6 +14,8 @@ class Page:
     loading_game = "loading_game"
     # 比赛加载
     loading_race = "loading_race"
+    # 寻车加载
+    loading_carhunt = "loading_carhunt"
     # 手柄激活
     connect_controller = "connect_controller"
     # 手柄已连接
@@ -85,6 +87,7 @@ class Page:
     features = {
         loading_game: "GAMELOFT PLAYER ID.*ASPHALT",
         loading_race: "LOADING RACE",
+        loading_carhunt: "CAR HUNT.*BEAT YOUR BEST TIME",
         connect_controller: "Press.*on the controller",
         connected_controller: "Controllers",
         multi_player: "WORLD SERIES.*(LIMITED|TRIAL) SERIES",
@@ -105,7 +108,7 @@ class Page:
         vip_reward: "TIER",
         # CONGRATULATIONS.*IMPROVE,
         racing: "POS\.| \d/\d|DIST|\d+%|NITRO|\d+:\d+\.\d+|TOUCHORIVE|SURFING|PERFECT",
-        race_results: "RACE RESULTS|POS\.|PLAYER|CAR NAME|TIME|NEXT",
+        race_results: "RACE RESULTS|POS\.|PLAYER|CAR NAME|NEXT",
         race_score: "WINNER|YOUR POSITION|YOUR TIME|RATING|NEXT",
         race_reward: "RACE|REWARDS|REPUTATION|TOTAL|CREDITS|NEXT",
         milestone_reward: "CONGRATULATIONS",
