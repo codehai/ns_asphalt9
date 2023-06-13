@@ -526,30 +526,29 @@ class TaskManager:
 
     last_mode = None
 
-    def __init__(self) -> None:
-        self.task_init()
-
-    def task_init(self):
-        global CONFIG
+    @classmethod
+    def task_init(cls):
         if "任务" not in CONFIG:
             return
         for task in CONFIG["任务"]:
             if task["间隔"] > 0:
-                self.task_producer(task["名称"], task["间隔"])
+                cls.task_producer(task["名称"], task["间隔"])
+        cls.task_enter()
 
-    def task_producer(self, task, duration, skiped=False):
+    @classmethod
+    def task_producer(cls, task, duration, skiped=False):
         if skiped:
             task_queue.put(task)
         else:
             logger.info(f"Start task {task} producer, duration = {duration}min")
             skiped = True
         timer = threading.Timer(
-            duration * 60, self.task_producer, (task, duration), {"skiped": skiped}
+            duration * 60, cls.task_producer, (task, duration), {"skiped": skiped}
         )
         timer.start()
 
-    def task_dispatch(self, page):
-        global CONFIG
+    @classmethod
+    def task_dispatch(cls, page):
         if "任务" not in CONFIG:
             return False
 
@@ -563,17 +562,18 @@ class TaskManager:
             return False
 
         if task_queue.empty():
-            if self.last_mode:
-                self.task_enter(mode_name=self.last_mode)
-                self.last_mode = ""
+            if cls.last_mode:
+                cls.task_enter(mode_name=cls.last_mode)
+                cls.last_mode = ""
                 return True
         else:
-            self.last_mode = MODE
+            cls.last_mode = MODE
             task = task_queue.get()
-            self.task_enter(task_name=task)
+            cls.task_enter(task_name=task)
             return True
 
-    def task_enter(self, task_name="", mode_name=""):
+    @classmethod
+    def task_enter(cls, task_name="", mode_name=""):
         mode_mapping = {
             "WORLD SERIES": "world_series",
             "LIMITED SERIES": "other_series",
@@ -582,6 +582,8 @@ class TaskManager:
         }
         if mode_name:
             task_name = mode_mapping.get(mode_name)
+        if not task_name and mode_name:
+            task_name = CONFIG["mode"]
         if task_name == "world_series":
             enter_series(upcount=2)
         if task_name == "other_series":
@@ -592,15 +594,12 @@ class TaskManager:
             free_pack()
 
 
-manager = TaskManager()
-
-
 def event_loop():
     global G_RACE_QUIT_EVENT
     global DIVISION
     global MODE
 
-    manager.task_enter(CONFIG["mode"])
+    TaskManager.task_init()
 
     while G_RACE_RUN_EVENT.is_set() and G_RUN.is_set():
         try:
@@ -609,7 +608,7 @@ def event_loop():
                 DIVISION = page.division
             if page.mode:
                 MODE = page.mode
-            dispatched = manager.task_dispatch(page)
+            dispatched = TaskManager.task_dispatch(page)
             if not dispatched:
                 process_screen(page)
             time.sleep(3)
