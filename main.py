@@ -151,14 +151,14 @@ def enter_carhunt():
     pro.press_group([Buttons.ZR] * CONFIG["寻车"]["位置"], 0.5)
     time.sleep(2)
     page = ocr_screen()
-    if page.name == Page.carhunt:
+    if has_text("CAR HUNT", page.text):
         pro.press_a()
     else:
         pro.press_group([Buttons.ZL] * 12, 0)
         for i in range(12):
             pro.press_buttons([Buttons.ZR], 1)
             page = ocr_screen()
-            if page.name == Page.carhunt:
+            if has_text("CAR HUNT", page.text):
                 CONFIG["寻车"]["位置"] = i
                 pro.press_a()
                 break
