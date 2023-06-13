@@ -157,7 +157,7 @@ def enter_carhunt():
     else:
         pro.press_group([Buttons.DPAD_LEFT] * 12, 0)
         for i in range(12):
-            pro.press_button(Buttons.DPAD_RIGHT, 1)
+            pro.press_buttons([Buttons.DPAD_RIGHT, Buttons.A], 1)
             page = ocr_screen()
             if page.name == Page.carhunt:
                 CONFIG["寻车"]["位置"] = i
