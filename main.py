@@ -164,16 +164,13 @@ def enter_carhunt():
 
 def free_pack():
     """领卡"""
-    global FINISHED_COUNT
-    page = ocr_screen()
-    if has_text("FREE PACK", page.text):
-        pro.press_group([Buttons.DPAD_UP] * 5, 0.5)
-        pro.press_group([Buttons.DPAD_LEFT] * 7, 0.5)
-        pro.press_group([Buttons.DPAD_RIGHT] * 3, 0.5)
-        pro.press_a(4)
-        pro.press_group([Buttons.A] * 3, 2)
-        pro.press_group([Buttons.B] * 3, 0.5)
-    FINISHED_COUNT += 1
+    pro.press_group([Buttons.B] * 5, 2)
+    pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
+    pro.press_group([Buttons.DPAD_LEFT] * 7, 0.5)
+    pro.press_group([Buttons.A], 0.5)
+    pro.press_group([Buttons.DPAD_UP], 0.5)
+    pro.press_group([Buttons.A] * 5, 3)
+    pro.press_group([Buttons.B], 0.5)
 
 
 def play_game(select_car=1):
