@@ -8,11 +8,16 @@ import traceback
 import yaml
 import types
 import json
+import queue
+
 
 from ocr import Page, ocr
 from screenshot import screenshot
 from utils.controller import Buttons, pro
 from utils.log import logger
+
+
+task_queue = queue.Queue()
 
 
 CONFIG = None
@@ -115,9 +120,9 @@ def enter_series(upcount=None):
     """进入多人赛事"""
     pro.press_group([Buttons.B] * 5, 2)
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
-    pro.press_group([Buttons.DPAD_LEFT] * 7, 0.5)
+    pro.press_group([Buttons.DPAD_RIGHT] * 7, 0.5)
     pro.press_group([Buttons.A] * 1, 0.5)
-    pro.press_group([Buttons.DPAD_RIGHT] * 3, 0.5)
+    pro.press_group([Buttons.DPAD_LEFT] * 4, 0.5)
     pro.press_group([Buttons.A] * 1, 0.5)
     if upcount is None:
         upcount = 2 if MODE == "WORLD SERIES" else 1
@@ -130,15 +135,31 @@ def enter_carhunt():
     """进入寻车"""
     pro.press_group([Buttons.B] * 5, 2)
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
-    pro.press_group([Buttons.DPAD_LEFT] * 7, 0.5)
+    pro.press_group([Buttons.DPAD_RIGHT] * 7, 0.5)
     pro.press_group([Buttons.A] * 1, 0.5)
-    pro.press_group([Buttons.DPAD_RIGHT] * 2, 0.5)
+    pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5)
     time.sleep(2)
     pro.press_group([Buttons.A] * 2, 0.5)
     time.sleep(2)
+    page = ocr_screen()
+    if has_text("TO CLAIM", page.text):
+        pro.press_a()
     pro.press_group([Buttons.DPAD_RIGHT] * CONFIG["寻车"]["位置"], 0.5)
     time.sleep(2)
-    pro.press_group([Buttons.A] * 2, 0.5)
+    pro.press_a()
+    page = ocr_screen()
+    if page.name == Page.carhunt:
+        pro.press_a()
+    else:
+        pro.press_group([Buttons.DPAD_RIGHT] * 12, 0)
+        for _ in range(12):
+            pro.press_button(Buttons.DPAD_LEFT, 1)
+            page = ocr_screen()
+            if page.name == Page.carhunt:
+                pro.press_a()
+                break
+        else:
+            raise Exception("Can`t find car hunt page.")
 
 
 def free_pack():
@@ -182,13 +203,25 @@ def world_series_reset():
     pro.press_a(2)
 
 
-def limited_series_reset():
+def default_reset():
+    pro.press_button(Buttons.ZL, 0)
+
+
+def other_series_reset():
     pro.press_button(Buttons.ZL, 0)
 
 
 def carhunt_reset():
     pro.press_button(Buttons.ZR, 0)
     pro.press_button(Buttons.ZL, 1)
+
+
+def default_positions():
+    positions = []
+    for row in [1, 2]:
+        for col in [1, 2, 3]:
+            positions.append({"row": row, "col": col})
+    return positions
 
 
 def world_series_positions():
@@ -199,7 +232,7 @@ def world_series_positions():
     return config["车库位置"]
 
 
-def limited_series_position():
+def other_series_position():
     return CONFIG["多人二"]["车库位置"]
 
 
@@ -208,15 +241,14 @@ def carhunt_position():
 
 
 def get_series_config():
-    current_task = TaskManager.current_task
-    if current_task == TaskManager.other_series:
-        return limited_series_position(), limited_series_reset
-    elif current_task == TaskManager.car_hunt:
+    if MODE in ["LIMITED SERIES", "TRIAL SERIES"]:
+        return other_series_position(), other_series_reset
+    elif MODE == "CAR HUNT":
         return carhunt_position(), carhunt_reset
-    elif current_task == TaskManager.world_series:
+    elif MODE == "WORLD SERIES":
         return world_series_positions(), world_series_reset
     else:
-        raise Exception("Not support task.")
+        return default_positions(), default_reset
 
 
 def select_car():
@@ -401,11 +433,6 @@ def process_screen(page):
             "args": (Buttons.A, 3),
         },
         {
-            "pages": [Page.trial_series],
-            "action": pro.press_group,
-            "args": ([Buttons.A, Buttons.A], 3),
-        },
-        {
             "pages": [Page.select_car],
             "action": select_car,
             "args": (),
@@ -496,18 +523,62 @@ class TaskManager:
     car_hunt = "car_hunt"
     free_pack = "free_pack"
 
-    current_task = None
-    task_queue = None
+    last_mode = None
 
-    @classmethod
-    def task_init(cls):
+    def __init__(self) -> None:
+        self.task_init()
+
+    def task_init(self):
         if "任务" not in CONFIG:
             return
-        cls.parse_task()
-        cls.task_enter(cls.task_queue[0])
+        for task in CONFIG["任务"]:
+            if task["间隔"] > 0:
+                self.task_producer(task["名称"], task["间隔"])
 
-    @classmethod
-    def task_enter(cls, task_name):
+    def task_producer(self, task, duration, skiped=False):
+        if skiped:
+            task_queue.put(task)
+        else:
+            logger.info(f"Start task {task} producer, duration = {duration}min")
+            skiped = True
+        timer = threading.Timer(
+            duration * 60, self.task_producer, (task, duration), {"skiped": skiped}
+        )
+        timer.start()
+
+    def task_dispatch(self, page):
+        if "任务" not in CONFIG:
+            return False
+
+        if page.name not in [
+            Page.world_series,
+            Page.limited_series,
+            Page.trial_series,
+            Page.carhunt,
+            Page.card_pack,
+        ]:
+            return False
+
+        if task_queue.empty():
+            if self.last_mode:
+                self.task_enter(mode_name=self.last_mode)
+                self.last_mode = ""
+                return True
+        else:
+            self.last_mode = MODE
+            task = task_queue.get()
+            self.task_enter(task_name=task)
+            return True
+
+    def task_enter(self, task_name="", mode_name=""):
+        mode_mapping = {
+            "WORLD SERIES": "world_series",
+            "LIMITED SERIES": "other_series",
+            "TRIAL SERIES": "other_series",
+            "CAR HUNT": "car_hunt",
+        }
+        if mode_name:
+            task_name = mode_mapping.get(mode_name)
         if task_name == "world_series":
             enter_series(upcount=2)
         if task_name == "other_series":
@@ -516,44 +587,15 @@ class TaskManager:
             enter_carhunt()
         if task_name == "free_pack":
             free_pack()
-        cls.current_task = task_name
 
-    @classmethod
-    def parse_task(cls):
-        flat_task = []
-        for task in CONFIG["任务"]:
-            if "组" in task:
-                sub_tasks = []
-                for sub_task in task["组"]:
-                    sub_tasks += [sub_task["名称"]] * sub_task["次数"]
-                flat_task += sub_tasks * task["次数"]
-            else:
-                flat_task += [task["名称"]] * task["次数"]
-        cls.task_queue = flat_task
 
-    @classmethod
-    def task_dispatch(cls, page):
-        if "任务" not in CONFIG or FINISHED_COUNT == 0:
-            return
-        if page.name not in [
-            Page.limited_series,
-            Page.trial_series,
-            Page.carhunt,
-            Page.world_series,
-        ]:
-            return
-        next_task = cls.task_queue[FINISHED_COUNT % len(cls.task_queue)]
-        if cls.current_task != next_task:
-            cls.task_enter(next_task)
-            return True
+manager = TaskManager()
 
 
 def event_loop():
     global G_RACE_QUIT_EVENT
     global DIVISION
     global MODE
-
-    TaskManager.task_init()
 
     while G_RACE_RUN_EVENT.is_set() and G_RUN.is_set():
         try:
@@ -562,7 +604,7 @@ def event_loop():
                 DIVISION = page.division
             if page.mode:
                 MODE = page.mode
-            dispatched = TaskManager.task_dispatch(page)
+            dispatched = manager.task_dispatch(page)
             if not dispatched:
                 process_screen(page)
             time.sleep(3)
