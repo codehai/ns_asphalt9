@@ -156,6 +156,7 @@ def enter_carhunt():
         pro.press_a()
     else:
         pro.press_group([Buttons.DPAD_LEFT] * 12, 0)
+        pro.press_a(0)
         for i in range(12):
             pro.press_buttons([Buttons.DPAD_RIGHT, Buttons.A], 1)
             page = ocr_screen()
