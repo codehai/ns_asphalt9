@@ -123,7 +123,7 @@ def enter_series(mode="WORLD SERIES"):
     pro.press_group([Buttons.DPAD_RIGHT] * 7, 0.5)
     pro.press_group([Buttons.A] * 1, 0.5)
     pro.press_group([Buttons.ZL] * 4, 0.5)
-    if MODE != "WORLD SERIES":
+    if mode != "WORLD SERIES":
         pro.press_group([Buttons.DPAD_DOWN], 0.5)
     time.sleep(2)
     pro.press_group([Buttons.A] * 1, 0.5)
