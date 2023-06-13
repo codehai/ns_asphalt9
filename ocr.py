@@ -87,7 +87,6 @@ class Page:
     features = {
         loading_game: "GAMELOFT PLAYER ID.*ASPHALT",
         loading_race: "LOADING RACE",
-        loading_carhunt: "CAR HUNT.*BEST TIME",
         connect_controller: "Press.*on the controller",
         connected_controller: "Controllers",
         multi_player: "WORLD SERIES.*(LIMITED|TRIAL) SERIES",
@@ -96,6 +95,7 @@ class Page:
         limited_series: "LIMITED SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
         trial_series: "TRIAL SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY",
         carhunt: "CAR HUNT:.*CAR HUNT EVENT PACK",
+        loading_carhunt: "CAR HUNT.*BEST TIME",
         legendary_hunt: "LEGENDARY HUNT",
         tickets: "TICKETS",
         select_car: "CAR SELECTION",
