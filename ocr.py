@@ -87,7 +87,7 @@ class Page:
     features = {
         loading_game: "GAMELOFT PLAYER ID.*ASPHALT",
         loading_race: "LOADING RACE",
-        loading_carhunt: "CAR HUNT.*BEAT YOUR BEST TIME",
+        loading_carhunt: "CAR HUNT.*BEST TIME",
         connect_controller: "Press.*on the controller",
         connected_controller: "Controllers",
         multi_player: "WORLD SERIES.*(LIMITED|TRIAL) SERIES",
