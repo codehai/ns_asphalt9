@@ -145,9 +145,9 @@ def enter_carhunt():
     # if has_text("TO CLAIM", page.text):
     #     pro.press_a()
     # time.sleep(3)
-    pro.press_group([Buttons.DPAD_RIGHT] * 1, 0.5)
-    pro.press_a(2)
-    pro.press_group([Buttons.ZL] * 1, 0.5)
+    # pro.press_group([Buttons.DPAD_RIGHT] * 1, 0.5)
+    # pro.press_a(2)
+    # pro.press_group([Buttons.ZL] * 1, 0.5)
     pro.press_group([Buttons.ZR] * CONFIG["寻车"]["位置"], 0.5)
     time.sleep(2)
     page = ocr_screen()
