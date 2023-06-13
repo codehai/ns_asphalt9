@@ -141,9 +141,13 @@ def enter_carhunt():
     time.sleep(2)
     pro.press_group([Buttons.A] * 2, 0.5)
     time.sleep(2)
-    page = ocr_screen()
-    if has_text("TO CLAIM", page.text):
-        pro.press_a()
+    # page = ocr_screen()
+    # if has_text("TO CLAIM", page.text):
+    #     pro.press_a()
+    # time.sleep(3)
+    pro.press_group([Buttons.DPAD_RIGHT] * 1, 0.5)
+    pro.press_a(2)
+    pro.press_group([Buttons.DPAD_LEFT] * 1, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * CONFIG["寻车"]["位置"], 0.5)
     time.sleep(2)
     pro.press_a()
@@ -678,7 +682,7 @@ def init_config():
         with open(args.config) as f:
             custom_config = yaml.load(f, Loader=yaml.FullLoader)
         config.update(custom_config)
-    logger.info(f"config = {json.dumps(config, indent=2, ensure_ascii=True)}")
+    logger.info(f"config = {json.dumps(config, indent=2, ensure_ascii=False)}")
     CONFIG = config
 
 
