@@ -173,8 +173,9 @@ def free_pack():
     pro.press_group([Buttons.DPAD_LEFT] * 7, 0.5)
     pro.press_group([Buttons.A], 0.5)
     pro.press_group([Buttons.DPAD_UP], 0.5)
-    pro.press_group([Buttons.A] * 5, 3)
+    pro.press_group([Buttons.A] * 6, 3)
     pro.press_group([Buttons.B], 0.5)
+    TaskManager.set_done()
 
 
 def play_game(select_car=1):
@@ -295,6 +296,7 @@ def select_car():
             SELECT_COUNT += 1
             continue
     process_race()
+    TaskManager.set_done()
 
 
 def process_race(race_mode=0):
@@ -524,7 +526,7 @@ class TaskManager:
     car_hunt = "car_hunt"
     free_pack = "free_pack"
 
-    processing = False
+    status = ""
 
     @classmethod
     def task_init(cls):
@@ -562,12 +564,12 @@ class TaskManager:
             return False
 
         if task_queue.empty():
-            if cls.processing:
+            if cls.status == "DONE":
                 cls.task_enter()
-                cls.processing = False
+                cls.status = ""
                 return True
         else:
-            cls.processing = True
+            cls.status = "START"
             task = task_queue.get()
             cls.task_enter(task)
             return True
@@ -584,6 +586,11 @@ class TaskManager:
             enter_carhunt()
         if task_name == "free_pack":
             free_pack()
+    
+    @classmethod
+    def set_done(cls):
+        if cls.status == "START":
+            cls.status = "DONE"
 
 
 def event_loop():
