@@ -122,8 +122,7 @@ def enter_series(upcount=None):
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * 7, 0.5)
     pro.press_group([Buttons.A] * 1, 0.5)
-    pro.press_group([Buttons.DPAD_LEFT] * 4, 0.5)
-    pro.press_group([Buttons.A] * 1, 0.5)
+    pro.press_group([Buttons.ZL] * 4, 0.5)
     if upcount is None:
         upcount = 2 if MODE == "WORLD SERIES" else 1
     pro.press_group([Buttons.DPAD_UP] * upcount, 0.5)
@@ -137,10 +136,8 @@ def enter_carhunt():
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * 7, 0.5)
     pro.press_group([Buttons.A] * 1, 0.5)
-    pro.press_group([Buttons.DPAD_LEFT] * 5, 0.5)
-    time.sleep(2)
-    pro.press_group([Buttons.A] * 2, 0.5)
-    time.sleep(2)
+    pro.press_group([Buttons.ZL] * 5, 0.5)
+    pro.press_group([Buttons.A], 2)
     # page = ocr_screen()
     # if has_text("TO CLAIM", page.text):
     #     pro.press_a()
