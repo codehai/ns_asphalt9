@@ -524,7 +524,7 @@ class TaskManager:
     car_hunt = "car_hunt"
     free_pack = "free_pack"
 
-    last_mode = None
+    processing = False
 
     @classmethod
     def task_init(cls):
@@ -562,27 +562,19 @@ class TaskManager:
             return False
 
         if task_queue.empty():
-            if cls.last_mode:
-                cls.task_enter(mode_name=cls.last_mode)
-                cls.last_mode = ""
+            if cls.processing:
+                cls.task_enter()
+                cls.processing = False
                 return True
         else:
-            cls.last_mode = MODE
+            cls.processing = True
             task = task_queue.get()
-            cls.task_enter(task_name=task)
+            cls.task_enter(task)
             return True
 
     @classmethod
-    def task_enter(cls, task_name="", mode_name=""):
-        mode_mapping = {
-            "WORLD SERIES": "world_series",
-            "LIMITED SERIES": "other_series",
-            "TRIAL SERIES": "other_series",
-            "CAR HUNT": "car_hunt",
-        }
-        if mode_name:
-            task_name = mode_mapping.get(mode_name)
-        if not task_name and mode_name:
+    def task_enter(cls, task_name=""):
+        if not task_name:
             task_name = CONFIG["mode"]
         if task_name == "world_series":
             enter_series(upcount=2)
