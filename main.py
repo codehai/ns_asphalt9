@@ -150,7 +150,7 @@ def enter_carhunt():
         pro.press_a()
     else:
         pro.press_group([Buttons.ZL] * 12, 0)
-        for i in range(12):
+        for i in range(20):
             pro.press_group([Buttons.ZR], 1)
             page = ocr_screen()
             if has_text("CAR HUNT", page.text):
