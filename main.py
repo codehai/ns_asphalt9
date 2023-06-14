@@ -11,10 +11,12 @@ import json
 import queue
 
 
+import consts
 from ocr import Page, ocr
 from screenshot import screenshot
 from utils.controller import Buttons, pro
 from utils.log import logger
+from utils.decorator import retry
 
 
 task_queue = queue.Queue()
@@ -75,34 +77,6 @@ def ocr_screen():
     return page
 
 
-def wait_for(text, timeout=10):
-    """等待屏幕出现text"""
-    count = 0
-    logger.info(f"Wait for text = {text}")
-    while True:
-        page = ocr_screen()
-        if has_text(text, page.text):
-            return page
-        count += 1
-        time.sleep(1)
-        if count > timeout:
-            raise Exception(f"Wait for text = {text} timeout!")
-
-
-def wait_for_page(page_name, timeout=10):
-    """等待屏幕出现text"""
-    count = 0
-    logger.info(f"Wait for page = {page_name}")
-    while True:
-        page = ocr_screen()
-        if page.name == page_name:
-            return page
-        count += 1
-        time.sleep(1)
-        if count > timeout:
-            raise Exception(f"Wait for page = {page_name} timeout!")
-
-
 def enter_game():
     """进入游戏"""
     buttons = [
@@ -116,25 +90,50 @@ def enter_game():
     pro.press_group(buttons, 0.5)
 
 
-def enter_series(mode="WORLD SERIES"):
-    """进入多人赛事"""
+@retry(max_attempts=3)
+def reset_to_career():
+    """重置到生涯"""
     pro.press_group([Buttons.B] * 5, 2)
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * 7, 0.5)
-    pro.press_group([Buttons.A] * 1, 0.5)
+    pro.press_group([Buttons.A] * 3, 2)
+    page = ocr_screen()
+    if page.career:
+        pro.press_group([Buttons.B], 2)
+    else:
+        raise Exception(f"Failed to access career, current page = {page.name}")
+
+
+@retry(max_attempts=3)
+def enter_series(mode="world_series"):
+    """进入多人赛事"""
+    reset_to_career()
     pro.press_group([Buttons.ZL] * 4, 0.5)
-    if mode != "WORLD SERIES":
+    if mode != "world_series":
         pro.press_group([Buttons.DPAD_DOWN], 0.5)
     time.sleep(2)
-    pro.press_group([Buttons.A] * 1, 0.5)
+    pro.press_group([Buttons.A], 2)
+    page = ocr_screen()
+    if (
+        mode == "world_series"
+        and page.name == Page.world_series
+        or mode == "other_series"
+        and page.name
+        in [
+            Page.trial_series,
+            Page.limited_series,
+        ]
+    ):
+        pass
+    else:
+        raise Exception(f"Failed to access {mode}, current page = {page.name}")
 
 
+@retry(max_attempts=3)
 def enter_carhunt():
     """进入寻车"""
-    pro.press_group([Buttons.B] * 5, 2)
-    pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
-    pro.press_group([Buttons.DPAD_RIGHT] * 7, 0.5)
-    pro.press_group([Buttons.A] * 1, 0.5)
+    global CONFIG
+    reset_to_career()
     pro.press_group([Buttons.ZL] * 5, 0.5)
     pro.press_group([Buttons.A], 2)
     # page = ocr_screen()
@@ -152,21 +151,21 @@ def enter_carhunt():
     else:
         pro.press_group([Buttons.ZL] * 12, 0)
         for i in range(12):
-            pro.press_buttons([Buttons.ZR], 1)
+            pro.press_group([Buttons.ZR], 1)
             page = ocr_screen()
             if has_text("CAR HUNT", page.text):
-                CONFIG["寻车"]["位置"] = i
+                CONFIG["寻车"]["位置"] = i + 1
                 pro.press_a()
                 break
         else:
-            raise Exception("Can`t find car hunt page.")
+            raise Exception(f"Failed to access carhunt, current page = {page.name}")
 
 
 def free_pack():
     """领卡"""
-    pro.press_group([Buttons.B] * 5, 2)
-    pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
-    pro.press_group([Buttons.DPAD_LEFT] * 7, 0.5)
+    reset_to_career()
+    pro.press_group([Buttons.DPAD_DOWN] * 3, 0.5)
+    pro.press_group([Buttons.DPAD_LEFT] * 8, 0.5)
     pro.press_group([Buttons.A], 0.5)
     pro.press_group([Buttons.DPAD_UP], 0.5)
     pro.press_group([Buttons.A] * 6, 3)
@@ -202,7 +201,7 @@ def world_series_reset():
 
 
 def default_reset():
-    pro.press_button(Buttons.ZL, 0)
+    pass
 
 
 def other_series_reset():
@@ -238,12 +237,13 @@ def carhunt_position():
     return CONFIG["寻车"]["车库位置"]
 
 
-def get_series_config():
-    if MODE in ["LIMITED SERIES", "TRIAL SERIES"]:
+def get_race_config():
+    task = consts.ModeTaskMapping.get(MODE, CONFIG["task"])
+    if task == consts.TaskName.other_series:
         return other_series_position(), other_series_reset
-    elif MODE == "CAR HUNT":
+    elif task == consts.TaskName.car_hunt:
         return carhunt_position(), carhunt_reset
-    elif MODE == "WORLD SERIES":
+    elif task == consts.TaskName.world_series:
         return world_series_positions(), world_series_reset
     else:
         return default_positions(), default_reset
@@ -254,7 +254,7 @@ def select_car():
     global DIVISION
     # 选车
     while G_RUN.is_set():
-        positions, reset = get_series_config()
+        positions, reset = get_race_config()
         reset()
         if SELECT_COUNT >= len(positions):
             SELECT_COUNT = 0
@@ -522,13 +522,9 @@ def capture():
 
 
 class TaskManager:
-    world_series = "world_series"
-    other_series = "other_series"
-    car_hunt = "car_hunt"
-    free_pack = "free_pack"
     timers = []
-
-    status = ""
+    status = consts.TaskStatus.default
+    current_task = ""
 
     @classmethod
     def task_init(cls):
@@ -554,7 +550,7 @@ class TaskManager:
         return timer
 
     @classmethod
-    def task_dispatch(cls, page):
+    def task_dispatch(cls, page: Page) -> None:
         if "任务" not in CONFIG:
             return False
 
@@ -568,33 +564,37 @@ class TaskManager:
             return False
 
         if task_queue.empty():
-            if cls.status == "DONE":
+            if cls.status == consts.TaskStatus.done:
                 cls.task_enter()
-                cls.status = ""
+                cls.status = consts.TaskStatus.default
                 return True
         else:
-            cls.status = "START"
             task = task_queue.get()
+            logger.info(f"Get {task} task from queue.")
+            cls.status = consts.TaskStatus.start
+            cls.current_task = task
             cls.task_enter(task)
             return True
 
     @classmethod
-    def task_enter(cls, task_name=""):
-        if not task_name:
-            task_name = CONFIG["mode"]
-        if task_name == "world_series":
+    def task_enter(cls, task: str = "") -> None:
+        if not task:
+            task = CONFIG["task"]
+        logger.info(f"Start process {task} task.")
+        if task == consts.TaskName.world_series:
             enter_series()
-        if task_name == "other_series":
-            enter_series(mode="OTHER_SERIES")
-        if task_name == "car_hunt":
+        if task == consts.TaskName.other_series:
+            enter_series(task)
+        if task == consts.TaskName.car_hunt:
             enter_carhunt()
-        if task_name == "free_pack":
+        if task == consts.TaskName.free_pack:
             free_pack()
 
     @classmethod
-    def set_done(cls):
-        if cls.status == "START":
-            cls.status = "DONE"
+    def set_done(cls) -> None:
+        if cls.status == consts.TaskStatus.start:
+            cls.status = consts.TaskStatus.done
+            cls.current_task = ""
 
 
 def event_loop():
@@ -632,6 +632,7 @@ def command_input():
 
     while G_RUN.is_set():
         command = input("Please input command \n")
+
         if command == "stop":
             # 停止挂机
             if G_RACE_RUN_EVENT.is_set():
@@ -668,7 +669,12 @@ def command_input():
                 control_data()
 
         else:
-            logger.info(f"{command} command not support!")
+            global_vars = globals()
+            func = global_vars.get(command, "")
+            if isinstance(func, types.FunctionType):
+                func()
+            else:
+                logger.info(f"{command} command not support!")
 
 
 def start_command_input():
@@ -680,7 +686,7 @@ def init_config():
     global CONFIG
     parser = argparse.ArgumentParser(description="NS Asphalt9 Tool.")
     parser.add_argument("-c", "--config", type=str, help="自定义配置文件")
-    parser.add_argument("-m", "--mode", type=int, default=1, help="1 多人一 2 多人二 3 寻车")
+    parser.add_argument("-t", "--task", type=int, default=1, help="1 多人一 2 多人二 3 寻车")
 
     args = parser.parse_args()
 
@@ -692,7 +698,7 @@ def init_config():
             custom_config = yaml.load(f, Loader=yaml.FullLoader)
         config.update(custom_config)
     mode_mapping = {1: "world_series", 2: "other_series", 3: "car_hunt"}
-    config.update({"mode": mode_mapping.get(args.mode)})
+    config.update({"task": mode_mapping.get(args.task)})
     logger.info(f"config = {json.dumps(config, indent=2, ensure_ascii=False)}")
     CONFIG = config
 

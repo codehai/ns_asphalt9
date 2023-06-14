@@ -82,6 +82,8 @@ class Page:
     daily_events = "daily_events"
     # 没匹配到对手
     no_opponents = "no_opponents"
+    # 生涯
+    career = "career"
 
     # 页面特征
     features = {
@@ -122,6 +124,7 @@ class Page:
         card_pack: "CARD PACK LEVEL INFO",
         club: "YOUR CLUB",
         no_opponents: "NO OPPONENTS WERE FOUND",
+        career: "COLLECTED.*CAREER",
     }
 
     # 部分匹配的页面
@@ -162,7 +165,7 @@ class Page:
         modes = re.findall(
             "CAR HUNT|WORLD SERIES|LIMITED SERIES|TRIAL SERIES", self.text
         )
-        if modes:
+        if modes and self.name not in [self.multi_player]:
             self.mode = modes[0]
 
         if "TOUCHDRIVE ON" in self.text:
