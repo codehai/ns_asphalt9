@@ -272,7 +272,12 @@ def select_car():
 
         page = ocr_screen()
 
-        if page.name in [Page.loading_race, Page.searching, Page.racing, Page.loading_carhunt]:
+        if page.name in [
+            Page.loading_race,
+            Page.searching,
+            Page.racing,
+            Page.loading_carhunt,
+        ]:
             break
         elif page.name == Page.tickets:
             pro.press_button(Buttons.DPAD_DOWN, 2)
@@ -521,6 +526,7 @@ class TaskManager:
     other_series = "other_series"
     car_hunt = "car_hunt"
     free_pack = "free_pack"
+    timers = []
 
     status = ""
 
@@ -530,7 +536,8 @@ class TaskManager:
             return
         for task in CONFIG["任务"]:
             if task["间隔"] > 0:
-                cls.task_producer(task["名称"], task["间隔"])
+                timer = cls.task_producer(task["名称"], task["间隔"])
+                cls.timers.append(timer)
         cls.task_enter()
 
     @classmethod
@@ -544,6 +551,7 @@ class TaskManager:
             duration * 60, cls.task_producer, (task, duration), {"skiped": skiped}
         )
         timer.start()
+        return timer
 
     @classmethod
     def task_dispatch(cls, page):
@@ -582,7 +590,7 @@ class TaskManager:
             enter_carhunt()
         if task_name == "free_pack":
             free_pack()
-    
+
     @classmethod
     def set_done(cls):
         if cls.status == "START":
@@ -647,6 +655,8 @@ def command_input():
             # 退出程序
             logger.info("Quit main.")
             G_RUN.clear()
+            for timer in TaskManager.timers:
+                timer.cancel()
 
         elif command in KEY_MAPPING:
             # 手柄操作

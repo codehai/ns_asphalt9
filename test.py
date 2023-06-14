@@ -1,21 +1,47 @@
-import yaml
+import threading
+import queue
 
-with open("custom.yaml") as f:
-    config = yaml.load(f, Loader=yaml.FullLoader)
+q = queue.Queue()
 
-print(config["任务"])
+CONFIG = []
 
-flat_task = []
 
-def parse_task(tasks, flat_task):
-    for task in tasks:
-        if "组" in task:
-            sub_tasks = []
-            for sub_task in task["组"]:
-                sub_tasks += [sub_task["名称"]] * sub_task["次数"]
-            flat_task += sub_tasks * task["次数"]
+class TaskManager:
+    world_series = "world_series"
+    other_series = "other_series"
+    car_hunt = "car_hunt"
+    free_pack = "free_pack"
+
+    current_task = None
+
+    def __init__(self) -> None:
+        # self.task_producer("test task", 3)
+        if "a" not in CONFIG:
+            print("11111111")
+
+    def log_global(self):
+        print(CONFIG)
+
+    def task_producer(self, task, duration, skiped=False):
+        if skiped:
+            print(f"put {task}")
+            q.put(task)
         else:
-            flat_task += [task["名称"]] * task["次数"]
+            skiped = True
+        timer = threading.Timer(
+            duration * 1, self.task_producer, (task, duration), {"skiped": skiped}
+        )
+        timer.start()
 
-parse_task(config["任务"], flat_task)
-print(flat_task)
+    def task_consumer(self):
+        while True:
+            t = q.get_nowait()
+            print(f"get task {t}")
+
+
+t = TaskManager()
+CONFIG.append(123)
+t.log_global()
+# t.task_consumer()
+
+# print(q.empty())
