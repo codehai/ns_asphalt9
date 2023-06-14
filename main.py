@@ -160,7 +160,7 @@ def enter_carhunt():
         else:
             raise Exception(f"Failed to access carhunt, current page = {page.name}")
 
-
+@retry(max_attempts=3)
 def free_pack():
     """领卡"""
     reset_to_career()
@@ -168,10 +168,10 @@ def free_pack():
     pro.press_group([Buttons.DPAD_LEFT] * 8, 0.5)
     pro.press_group([Buttons.A], 0.5)
     pro.press_group([Buttons.DPAD_UP], 0.5)
-    pro.press_group([Buttons.A] * 2, 3)
+    pro.press_group([Buttons.A] * 2, 5)
     page = ocr_screen()
     if has_text("CLASSIC PACK.*POSSIBLE CONTENT", page.text):
-        pro.press_group([Buttons.A] * 2, 3)
+        pro.press_group([Buttons.A] * 3, 3)
         pro.press_group([Buttons.B], 0.5)
         TaskManager.set_done()
     else:
