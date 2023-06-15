@@ -96,10 +96,12 @@ def reset_to_career():
     pro.press_group([Buttons.B] * 5, 2)
     pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
     pro.press_group([Buttons.DPAD_RIGHT] * 7, 0.5)
-    pro.press_group([Buttons.A] * 3, 2)
-    page = ocr_screen()
-    if page.career:
-        pro.press_group([Buttons.B], 2)
+    for _ in range(2):
+        pro.press_group([Buttons.A], 3)
+        page = ocr_screen()
+        if page.career:
+            pro.press_group([Buttons.B], 2)
+            break
     else:
         raise Exception(f"Failed to access career, current page = {page.name}")
 
