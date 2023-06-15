@@ -160,6 +160,7 @@ def enter_carhunt():
         else:
             raise Exception(f"Failed to access carhunt, current page = {page.name}")
 
+
 @retry(max_attempts=3)
 def free_pack():
     """领卡"""
@@ -176,17 +177,6 @@ def free_pack():
         TaskManager.set_done()
     else:
         raise Exception(f"Failed to access carhunt, current page = {page.name}")
-
-
-def play_game(select_car=1):
-    """点击play并等待进入到选车界面"""
-    pro.press_a(0.1)
-    if select_car:
-        for i in range(20):
-            time.sleep(1)
-            page = ocr_screen()
-            if page.name == Page.select_car:
-                break
 
 
 def world_series_reset():
@@ -273,7 +263,16 @@ def select_car():
 
         time.sleep(2)
 
-        pro.press_group([Buttons.A] * 2, 2)
+        pro.press_group([Buttons.A], 2)
+
+        page = ocr_screen()
+
+        # 如果没有进到车辆详情页面, router到默认任务
+        if page.name != Page.car_info:
+            TaskManager.task_enter()
+            break
+
+        pro.press_group([Buttons.A], 2)
 
         page = ocr_screen()
 
