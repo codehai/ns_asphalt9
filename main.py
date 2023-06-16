@@ -116,16 +116,7 @@ def enter_series(mode="world_series"):
     time.sleep(2)
     pro.press_group([Buttons.A], 2)
     page = ocr_screen()
-    if (
-        mode == "world_series"
-        and page.name == Page.world_series
-        or mode == "other_series"
-        and page.name
-        in [
-            Page.trial_series,
-            Page.limited_series,
-        ]
-    ):
+    if page.name in [Page.world_series, Page.trial_series, Page.limited_series]:
         pass
     else:
         raise Exception(f"Failed to access {mode}, current page = {page.name}")
