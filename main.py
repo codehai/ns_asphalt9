@@ -225,6 +225,18 @@ def carhunt_position():
     return CONFIG["寻车"]["车库位置"]
 
 
+def move_to_position(positions):
+    if not positions:
+        return
+    if SELECT_COUNT >= len(positions):
+        SELECT_COUNT = 0
+    position = positions[SELECT_COUNT]
+    for _ in range(position["row"] - 1):
+        pro.press_button(Buttons.DPAD_DOWN, 0)
+    for _ in range(position["col"] - 1):
+        pro.press_button(Buttons.DPAD_RIGHT, 0)
+
+
 def get_race_config():
     task = consts.ModeTaskMapping.get(MODE, CONFIG["task"])
     if task == consts.TaskName.other_series:
@@ -244,15 +256,7 @@ def select_car():
     while G_RUN.is_set():
         positions, reset = get_race_config()
         reset()
-        if SELECT_COUNT >= len(positions):
-            SELECT_COUNT = 0
-        position = positions[SELECT_COUNT]
-
-        for i in range(position["row"] - 1):
-            pro.press_button(Buttons.DPAD_DOWN, 0)
-
-        for i in range(position["col"] - 1):
-            pro.press_button(Buttons.DPAD_RIGHT, 0)
+        move_to_position(positions)
 
         time.sleep(2)
 
@@ -263,7 +267,7 @@ def select_car():
         # 如果没有进到车辆详情页面, router到默认任务
         if page.name != Page.car_info:
             TaskManager.task_enter()
-            break
+            return
 
         pro.press_group([Buttons.A], 2)
 
