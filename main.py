@@ -553,6 +553,8 @@ class TaskManager:
             Page.trial_series,
             Page.carhunt,
             Page.card_pack,
+            Page.multi_player,
+            Page.daily_events
         ]:
             return False
 
