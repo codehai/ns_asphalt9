@@ -93,9 +93,9 @@ def enter_game():
 @retry(max_attempts=3)
 def reset_to_career():
     """重置到生涯"""
-    pro.press_group([Buttons.B] * 5, 2)
-    pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
-    pro.press_group([Buttons.DPAD_RIGHT] * 7, 0.5)
+    pro.press_group([Buttons.B] * 3, 2)
+    pro.press_group([Buttons.DPAD_DOWN] * 4, 0)
+    pro.press_group([Buttons.DPAD_RIGHT] * 7, 0)
     for _ in range(2):
         pro.press_group([Buttons.A], 3)
         page = ocr_screen()
@@ -110,9 +110,9 @@ def reset_to_career():
 def enter_series(mode="world_series"):
     """进入多人赛事"""
     reset_to_career()
-    pro.press_group([Buttons.ZL] * 4, 0.5)
+    pro.press_group([Buttons.ZL] * 4, 0)
     if mode != "world_series":
-        pro.press_group([Buttons.DPAD_DOWN], 0.5)
+        pro.press_group([Buttons.DPAD_DOWN], 0)
     time.sleep(2)
     pro.press_group([Buttons.A], 2)
     page = ocr_screen()
@@ -127,7 +127,7 @@ def enter_carhunt():
     """进入寻车"""
     global CONFIG
     reset_to_career()
-    pro.press_group([Buttons.ZL] * 5, 0.5)
+    pro.press_group([Buttons.ZL] * 5, 0)
     pro.press_group([Buttons.A], 2)
     # page = ocr_screen()
     # if has_text("TO CLAIM", page.text):
@@ -136,15 +136,15 @@ def enter_carhunt():
     # pro.press_group([Buttons.DPAD_RIGHT] * 1, 0.5)
     # pro.press_a(2)
     # pro.press_group([Buttons.ZL] * 1, 0.5)
-    pro.press_group([Buttons.ZR] * CONFIG["寻车"]["位置"], 0.5)
-    time.sleep(2)
+    pro.press_group([Buttons.ZR] * CONFIG["寻车"]["位置"], 0)
+    time.sleep(1)
     page = ocr_screen()
     if has_text("CAR HUNT", page.text):
         pro.press_a()
     else:
         pro.press_group([Buttons.ZL] * 12, 0)
         for i in range(20):
-            pro.press_group([Buttons.ZR], 1)
+            pro.press_group([Buttons.ZR], 0.5)
             page = ocr_screen()
             if has_text("CAR HUNT", page.text):
                 CONFIG["寻车"]["位置"] = i + 1
@@ -158,8 +158,8 @@ def enter_carhunt():
 def free_pack():
     """领卡"""
     reset_to_career()
-    pro.press_group([Buttons.DPAD_DOWN] * 3, 0.5)
-    pro.press_group([Buttons.DPAD_LEFT] * 8, 0.5)
+    pro.press_group([Buttons.DPAD_DOWN] * 3, 0)
+    pro.press_group([Buttons.DPAD_LEFT] * 8, 0)
     pro.press_group([Buttons.A], 0.5)
     pro.press_group([Buttons.DPAD_UP], 0.5)
     pro.press_group([Buttons.A] * 2, 5)
@@ -287,10 +287,6 @@ def select_car():
             pro.press_b(2)
             pro.press_a(2)
         else:
-            if page.name == Page.car_info and has_text(
-                "BRONZE|SILVER|GOLD|PLATINUM", page.text
-            ):
-                DIVISION = ""
             for i in range(2):
                 pro.press_b()
                 page = ocr_screen()
@@ -381,6 +377,7 @@ def process_race(race_mode=0):
             pro.press_button(Buttons.Y, 0)
 
         if page.name in [Page.race_score, Page.race_results, Page.race_reward]:
+            pro.press_a(2)
             break
 
     FINISHED_COUNT += 1

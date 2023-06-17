@@ -124,7 +124,7 @@ class Page:
         card_pack: "CARD PACK LEVEL INFO",
         club: "YOUR CLUB",
         no_opponents: "NO OPPONENTS WERE FOUND",
-        career: "COLLECTED.*CAREER",
+        career: "(COLLECTED|COMPLETED).*CAREER",
     }
 
     # 部分匹配的页面
