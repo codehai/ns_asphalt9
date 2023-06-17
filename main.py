@@ -593,8 +593,6 @@ def event_loop():
     global DIVISION
     global MODE
 
-    TaskManager.task_init()
-
     while G_RACE_RUN_EVENT.is_set() and G_RUN.is_set():
         try:
             page = ocr_screen()
@@ -702,6 +700,8 @@ def main():
     G_RUN.set()
 
     init_config()
+
+    TaskManager.task_init()
 
     start_command_input()
 
