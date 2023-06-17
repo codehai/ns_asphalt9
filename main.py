@@ -552,6 +552,7 @@ class TaskManager:
         if not cls.inited:
             cls.task_enter()
             cls.inited = True
+            return True
 
         elif task_queue.empty():
             if cls.status == consts.TaskStatus.done:
