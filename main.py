@@ -79,16 +79,7 @@ def ocr_screen():
 
 def enter_game():
     """进入游戏"""
-    buttons = [
-        Buttons.B,
-        Buttons.DPAD_UP,
-        Buttons.DPAD_LEFT,
-        Buttons.DPAD_LEFT,
-        Buttons.A,
-        Buttons.A,
-    ]
-    pro.press_group(buttons, 0.5)
-
+    pro.press_group([Buttons.HOME, Buttons.A, Buttons.A], 0.5)
 
 
 def reset_to_career():
