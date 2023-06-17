@@ -90,20 +90,14 @@ def enter_game():
     pro.press_group(buttons, 0.5)
 
 
-@retry(max_attempts=3)
+
 def reset_to_career():
     """重置到生涯"""
     pro.press_group([Buttons.B] * 3, 2)
     pro.press_group([Buttons.DPAD_DOWN] * 4, 0)
     pro.press_group([Buttons.DPAD_RIGHT] * 7, 0)
-    for _ in range(2):
-        pro.press_group([Buttons.A], 3)
-        page = ocr_screen()
-        if page.career:
-            pro.press_group([Buttons.B], 2)
-            break
-    else:
-        raise Exception(f"Failed to access career, current page = {page.name}")
+    pro.press_group([Buttons.A], 2)
+    pro.press_group([Buttons.B], 2)
 
 
 @retry(max_attempts=3)
