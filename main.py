@@ -94,8 +94,8 @@ def enter_game():
 def reset_to_career():
     """重置到生涯"""
     pro.press_group([Buttons.B] * 3, 2)
-    pro.press_group([Buttons.DPAD_DOWN] * 4, 0)
-    pro.press_group([Buttons.DPAD_RIGHT] * 7, 0)
+    pro.press_group([Buttons.DPAD_DOWN] * 4, 0.1)
+    pro.press_group([Buttons.DPAD_RIGHT] * 7, 0.1)
     pro.press_group([Buttons.A], 2)
     pro.press_group([Buttons.B], 2)
 
@@ -104,9 +104,9 @@ def reset_to_career():
 def enter_series(mode="world_series"):
     """进入多人赛事"""
     reset_to_career()
-    pro.press_group([Buttons.ZL] * 4, 0)
+    pro.press_group([Buttons.ZL] * 4, 0.2)
     if mode != "world_series":
-        pro.press_group([Buttons.DPAD_DOWN], 0)
+        pro.press_group([Buttons.DPAD_DOWN], 0.2)
     time.sleep(2)
     pro.press_group([Buttons.A], 2)
     page = ocr_screen()
@@ -121,7 +121,7 @@ def enter_carhunt():
     """进入寻车"""
     global CONFIG
     reset_to_career()
-    pro.press_group([Buttons.ZL] * 5, 0)
+    pro.press_group([Buttons.ZL] * 5, 0.2)
     pro.press_group([Buttons.A], 2)
     # page = ocr_screen()
     # if has_text("TO CLAIM", page.text):
@@ -152,8 +152,8 @@ def enter_carhunt():
 def free_pack():
     """领卡"""
     reset_to_career()
-    pro.press_group([Buttons.DPAD_DOWN] * 3, 0)
-    pro.press_group([Buttons.DPAD_LEFT] * 8, 0)
+    pro.press_group([Buttons.DPAD_DOWN] * 3, 0.2)
+    pro.press_group([Buttons.DPAD_LEFT] * 8, 0.2)
     pro.press_group([Buttons.A], 0.5)
     pro.press_group([Buttons.DPAD_UP], 0.5)
     pro.press_group([Buttons.A] * 2, 5)
