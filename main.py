@@ -549,7 +549,7 @@ class TaskManager:
             return False
 
         if task_queue.empty():
-            if cls.status == consts.TaskStatus.done:
+            if cls.status in [consts.TaskStatus.default, consts.TaskStatus.done]:
                 cls.task_enter()
                 cls.status = consts.TaskStatus.default
                 return True
