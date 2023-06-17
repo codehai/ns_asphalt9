@@ -226,6 +226,7 @@ def carhunt_position():
 
 
 def move_to_position(positions):
+    global SELECT_COUNT
     if not positions:
         return
     if SELECT_COUNT >= len(positions):
