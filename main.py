@@ -527,7 +527,6 @@ class TaskManager:
             if task["间隔"] > 0:
                 timer = cls.task_producer(task["名称"], task["间隔"])
                 cls.timers.append(timer)
-        cls.task_enter()
 
     @classmethod
     def task_producer(cls, task, duration, skiped=False):
