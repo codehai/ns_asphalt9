@@ -509,6 +509,7 @@ class TaskManager:
     timers = []
     status = consts.TaskStatus.default
     current_task = ""
+    inited = False
 
     @classmethod
     def task_init(cls):
@@ -547,9 +548,13 @@ class TaskManager:
             Page.daily_events
         ]:
             return False
+        
+        if not cls.inited:
+            cls.task_enter()
+            cls.inited = True
 
-        if task_queue.empty():
-            if cls.status in [consts.TaskStatus.default, consts.TaskStatus.done]:
+        elif task_queue.empty():
+            if cls.status == consts.TaskStatus.done:
                 cls.task_enter()
                 cls.status = consts.TaskStatus.default
                 return True
