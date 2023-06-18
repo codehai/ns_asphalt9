@@ -84,9 +84,12 @@ class Page:
     no_opponents = "no_opponents"
     # 生涯
     career = "career"
+    # 通行证页
+    legend_pass = "legend_pass"
 
     # 页面特征
     features = {
+        legend_pass: "CURRENT TIER",
         loading_game: "GAMELOFT PLAYER ID.*ASPHALT",
         loading_race: "LOADING RACE",
         connect_controller: "Press.*on the controller",

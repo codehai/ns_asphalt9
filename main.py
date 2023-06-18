@@ -545,7 +545,8 @@ class TaskManager:
             Page.carhunt,
             Page.card_pack,
             Page.multi_player,
-            Page.daily_events
+            Page.daily_events,
+            Page.legend_pass
         ]:
             return False
         
