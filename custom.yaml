@@ -60,5 +60,7 @@
 任务:
   - 名称: free_pack
     间隔: 240
+  - 名称: prix_pack
+    间隔: 240
   - 名称: car_hunt
     间隔: 10

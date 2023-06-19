@@ -567,7 +567,8 @@ class TaskManager:
             Page.card_pack,
             Page.multi_player,
             Page.daily_events,
-            Page.legend_pass
+            Page.legend_pass,
+            Page.grand_prix
         ]:
             return False
         
