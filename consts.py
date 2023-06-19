@@ -10,6 +10,7 @@ class TaskName:
     world_series = "world_series"
     other_series = "other_series"
     free_pack = "free_pack"
+    prix_pack = "prix_pack"
 
 
 class TaskStatus:

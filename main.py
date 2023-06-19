@@ -162,7 +162,7 @@ def prix_pack():
     """大奖赛领卡"""
     reset_to_career()
     pro.press_group([Buttons.DPAD_DOWN] * 3, 0.2)
-    pro.press_group([Buttons.DPAD_LEFT] * 7, 0.2)
+    pro.press_group([Buttons.DPAD_LEFT] * 6, 0.2)
     pro.press_group([Buttons.A], 0.5)
     up_count = 2
     if "大奖赛" in CONFIG:
@@ -170,7 +170,7 @@ def prix_pack():
     pro.press_group([Buttons.DPAD_UP] * up_count, 0.5)
     pro.press_group([Buttons.A], 5)
     page = ocr_screen()
-    if page.grand_prix:
+    if page.name == Page.grand_prix:
         pro.press_group([Buttons.DPAD_LEFT] * 2, 0.5)
         pro.press_group([Buttons.A] * 3, 3)
         TaskManager.set_done()
@@ -602,6 +602,8 @@ class TaskManager:
             enter_carhunt()
         if task == consts.TaskName.free_pack:
             free_pack()
+        if task ==  consts.TaskName.prix_pack:
+            prix_pack()
 
     @classmethod
     def set_done(cls) -> None:
