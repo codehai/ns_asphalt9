@@ -86,9 +86,12 @@ class Page:
     career = "career"
     # 通行证页
     legend_pass = "legend_pass"
+    # 大奖赛页
+    grand_prix = "grand_prix"
 
     # 页面特征
     features = {
+        grand_prix: "GP Standings",
         legend_pass: "CURRENT TIER",
         loading_game: "GAMELOFT PLAYER ID.*ASPHALT",
         loading_race: "LOADING RACE",

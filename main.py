@@ -157,6 +157,27 @@ def free_pack():
         raise Exception(f"Failed to access carhunt, current page = {page.name}")
 
 
+@retry(max_attempts=3)
+def prix_pack():
+    """大奖赛领卡"""
+    reset_to_career()
+    pro.press_group([Buttons.DPAD_DOWN] * 3, 0.2)
+    pro.press_group([Buttons.DPAD_LEFT] * 7, 0.2)
+    pro.press_group([Buttons.A], 0.5)
+    up_count = 2
+    if "大奖赛" in CONFIG:
+        up_count = CONFIG["大奖赛"].get("位置", 2)
+    pro.press_group([Buttons.DPAD_UP] * up_count, 0.5)
+    pro.press_group([Buttons.A], 5)
+    page = ocr_screen()
+    if page.grand_prix:
+        pro.press_group([Buttons.DPAD_LEFT] * 2, 0.5)
+        pro.press_group([Buttons.A] * 3, 3)
+        TaskManager.set_done()
+    else:
+        raise Exception(f"Failed to access carhunt, current page = {page.name}")
+
+
 def world_series_reset():
     division = DIVISION
     if not division:
