@@ -1,5 +1,5 @@
-import time
 from utils.log import logger
+from core.cache import cache
 
 
 def retry(max_attempts):
@@ -15,5 +15,17 @@ def retry(max_attempts):
             raise RuntimeError(f"Reached maximum attempts ({max_attempts})")
 
         return wrapper
+
+    return decorator
+
+
+def cache_decorator(cls_type):
+    def decorator(cls):
+        if cls_type not in ["page", "task"]:
+            raise Exception("Not support cache type!")
+        key = f"{cls_type}_{cls.name}"
+        cache.check(key)
+        cache.set(key, cls)
+        return cls
 
     return decorator
