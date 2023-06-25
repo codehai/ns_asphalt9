@@ -124,14 +124,14 @@ def enter_carhunt():
     pro.press_group([Buttons.ZR] * CONFIG["寻车"]["位置"], 0)
     time.sleep(1)
     page = ocr_screen()
-    if has_text("CAR HUNT", page.text):
+    if has_text("CAR HUNT(?!\sRIOT)", page.text):
         pro.press_a()
     else:
         pro.press_group([Buttons.ZL] * 12, 0)
         for i in range(20):
             pro.press_group([Buttons.ZR], 0.5)
             page = ocr_screen()
-            if has_text("CAR HUNT", page.text):
+            if has_text("CAR HUNT(?!\sRIOT)", page.text):
                 CONFIG["寻车"]["位置"] = i + 1
                 pro.press_a()
                 break
@@ -568,10 +568,10 @@ class TaskManager:
             Page.multi_player,
             Page.daily_events,
             Page.legend_pass,
-            Page.grand_prix
+            Page.grand_prix,
         ]:
             return False
-        
+
         if not cls.inited:
             cls.task_enter()
             cls.inited = True
@@ -603,7 +603,7 @@ class TaskManager:
             enter_carhunt()
         if task == consts.TaskName.free_pack:
             free_pack()
-        if task ==  consts.TaskName.prix_pack:
+        if task == consts.TaskName.prix_pack:
             prix_pack()
 
     @classmethod
