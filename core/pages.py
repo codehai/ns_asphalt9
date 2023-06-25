@@ -1,8 +1,8 @@
 import re
-from utils.decorator import cache_decorator
-from core import consts
-from core.controller import pro, Buttons
-from core import actions
+
+from core import actions, consts
+from core.controller import Buttons, pro
+from core.utils.decorator import cache_decorator
 
 
 class Page:

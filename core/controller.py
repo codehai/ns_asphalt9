@@ -3,7 +3,8 @@ from random import randint
 
 import nxbt
 from nxbt import Nxbt
-from utils.log import logger
+
+from core.utils.log import logger
 
 
 def random_colour():

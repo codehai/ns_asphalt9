@@ -4,11 +4,11 @@ import shutil
 
 import pytesseract
 from PIL import Image
-from utils.log import logger
 
 from core import consts, pages
 from core.cache import cache
 from core.screenshot import screenshot
+from core.utils.log import logger
 
 
 class PageFactory:

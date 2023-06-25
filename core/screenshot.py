@@ -1,5 +1,6 @@
-from subprocess import Popen, PIPE
-from utils.log import logger
+from subprocess import PIPE, Popen
+
+from core.utils.log import logger
 
 
 def screenshot():
