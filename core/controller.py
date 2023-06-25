@@ -7,14 +7,6 @@ from nxbt import Nxbt
 from core.utils.log import logger
 
 
-def random_colour():
-    return [
-        randint(0, 255),
-        randint(0, 255),
-        randint(0, 255),
-    ]
-
-
 class Buttons:
     """The button object containing the button string constants."""
 
