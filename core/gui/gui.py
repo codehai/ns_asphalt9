@@ -20,9 +20,6 @@ class App(customtkinter.CTk):
             Image.open(os.path.join(image_path, "logo.png")),
             size=(26, 26),
         )
-        self.image_icon_image = customtkinter.CTkImage(
-            Image.open(os.path.join(image_path, "image_icon_light.png")), size=(20, 20)
-        )
         self.home_image = customtkinter.CTkImage(
             light_image=Image.open(os.path.join(image_path, "home.png")),
             size=(20, 20),
