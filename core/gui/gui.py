@@ -17,7 +17,7 @@ class App(customtkinter.CTk):
         # load images with light and dark mode image
         image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "images")
         self.logo_image = customtkinter.CTkImage(
-            Image.open(os.path.join(image_path, "CustomTkinter_logo_single.png")),
+            Image.open(os.path.join(image_path, "logo.png")),
             size=(26, 26),
         )
         self.image_icon_image = customtkinter.CTkImage(
