@@ -1,26 +1,22 @@
 import json
 import os
 import tkinter
-import types
 
 import customtkinter
-from core import consts
-from core import globals as G
-from core.controller import pro
-from core.screenshot import screenshot
-from core.tasks import TaskManager
-from core.utils.log import logger
 from PIL import Image
 
 
 class App(customtkinter.CTk):
-    def __init__(self):
+    def __init__(self, queue):
         super().__init__()
+
+        self.queue = queue
 
         self.settings_data = None
 
-        with open("settings.json", "r") as file:
-            self.settings_data = json.load(file)
+        if os.path.exists("settings.json"):
+            with open("settings.json", "r") as file:
+                self.settings_data = json.load(file)
 
         self.title("A9 AUTO")
         self.geometry("700x450")
@@ -384,55 +380,16 @@ class App(customtkinter.CTk):
 
         # select default frame
         self.select_frame_by_name("home")
+        self.save_settings()
+
+    def show(self, text):
+        self.textbox.insert(tkinter.END, text + "\n")
+        self.textbox.see(tkinter.END)
 
     def on_entry_enter(self, *args):
         text = self.entry.get()
-        self.process_command(text)
+        self.queue.put(text)
         self.entry.delete(0, tkinter.END)
-
-    def process_command(self, command):
-        if command == "stop":
-            # 停止挂机
-            if G.G_RACE_RUN_EVENT.is_set():
-                G.G_RACE_RUN_EVENT.clear()
-                logger.info("Stop event loop.")
-                G.G_RACE_QUIT_EVENT.wait()
-                logger.info("Event loop stoped.")
-            else:
-                logger.info("Event loop not running.")
-
-        elif command == "run":
-            # 开始挂机
-            if G.G_RACE_RUN_EVENT.is_set():
-                logger.info("Event loop is running.")
-            else:
-                G.G_RACE_RUN_EVENT.set()
-                G.G_RACE_QUIT_EVENT.clear()
-                logger.info("Start run event loop.")
-
-        elif command == "quit":
-            # 退出程序
-            logger.info("Quit main.")
-            G.G_RUN.clear()
-            for timer in TaskManager.timers:
-                timer.cancel()
-
-        elif command in consts.KEY_MAPPING:
-            # 手柄操作
-            control_data = consts.KEY_MAPPING.get(command)
-            if isinstance(control_data, str):
-                pro.press_buttons(control_data)
-                screenshot()
-            if isinstance(control_data, types.FunctionType):
-                control_data()
-
-        else:
-            global_vars = globals()
-            func = global_vars.get(command, "")
-            if isinstance(func, types.FunctionType):
-                func()
-            else:
-                logger.info(f"{command} command not support!")
 
     def save_settings(self, *args, **kwargs):
         def get_value(objs):
@@ -453,7 +410,7 @@ class App(customtkinter.CTk):
 
         res = get_value(self.setting_modules)
         self.settings_data = res
-        G.CONFIG = res
+        self.queue.put(res)
         with open("settings.json", "w") as file:
             file.write(json.dumps(res, indent=2, ensure_ascii=False))
 

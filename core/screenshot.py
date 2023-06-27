@@ -1,7 +1,5 @@
 from subprocess import PIPE, Popen
 
-from core.utils.log import logger
-
 
 def screenshot():
     cmd = "ffmpeg -loglevel quiet -y -f v4l2 -i /dev/video0 -frames:v 1 output.jpg"

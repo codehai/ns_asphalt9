@@ -1,5 +1,9 @@
 import queue
 import threading
+import multiprocessing
+
+input_queue = multiprocessing.Queue()
+output_queue = multiprocessing.Queue()
 
 task_queue = queue.Queue()
 

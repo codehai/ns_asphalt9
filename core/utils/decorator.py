@@ -1,5 +1,5 @@
-from utils.log import logger
 from core.cache import cache
+from core.utils.log import logger
 
 
 def retry(max_attempts):

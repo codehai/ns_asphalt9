@@ -1,15 +1,14 @@
 import time
+
+from core import consts, globals, ocr
 from core.controller import Buttons, pro
-from core.ocr import ocr_screen
-from core import consts
-from utils.log import logger
-from core import globals
+from core.utils.log import logger
 
 
 def process_race(race_mode=0):
     for i in range(60):
         progress = 0
-        page = ocr_screen()
+        page = ocr.ocr_screen()
         if page.data and "progress" in page.data:
             progress = page.data["progress"] if page.data["progress"] else 0
         if race_mode == 1:

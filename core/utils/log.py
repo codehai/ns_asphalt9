@@ -1,12 +1,20 @@
 import logging
 from logging.handlers import RotatingFileHandler
+from core import globals
+
+
+class AppConsoleHandler(logging.Handler):
+    def emit(self, record):
+        # 获取日志记录的信息
+        message = self.format(record)
+        globals.output_queue.put(message)
 
 
 def init_logger(
     log_file,
     logger_name="",
     file_log_level=logging.DEBUG,
-    console_log_level=logging.ERROR,
+    console_log_level=logging.INFO,
     size_in_mb=3,
     log_count=5,
 ):
@@ -33,15 +41,21 @@ def init_logger(
         except Exception as e:
             print("Create RotatingFileHandler failed! err = %s" % e)
 
-    console_handler = None
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(console_log_level)
-    console_handler.setFormatter(log_fmt)
+    # console_handler = logging.StreamHandler()
+    # console_handler.setLevel(console_log_level)
+    # console_handler.setFormatter(log_fmt)
+
+    app_console_handler = AppConsoleHandler()
+    app_console_handler.setLevel(console_log_level)
+    app_console_format = logging.Formatter("[%(asctime)s] %(message)s")
+    app_console_handler.setFormatter(app_console_format)
+
+    logging.getLogger(root_logger_name).addHandler(app_console_handler)
 
     if rotating_file_handler:
         logging.getLogger(root_logger_name).addHandler(rotating_file_handler)
-    if console_handler:
-        logging.getLogger(root_logger_name).addHandler(console_handler)
+    # if console_handler:
+    #     logging.getLogger(root_logger_name).addHandler(console_handler)
 
     logging.getLogger(root_logger_name).setLevel(logging.DEBUG)
 

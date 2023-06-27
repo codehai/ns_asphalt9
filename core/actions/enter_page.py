@@ -1,6 +1,6 @@
 import time
 
-from utils.decorator import retry
+from core.utils.decorator import retry
 
 from core import consts
 from core.controller import Buttons, pro

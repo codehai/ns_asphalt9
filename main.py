@@ -1,18 +1,20 @@
 import datetime
+import multiprocessing
 import shutil
 import threading
 import time
 import traceback
+import types
 
-
-from core import consts, globals
+from core import consts
+from core import globals as G
 from core.controller import Buttons, pro
+from core.gui.app import App
 from core.ocr import ocr_screen
 from core.pages import Page
-
+from core.screenshot import screenshot
 from core.tasks import TaskManager
 from core.utils.log import logger
-from core.gui.app import App
 
 
 def process_screen(page: Page):
@@ -23,11 +25,11 @@ def process_screen(page: Page):
 
     else:
         logger.info("Match none page.")
-        globals.NO_OPERATION_COUNT += 1
-        if globals.NO_OPERATION_COUNT > 30:
+        G.NO_OPERATION_COUNT += 1
+        if G.NO_OPERATION_COUNT > 30:
             logger.info("Keep alive press button y")
             pro.press_buttons(Buttons.Y)
-            globals.NO_OPERATION_COUNT = 0
+            G.NO_OPERATION_COUNT = 0
 
 
 def capture():
@@ -39,13 +41,13 @@ def capture():
 def event_loop():
     TaskManager.task_init()
 
-    while globals.G_RACE_RUN_EVENT.is_set() and globals.G_RUN.is_set():
+    while G.G_RACE_RUN_EVENT.is_set() and G.G_RUN.is_set():
         try:
             page = ocr_screen()
             if page.division:
-                globals.DIVISION = page.division
+                G.DIVISION = page.division
             if page.mode:
-                globals.MODE = page.mode
+                G.MODE = page.mode
             dispatched = TaskManager.task_dispatch(page)
             if not dispatched:
                 process_screen(page)
@@ -57,28 +59,114 @@ def event_loop():
                   filename = {filename}"
             )
 
-    globals.G_RACE_QUIT_EVENT.set()
+    G.G_RACE_QUIT_EVENT.set()
 
 
-def start_app():
-    app = App()
-    app.mainloop()
+def command_input(queue):
+    while G.G_RUN.is_set():
+        command = queue.get()
+
+        if isinstance(command, str):
+            if command == "stop":
+                # 停止挂机
+                if G.G_RACE_RUN_EVENT.is_set():
+                    G.G_RACE_RUN_EVENT.clear()
+                    logger.info("Stop event loop.")
+                    G.G_RACE_QUIT_EVENT.wait()
+                    logger.info("Event loop stoped.")
+                else:
+                    logger.info("Event loop not running.")
+
+            elif command == "run":
+                # 开始挂机
+                if G.G_RACE_RUN_EVENT.is_set():
+                    logger.info("Event loop is running.")
+                else:
+                    G.G_RACE_RUN_EVENT.set()
+                    G.G_RACE_QUIT_EVENT.clear()
+                    logger.info("Start run event loop.")
+
+            elif command == "quit":
+                # 退出程序
+                logger.info("Quit main.")
+                G.G_RUN.clear()
+                logger.info(f"G_RUN status = {G.G_RUN.is_set()}")
+                for timer in TaskManager.timers:
+                    timer.cancel()
+
+            elif command in consts.KEY_MAPPING:
+                # 手柄操作
+                control_data = consts.KEY_MAPPING.get(command)
+                if isinstance(control_data, str):
+                    pro.press_buttons(control_data)
+                    screenshot()
+                if isinstance(control_data, types.FunctionType):
+                    control_data()
+            else:
+                global_vars = globals()
+                func = global_vars.get(command, "")
+                if isinstance(func, types.FunctionType):
+                    func()
+                else:
+                    logger.info(f"{command} command not support!")
+
+        elif isinstance(command, dict):
+            G.CONFIG = command
+
+        else:
+            logger.info(f"{command} command not support!")
 
 
-def thread_start_app():
-    t = threading.Thread(target=start_app, args=())
+def start_command_input(queue):
+    t = threading.Thread(target=command_input, args=(queue,))
     t.start()
 
 
-def main():
-    globals.G_RACE_QUIT_EVENT.set()
-    globals.G_RUN.set()
-    thread_start_app()
-    while globals.G_RUN.is_set():
-        if globals.G_RACE_RUN_EVENT.is_set():
+def worker(input_queue, output_queue):
+    G.G_RACE_QUIT_EVENT.set()
+    G.G_RUN.set()
+    G.output_queue = output_queue
+
+    start_command_input(input_queue)
+    while G.G_RUN.is_set():
+        if G.G_RACE_RUN_EVENT.is_set():
             event_loop()
         else:
             time.sleep(1)
+    logger.info("Woker quit.")
+
+
+def start_worker():
+    p = multiprocessing.Process(target=worker, args=(G.input_queue, G.output_queue))
+    p.start()
+
+
+def output_worker(app, event):
+    logger.info("Start output worker.")
+    while event.is_set():
+        text = G.output_queue.get()
+        app.show(text)
+    logger.info("Output worker quit.")
+
+
+def start_output_worker(app):
+    t = threading.Thread(target=output_worker, args=(app, G.G_RUN))
+    t.start()
+
+
+def on_closing(app):
+    G.G_RUN.clear()
+    logger.info(f"G_RUN state {G.G_RUN.is_set()}")
+    app.destroy()
+
+
+def main():
+    G.G_RUN.set()
+    start_worker()
+    app = App(G.input_queue)
+    start_output_worker(app)
+    app.protocol("WM_DELETE_WINDOW", lambda: on_closing(app))
+    app.mainloop()
 
 
 if __name__ == "__main__":
