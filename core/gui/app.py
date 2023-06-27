@@ -1,11 +1,26 @@
-import customtkinter
+import json
 import os
+import tkinter
+import types
+
+import customtkinter
+from core import consts
+from core import globals as G
+from core.controller import pro
+from core.screenshot import screenshot
+from core.tasks import TaskManager
+from core.utils.log import logger
 from PIL import Image
 
 
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
+
+        self.settings_data = None
+
+        with open("settings.json", "r") as file:
+            self.settings_data = json.load(file)
 
         self.title("A9 AUTO")
         self.geometry("700x450")
@@ -104,62 +119,99 @@ class App(customtkinter.CTk):
         self.entry = customtkinter.CTkEntry(
             self.home_frame, placeholder_text="Please input command."
         )
+        self.entry.bind("<Return>", self.on_entry_enter)
         self.entry.grid(
             row=1, column=0, columnspan=2, padx=(20, 20), pady=(0, 20), sticky="nsew"
         )
 
-        # create second frame
+        self.setting_modules = {}
+
+        # create settings frame
         self.settings = customtkinter.CTkScrollableFrame(
             self, corner_radius=0, fg_color="transparent"
         )
 
         for row, label_text in enumerate(["模式", "任务", "多一", "多二", "寻车"]):
             label = customtkinter.CTkLabel(master=self.settings, text=f"{label_text}:")
-            label.grid(row=row, column=0, columnspan=1, padx=10, pady=10, sticky="")
+            label.grid(
+                row=row,
+                column=0,
+                columnspan=1,
+                padx=10,
+                pady=(20 if row == 0 else 10, 10),
+                sticky="",
+            )
 
-        self.mode_buttons = customtkinter.CTkSegmentedButton(self.settings)
-        self.mode_buttons.grid(
-            row=0, column=1, padx=(20, 10), pady=(10, 10), sticky="ew"
+        # 模式配置
+        self.mode = tkinter.StringVar()
+        self.mode_buttons = customtkinter.CTkSegmentedButton(
+            self.settings,
+            variable=self.mode,
+            command=self.save_settings,
+            values=["多人一", "多人二", "寻车"],
         )
+        self.mode_buttons.grid(
+            row=0, column=1, padx=(20, 10), pady=(20, 10), sticky="ew"
+        )
+        if self.settings_data:
+            self.mode_buttons.set(self.settings_data["模式"])
+        self.setting_modules["模式"] = self.mode_buttons
 
+        # 任务配置
         tasks_frame = customtkinter.CTkFrame(self.settings, width=340)
         tasks_frame.grid(row=1, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
-
         tasks = [("免费抽卡", ["180", "240"]), ("大奖赛抽卡", ["240"]), ("寻车", ["10"])]
+        self.setting_modules["任务"] = []
         for row, (task, values) in enumerate(tasks):
-            task_box = customtkinter.CTkCheckBox(master=tasks_frame, text=task)
+            task_box = customtkinter.CTkCheckBox(
+                master=tasks_frame, text=task, command=self.save_settings
+            )
             task_box.grid(row=row, column=1, pady=(10, 10), padx=(20, 0), sticky="ew")
 
             task_combobox = customtkinter.CTkComboBox(
-                tasks_frame, values=values, width=100
+                tasks_frame, values=values, width=100, command=self.save_settings
             )
             task_combobox.grid(row=row, column=2, padx=(20, 100), pady=(10, 10))
 
-        # create tabview
+            if self.settings_data:
+                if self.settings_data["任务"][row]["运行"]:
+                    task_box.select()
+                task_combobox.set(self.settings_data["任务"][row]["间隔"])
+
+            self.setting_modules["任务"].append(
+                {"名称": task, "运行": task_box, "间隔": task_combobox}
+            )
+
+        # 多人一配置
         self.tabview = customtkinter.CTkTabview(self.settings, width=340)
         self.tabview.grid(
             row=2, column=1, columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew"
         )
 
+        self.setting_modules["多人一"] = {}
+
         tabs = ["青铜", "白银", "黄金", "铂金"]
         for tab_index, tab_name in enumerate(tabs):
+            self.setting_modules["多人一"][tab_name] = {}
             self.tabview.add(tab_name)
-
-            # self.tabview.tab(tab_name).grid_columnconfigure(1, weight=1)
-
             car_level = customtkinter.CTkLabel(
                 master=self.tabview.tab(tab_name), text="车库等级:"
             )
             car_level.grid(row=0, column=0, padx=10, pady=(10, 10))
-
             option_level = customtkinter.CTkOptionMenu(
                 self.tabview.tab(tab_name),
                 dynamic_resizing=False,
                 values=tabs[: tab_index + 1],
                 width=100,
                 height=28,
+                command=self.save_settings,
             )
             option_level.grid(row=0, column=1, padx=10, pady=(10, 10))
+
+            if self.settings_data:
+                option_level.set(self.settings_data["多人一"][tab_name]["车库等级"])
+
+            self.setting_modules["多人一"][tab_name]["车库等级"] = option_level
 
             car_position = customtkinter.CTkLabel(
                 master=self.tabview.tab(tab_name), text="车库位置:"
@@ -175,6 +227,8 @@ class App(customtkinter.CTk):
 
             col.grid(row=1, column=2, padx=10, pady=(10, 10), sticky="nsew")
 
+            self.setting_modules["多人一"][tab_name]["车库位置"] = []
+
             for r in range(6):
                 option1 = customtkinter.CTkOptionMenu(
                     self.tabview.tab(tab_name),
@@ -182,6 +236,7 @@ class App(customtkinter.CTk):
                     values=[str(i) for i in range(0, 3)],
                     width=100,
                     height=28,
+                    command=self.save_settings,
                 )
 
                 option2 = customtkinter.CTkOptionMenu(
@@ -190,11 +245,21 @@ class App(customtkinter.CTk):
                     values=[str(i) for i in range(0, 20)],
                     width=100,
                     height=28,
+                    command=self.save_settings,
                 )
 
                 option1.grid(row=r + 2, column=1, padx=(10, 10), pady=(10, 10))
                 option2.grid(row=r + 2, column=2, padx=(10, 10), pady=(10, 10))
 
+                if self.settings_data:
+                    option1.set(self.settings_data["多人一"][tab_name]["车库位置"][r]["row"])
+                    option2.set(self.settings_data["多人一"][tab_name]["车库位置"][r]["col"])
+
+                self.setting_modules["多人一"][tab_name]["车库位置"].append(
+                    {"row": option1, "col": option2}
+                )
+
+        # 多人二配置
         mp2_settings_frame = customtkinter.CTkFrame(self.settings, width=340)
         mp2_settings_frame.grid(
             row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew"
@@ -212,6 +277,9 @@ class App(customtkinter.CTk):
 
         col.grid(row=1, column=2, padx=(0, 10), pady=(10, 10), sticky="nsew")
 
+        self.setting_modules["多人二"] = {}
+        self.setting_modules["多人二"]["车库位置"] = []
+
         for r in range(6):
             option1 = customtkinter.CTkOptionMenu(
                 mp2_settings_frame,
@@ -219,6 +287,7 @@ class App(customtkinter.CTk):
                 values=[str(i) for i in range(0, 3)],
                 width=100,
                 height=28,
+                command=self.save_settings,
             )
 
             option2 = customtkinter.CTkOptionMenu(
@@ -227,29 +296,58 @@ class App(customtkinter.CTk):
                 values=[str(i) for i in range(0, 20)],
                 width=100,
                 height=28,
+                command=self.save_settings,
             )
 
             option1.grid(row=r + 2, column=1, padx=(10, 10), pady=(10, 10))
             option2.grid(row=r + 2, column=2, padx=(10, 10), pady=(10, 10))
 
+            if self.settings_data:
+                option1.set(self.settings_data["多人二"]["车库位置"][r]["row"])
+                option2.set(self.settings_data["多人二"]["车库位置"][r]["col"])
+
+            self.setting_modules["多人二"]["车库位置"].append({"row": option1, "col": option2})
+
+        # 寻车配置
+        self.setting_modules["寻车"] = {}
         carhunt_setting_frame = customtkinter.CTkFrame(self.settings, width=340)
         carhunt_setting_frame.grid(
-            row=4, column=1, columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew"
+            row=4, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew"
         )
 
+        car_hunt_position = customtkinter.CTkLabel(
+            master=carhunt_setting_frame, text="寻车位置:"
+        )
+        car_hunt_position.grid(row=1, column=0, padx=(15, 10), pady=(10, 10))
+        position_option = customtkinter.CTkOptionMenu(
+            carhunt_setting_frame,
+            dynamic_resizing=False,
+            values=[str(i) for i in range(0, 20)],
+            width=100,
+            height=28,
+            command=self.save_settings,
+        )
+
+        position_option.grid(row=1, column=1, padx=(10, 10), pady=(10, 10))
+
+        if self.settings_data:
+            position_option.set(self.settings_data["寻车"]["寻车位置"])
+        self.setting_modules["寻车"]["寻车位置"] = position_option
+
+        self.setting_modules["寻车"]["车库位置"] = []
         car_position = customtkinter.CTkLabel(
             master=carhunt_setting_frame, text="车库位置:"
         )
 
-        car_position.grid(row=1, column=0, padx=(15, 10), pady=(10, 10))
+        car_position.grid(row=2, column=0, padx=(15, 10), pady=(10, 10))
 
         row = customtkinter.CTkLabel(master=carhunt_setting_frame, text="row")
 
-        row.grid(row=1, column=1, padx=(0, 0), pady=(10, 10), sticky="nsew")
+        row.grid(row=2, column=1, padx=(0, 0), pady=(10, 10), sticky="nsew")
 
         col = customtkinter.CTkLabel(master=carhunt_setting_frame, text="col")
 
-        col.grid(row=1, column=2, padx=(0, 10), pady=(10, 10), sticky="nsew")
+        col.grid(row=2, column=2, padx=(0, 10), pady=(10, 10), sticky="nsew")
 
         for r in range(6):
             option1 = customtkinter.CTkOptionMenu(
@@ -258,6 +356,7 @@ class App(customtkinter.CTk):
                 values=[str(i) for i in range(0, 3)],
                 width=100,
                 height=28,
+                command=self.save_settings,
             )
 
             option2 = customtkinter.CTkOptionMenu(
@@ -266,10 +365,17 @@ class App(customtkinter.CTk):
                 values=[str(i) for i in range(0, 20)],
                 width=100,
                 height=28,
+                command=self.save_settings,
             )
 
-            option1.grid(row=r + 2, column=1, padx=(10, 10), pady=(10, 10))
-            option2.grid(row=r + 2, column=2, padx=(10, 10), pady=(10, 10))
+            option1.grid(row=r + 3, column=1, padx=(10, 10), pady=(10, 10))
+            option2.grid(row=r + 3, column=2, padx=(10, 10), pady=(10, 10))
+
+            if self.settings_data:
+                option1.set(self.settings_data["寻车"]["车库位置"][r]["row"])
+                option2.set(self.settings_data["寻车"]["车库位置"][r]["col"])
+
+            self.setting_modules["寻车"]["车库位置"].append({"row": option1, "col": option2})
 
         # create third frame
         self.help = customtkinter.CTkFrame(
@@ -277,9 +383,79 @@ class App(customtkinter.CTk):
         )
 
         # select default frame
-        self.select_frame_by_name("settings")
-        self.mode_buttons.configure(values=["多人一", "多人二", "寻车"])
-        self.mode_buttons.set("多人一")
+        self.select_frame_by_name("home")
+
+    def on_entry_enter(self, *args):
+        text = self.entry.get()
+        self.process_command(text)
+        self.entry.delete(0, tkinter.END)
+
+    def process_command(self, command):
+        if command == "stop":
+            # 停止挂机
+            if G.G_RACE_RUN_EVENT.is_set():
+                G.G_RACE_RUN_EVENT.clear()
+                logger.info("Stop event loop.")
+                G.G_RACE_QUIT_EVENT.wait()
+                logger.info("Event loop stoped.")
+            else:
+                logger.info("Event loop not running.")
+
+        elif command == "run":
+            # 开始挂机
+            if G.G_RACE_RUN_EVENT.is_set():
+                logger.info("Event loop is running.")
+            else:
+                G.G_RACE_RUN_EVENT.set()
+                G.G_RACE_QUIT_EVENT.clear()
+                logger.info("Start run event loop.")
+
+        elif command == "quit":
+            # 退出程序
+            logger.info("Quit main.")
+            G.G_RUN.clear()
+            for timer in TaskManager.timers:
+                timer.cancel()
+
+        elif command in consts.KEY_MAPPING:
+            # 手柄操作
+            control_data = consts.KEY_MAPPING.get(command)
+            if isinstance(control_data, str):
+                pro.press_buttons(control_data)
+                screenshot()
+            if isinstance(control_data, types.FunctionType):
+                control_data()
+
+        else:
+            global_vars = globals()
+            func = global_vars.get(command, "")
+            if isinstance(func, types.FunctionType):
+                func()
+            else:
+                logger.info(f"{command} command not support!")
+
+    def save_settings(self, *args, **kwargs):
+        def get_value(objs):
+            if isinstance(objs, dict):
+                res = {}
+                for obj in objs:
+                    res[obj] = get_value(objs[obj])
+                return res
+            elif isinstance(objs, list):
+                res = []
+                for obj in objs:
+                    res.append(get_value(obj))
+                return res
+            elif isinstance(objs, str):
+                return objs
+            else:
+                return objs.get()
+
+        res = get_value(self.setting_modules)
+        self.settings_data = res
+        G.CONFIG = res
+        with open("settings.json", "w") as file:
+            file.write(json.dumps(res, indent=2, ensure_ascii=False))
 
     def select_frame_by_name(self, name):
         # set button color for selected button
