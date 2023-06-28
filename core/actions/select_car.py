@@ -3,6 +3,8 @@ import time
 from core import consts, globals
 from core.controller import Buttons, pro
 from core.ocr import ocr_screen
+from core import tasks
+from core.actions import process_race
 
 
 def world_series_reset():
@@ -124,5 +126,5 @@ def select_car():
                     break
             globals.SELECT_COUNT += 1
             continue
-    # process_race() # TODO
-    # TaskManager.set_done()
+    process_race()
+    tasks.TaskManager.set_done()

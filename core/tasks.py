@@ -2,7 +2,6 @@ import threading
 
 from core import consts, globals
 from core.actions import enter_carhunt, enter_series, free_pack
-from core.pages import Page
 from core.utils.log import logger
 
 
@@ -35,7 +34,7 @@ class TaskManager:
         return timer
 
     @classmethod
-    def task_dispatch(cls, page: Page) -> None:
+    def task_dispatch(cls, page) -> None:
         if "任务" not in globals.CONFIG:
             return False
 
@@ -50,7 +49,7 @@ class TaskManager:
 
         if globals.task_queue.empty():
             if cls.status == consts.TaskStatus.done:
-                cls.task_enter(page=page)
+                cls.task_enter(globals.CONFIG["模式"], page=page)
                 cls.status = consts.TaskStatus.default
                 return True
         else:
@@ -62,7 +61,7 @@ class TaskManager:
             return True
 
     @classmethod
-    def task_enter(cls, task, page: Page = None) -> None:
+    def task_enter(cls, task, page=None) -> None:
         logger.info(f"Start process {task} task.")
         if task == consts.world_series_zh:
             enter_series(page=page)

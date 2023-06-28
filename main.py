@@ -1,5 +1,6 @@
 import datetime
 import multiprocessing
+import os
 import shutil
 import threading
 import time
@@ -33,8 +34,10 @@ def process_screen(page: Page):
 
 
 def capture():
+    debug = os.environ.get("A9_DEBUG", 0)
     filename = "".join([str(d) for d in datetime.datetime.now().timetuple()]) + ".jpg"
-    shutil.copy("./images/output.jpg", f"./images/{filename}")
+    if not debug:
+        shutil.copy("./images/output.jpg", f"./images/{filename}")
     return filename
 
 
