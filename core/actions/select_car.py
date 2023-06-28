@@ -59,12 +59,12 @@ def carhunt_position():
 
 
 def get_race_config():
-    task = consts.ModeTaskMapping.get(globals.MODE, globals.CONFIG["task"])
-    if task == consts.TaskName.other_series:
+    task = consts.ModeTaskMapping.get(globals.MODE, globals.CONFIG["模式"])
+    if task == consts.other_series_zh:
         return other_series_position(), other_series_reset
-    elif task == consts.TaskName.car_hunt:
+    elif task == consts.car_hunt_zh:
         return carhunt_position(), carhunt_reset
-    elif task == consts.TaskName.world_series:
+    elif task == consts.world_series_zh:
         return world_series_positions(), world_series_reset
     else:
         return default_positions(), default_reset

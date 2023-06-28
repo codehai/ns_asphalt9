@@ -118,7 +118,7 @@ def command_input(queue):
 
 
 def start_command_input(queue):
-    t = threading.Thread(target=command_input, args=(queue,))
+    t = threading.Thread(target=command_input, args=(queue,), daemon=True)
     t.start()
 
 
@@ -138,6 +138,7 @@ def worker(input_queue, output_queue):
 
 def start_worker():
     p = multiprocessing.Process(target=worker, args=(G.input_queue, G.output_queue))
+    p.daemon = True
     p.start()
 
 
@@ -146,27 +147,29 @@ def output_worker(app, event):
     while event.is_set():
         text = G.output_queue.get()
         app.show(text)
-    logger.info("Output worker quit.")
+    # logger.info("Output worker quit.")
 
 
 def start_output_worker(app):
-    t = threading.Thread(target=output_worker, args=(app, G.G_RUN))
+    t = threading.Thread(target=output_worker, args=(app, G.G_OUT_WORKER), daemon=True)
     t.start()
 
 
 def on_closing(app):
     G.G_RUN.clear()
     logger.info(f"G_RUN state {G.G_RUN.is_set()}")
+    G.output_queue.put("Quit App.")
     app.destroy()
 
 
 def main():
-    G.G_RUN.set()
+    G.G_OUT_WORKER.set()
     start_worker()
     app = App(G.input_queue)
     start_output_worker(app)
     app.protocol("WM_DELETE_WINDOW", lambda: on_closing(app))
     app.mainloop()
+    print("App quit quit.")
 
 
 if __name__ == "__main__":

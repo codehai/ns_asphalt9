@@ -15,6 +15,9 @@ FINISHED_COUNT = 0
 # 程序运行
 G_RUN = threading.Event()
 
+#
+G_OUT_WORKER = threading.Event()
+
 # 退出循环事件
 G_RACE_RUN_EVENT = threading.Event()
 G_RACE_QUIT_EVENT = threading.Event()

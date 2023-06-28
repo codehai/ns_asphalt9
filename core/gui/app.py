@@ -408,11 +408,26 @@ class App(customtkinter.CTk):
             else:
                 return objs.get()
 
+        def convert_dict_values(data):
+            if isinstance(data, dict):
+                for key, value in data.items():
+                    if isinstance(value, str) and value.isdigit():
+                        data[key] = int(value)
+                    elif isinstance(value, (dict, list)):
+                        convert_dict_values(value)  # 递归调用
+            elif isinstance(data, list):
+                for i, item in enumerate(data):
+                    if isinstance(item, str) and item.isdigit():
+                        data[i] = int(item)
+                    elif isinstance(item, (dict, list)):
+                        convert_dict_values(item)  # 递归调用
+
         res = get_value(self.setting_modules)
         self.settings_data = res
-        self.queue.put(res)
         with open("settings.json", "w") as file:
             file.write(json.dumps(res, indent=2, ensure_ascii=False))
+        convert_dict_values(res)
+        self.queue.put(res)
 
     def select_frame_by_name(self, name):
         # set button color for selected button

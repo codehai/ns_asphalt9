@@ -16,10 +16,10 @@ class TaskManager:
         if "任务" not in globals.CONFIG:
             return
         for task in globals.CONFIG["任务"]:
-            if task["间隔"] > 0:
+            if task["运行"] > 0:
                 timer = cls.task_producer(task["名称"], task["间隔"])
                 cls.timers.append(timer)
-        cls.task_enter()
+        globals.task_queue.put(globals.CONFIG["模式"])
 
     @classmethod
     def task_producer(cls, task, duration, skiped=False):
@@ -50,7 +50,7 @@ class TaskManager:
 
         if globals.task_queue.empty():
             if cls.status == consts.TaskStatus.done:
-                cls.task_enter()
+                cls.task_enter(page=page)
                 cls.status = consts.TaskStatus.default
                 return True
         else:
@@ -58,21 +58,19 @@ class TaskManager:
             logger.info(f"Get {task} task from queue.")
             cls.status = consts.TaskStatus.start
             cls.current_task = task
-            cls.task_enter(task)
+            cls.task_enter(task, page)
             return True
 
     @classmethod
-    def task_enter(cls, task: str = "") -> None:
-        if not task:
-            task = globals.CONFIG["task"]
+    def task_enter(cls, task, page: Page = None) -> None:
         logger.info(f"Start process {task} task.")
-        if task == consts.TaskName.world_series:
-            enter_series()
-        if task == consts.TaskName.other_series:
-            enter_series(task)
-        if task == consts.TaskName.car_hunt:
-            enter_carhunt()
-        if task == consts.TaskName.free_pack:
+        if task == consts.world_series_zh:
+            enter_series(page=page)
+        if task == consts.other_series_zh:
+            enter_series(task=task, page=page)
+        if task == consts.car_hunt_zh:
+            enter_carhunt(page=page)
+        if task == consts.free_pack_zh:
             free_pack()
 
     @classmethod

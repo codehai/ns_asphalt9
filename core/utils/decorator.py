@@ -1,3 +1,4 @@
+import traceback
 from core.cache import cache
 from core.utils.log import logger
 
@@ -12,6 +13,9 @@ def retry(max_attempts):
                 except Exception as e:
                     attempts += 1
                     logger.info(f"Attempt {attempts} failed: {str(e)}")
+                    logger.debug(
+                        f"Attempt {attempts} failed: {str(e)}, traceback: {traceback.format_exc()}"
+                    )
             raise RuntimeError(f"Reached maximum attempts ({max_attempts})")
 
         return wrapper

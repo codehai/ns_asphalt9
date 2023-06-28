@@ -1,66 +1,9 @@
 import re
-import datetime
-import shutil
 
 from core import actions, consts
 from core.controller import Buttons, pro
 from core.utils.decorator import cache_decorator
-from core.cache import cache
 from core.utils.log import logger
-
-
-class PageFactory:
-    last_page = None
-
-    def create_page(self, text: str):
-        last_page_name = self.last_page.name if self.last_page else None
-        match_pages = []
-        pages_dict = cache.scan(type="page")
-        for page_key in pages_dict:
-            page: Page = pages_dict.get(page_key)
-            weight = page.calc_weight(text)
-            if weight > 0:
-                if last_page_name == consts.racing:
-                    weight += 1
-                match_pages.append((page, weight))
-
-        match_pages.sort(key=lambda pages: pages[1], reverse=True)
-
-        if last_page_name in [consts.loading_race, consts.racing] and not match_pages:
-            match_pages.append((self.last_page, 1))
-
-        if (
-            not match_pages
-            and text
-            or len(match_pages) >= 2
-            and match_pages[0][1] == match_pages[1][1]
-        ):
-            logger.info(f"match_pages = {match_pages}")
-            self.capture()
-
-        if match_pages:
-            page = match_pages[0][0]
-            methods = [
-                method for method in dir(page) if callable(getattr(page, method))
-            ]
-            for method in methods:
-                if method.startswith("parse"):
-                    func = getattr(page, method)
-                    func()
-            return page
-
-        empty = Empty()
-        return empty
-
-    def capture(self):
-        filename = (
-            "".join([str(d) for d in datetime.datetime.now().timetuple()]) + ".jpg"
-        )
-        shutil.copy("./images/output.jpg", f"./images/not_match_images/{filename}")
-        return filename
-
-
-factory = PageFactory()
 
 
 class Page:
@@ -77,7 +20,7 @@ class Page:
     action = None
     args = ()
 
-    def __init__(self, last_page: "Page", text: str) -> None:
+    def __init__(self, text: str, last_page: "Page" = None) -> None:
         if last_page:
             self.mode = last_page.mode
             self.division = last_page.division
@@ -107,7 +50,7 @@ class Page:
     @classmethod
     def calc_weight(cls, text: str) -> int:
         match_count = len(re.findall(cls.feature, text))
-        if cls.part_match and match_count > 0:
+        if not cls.part_match and match_count > 0:
             match_count = 10
         return match_count
 
@@ -130,12 +73,12 @@ class Page:
 
     def call_action(self):
         if self.action:
+            logger.debug(f"Call aciton func = {self.action} args = {self.args}")
             self.action(*self.args)
 
 
-@cache_decorator("page")
 class Empty(Page):
-    """游戏加载页"""
+    """Empty"""
 
     name = consts.empty
 
@@ -157,7 +100,7 @@ class LoadingRace(Page):
     feature = "LOADING RACE"
     part_match = False
 
-    action = actions.process_race
+    action = staticmethod(actions.process_race)
 
 
 @cache_decorator("page")
@@ -177,7 +120,7 @@ class ConnectController(Page):
     feature = "Press.*on the controller"
     part_match = False
 
-    action = actions.connect_controller
+    action = staticmethod(actions.connect_controller)
 
 
 @cache_decorator("page")
@@ -188,7 +131,7 @@ class ConnectedController(Page):
     feature = "Controllers"
     part_match = False
 
-    action = actions.enter_game
+    action = staticmethod(actions.enter_game)
 
 
 @cache_decorator("page")
@@ -199,7 +142,7 @@ class MultiPlayer(Page):
     feature = "WORLD SERIES.*(LIMITED|TRIAL) SERIES"
     part_match = False
 
-    action = actions.enter_series
+    action = staticmethod(actions.enter_series)
 
 
 @cache_decorator("page")
@@ -210,7 +153,7 @@ class WorldSeries(Page):
     feature = "WORLD SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY"
     part_match = True
 
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.A, 3)
 
 
@@ -222,7 +165,7 @@ class TrialSeries(Page):
     feature = "TRIAL SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY"
     part_match = True
 
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.A, 3)
 
 
@@ -234,7 +177,7 @@ class LimitedSeries(Page):
     feature = "LIMITED SERIES|MY POSITION|SERIES SCORE|NEXT MILESTONE|LEADERBOARD|PLAY"
     part_match = True
 
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.A, 3)
 
 
@@ -246,7 +189,7 @@ class CarHunt(Page):
     feature = "CAR HUNT:.*CAR HUNT EVENT PACK"
     part_match = False
 
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.A, 3)
 
 
@@ -276,7 +219,7 @@ class SelectCar(Page):
     feature = "CAR SELECTION"
     part_match = False
 
-    action = actions.select_car
+    action = staticmethod(actions.select_car)
 
 
 @cache_decorator("page")
@@ -287,7 +230,7 @@ class CarInfo(Page):
     feature = "TOP SPEED|ACCELERATION|HANDLING|NITRO|TOUCH|PLAY"
     part_match = True
 
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.A, 3)
 
 
@@ -299,7 +242,7 @@ class Searching(Page):
     feature = "SEARCHING FOR OTHER PLAYERS AND LOCATION"
     part_match = False
 
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.Y, 3)
 
 
@@ -342,7 +285,7 @@ class Disconnected(Page):
     feature = "DISCONNECTED"
     part_match = False
 
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.B,)
 
 
@@ -353,7 +296,7 @@ class NoConnection(Page):
     name = consts.no_connection
     feature = "NO CONNECTION"
     part_match = False
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.B,)
 
 
@@ -365,7 +308,7 @@ class ClubReward(Page):
     feature = "YOUR CLUB ACHIEVED"
     part_match = False
 
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.B,)
 
 
@@ -376,7 +319,7 @@ class VipReward(Page):
     name = consts.vip_reward
     feature = "TIER"
     part_match = False
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.B,)
 
 
@@ -387,7 +330,7 @@ class RaceResults(Page):
     name = consts.race_results
     feature = "RACE RESULTS|POS\.|PLAYER|CAR NAME|NEXT"
     part_match = True
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.A,)
 
 
@@ -398,7 +341,7 @@ class RaceScore(Page):
     name = consts.race_score
     feature = "WINNER|YOUR POSITION|YOUR TIME|RATING|NEXT"
     part_match = True
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.A,)
 
 
@@ -409,7 +352,7 @@ class RaceReward(Page):
     name = consts.race_reward
     feature = "RACE|REWARDS|REPUTATION|TOTAL|CREDITS|NEXT"
     part_match = True
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.A,)
 
 
@@ -420,7 +363,7 @@ class MilestoneReward(Page):
     name = consts.milestone_reward
     feature = "CONGRATULATIONS"
     part_match = False
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.A,)
 
 
@@ -431,7 +374,7 @@ class ConnectError(Page):
     name = consts.connect_error
     feature = "CONNECTION ERROR"
     part_match = False
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.A,)
 
 
@@ -442,7 +385,7 @@ class StarUp(Page):
     name = consts.star_up
     feature = "STAR|UP"
     part_match = True
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.A,)
 
 
@@ -453,7 +396,7 @@ class OfflineMode(Page):
     name = consts.offline_mode
     feature = "OFFLINE MODE"
     part_match = False
-    action = pro.press_group
+    action = staticmethod(pro.press_group)
     args = ([Buttons.DPAD_LEFT, Buttons.B], 1)
 
 
@@ -465,7 +408,7 @@ class SystemError(Page):
     feature = "software.*closed"
     part_match = False
 
-    action = (pro.press_group,)
+    action = staticmethod(pro.press_group)
     args = ([Buttons.A] * 3, 3)
 
 
@@ -476,7 +419,7 @@ class ServerError(Page):
     name = consts.server_error
     feature = "ERROR.*ACTION"
     part_match = False
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.B,)
 
 
@@ -488,7 +431,7 @@ class SwitchHome(Page):
     feature = "Asphalt 9: Legends.*ASPHALT"
     part_match = False
 
-    action = (pro.press_group,)
+    action = staticmethod(pro.press_group)
     args = ([Buttons.A] * 3, 3)
 
 
@@ -499,7 +442,7 @@ class GameMenu(Page):
     name = consts.game_menu
     feature = "GAME MENU"
     part_match = False
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.A,)
 
 
@@ -511,7 +454,7 @@ class CardPack(Page):
     feature = "CARD PACK LEVEL INFO"
     part_match = False
 
-    action = (pro.press_group,)
+    action = staticmethod(pro.press_group)
     args = ([Buttons.B] * 2, 3)
 
 
@@ -522,7 +465,7 @@ class Club(Page):
     name = consts.club
     feature = "YOUR CLUB"
     part_match = False
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.B,)
 
 
@@ -534,7 +477,7 @@ class DailyEvents(Page):
     feature = "PLAY LIMITED.*BEST WAY TO EARN CREDITS FAST"
     part_match = False
 
-    action = actions.enter_carhunt
+    action = staticmethod(actions.enter_carhunt)
 
 
 @cache_decorator("page")
@@ -544,7 +487,7 @@ class NoOpponents(Page):
     name = consts.no_opponents
     feature = "NO OPPONENTS WERE FOUND"
     part_match = False
-    action = pro.press_button
+    action = staticmethod(pro.press_button)
     args = (Buttons.B,)
 
 

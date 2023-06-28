@@ -93,6 +93,11 @@ KEY_MAPPING = {
     "d": "DPAD_RIGHT",
 }
 
+car_hunt_zh = "寻车"
+world_series_zh = "多人一"
+other_series_zh = "多人二"
+free_pack_zh = "免费抽卡"
+
 
 class Mode:
     car_hunt = "CAR HUNT"

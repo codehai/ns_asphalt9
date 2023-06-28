@@ -6,6 +6,7 @@ from core import consts
 from core.controller import Buttons, pro
 from core.ocr import ocr_screen
 from core import globals
+from core.utils.log import logger
 
 
 def enter_game():
@@ -35,34 +36,45 @@ def reset_to_career():
         raise Exception(f"Failed to access career, current page = {page.name}")
 
 
-@retry(max_attempts=3)
-def enter_series(mode="world_series"):
-    """进入多人赛事"""
-    reset_to_career()
-    pro.press_group([Buttons.ZL] * 4, 0.5)
-    if mode != "world_series":
-        pro.press_group([Buttons.DPAD_DOWN], 0.5)
-    time.sleep(2)
-    pro.press_group([Buttons.A], 2)
-    page = ocr_screen()
+def in_series(page, mode):
     if (
-        mode == "world_series"
+        mode == consts.world_series_zh
         and page.name == consts.world_series
-        or mode == "other_series"
+        or mode == consts.other_series_zh
         and page.name
         in [
             consts.trial_series,
             consts.limited_series,
         ]
     ):
+        return True
+    return False
+
+
+@retry(max_attempts=3)
+def enter_series(page=None, mode=consts.world_series_zh):
+    """进入多人赛事"""
+    if page and in_series(page, mode):
+        return
+    reset_to_career()
+    pro.press_group([Buttons.ZL] * 4, 0.5)
+    if mode != consts.world_series_zh:
+        pro.press_group([Buttons.DPAD_DOWN], 0.5)
+    time.sleep(2)
+    pro.press_group([Buttons.A], 2)
+    page = ocr_screen()
+    if in_series(page, mode):
         pass
     else:
         raise Exception(f"Failed to access {mode}, current page = {page.name}")
 
 
 @retry(max_attempts=3)
-def enter_carhunt():
+def enter_carhunt(page=None):
     """进入寻车"""
+    logger.info(f"page = {page}, page.name = {page.name}")
+    if page and page.name == consts.carhunt:
+        return
     reset_to_career()
     pro.press_group([Buttons.ZL] * 5, 0.5)
     pro.press_group([Buttons.A], 2)
@@ -85,7 +97,7 @@ def enter_carhunt():
 
 
 @retry(max_attempts=3)
-def free_pack():
+def free_pack(page=None):
     """领卡"""
     reset_to_career()
     pro.press_group([Buttons.DPAD_DOWN] * 3, 0.5)

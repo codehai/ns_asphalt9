@@ -19,7 +19,7 @@ class Cache(object):
 
     def scan(self, type: str = "") -> dict:
         if type:
-            return [d.startswith(type) for d in self._data]
+            return [self._data[d] for d in self._data if d.startswith(type)]
         return self._data
 
     def clear(self):
