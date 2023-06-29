@@ -34,7 +34,7 @@ class LogManager:
         return text
 
 
-def ocr(name="output", path="./images"):
+def ocr(name="output", path="./"):
     debug = os.environ.get("A9_DEBUG", 0)
     if debug:
         text = LogManager.get_text()

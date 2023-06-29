@@ -54,7 +54,7 @@ class PageFactory:
             "".join([str(d) for d in datetime.datetime.now().timetuple()]) + ".jpg"
         )
         if not debug:
-            shutil.copy("./images/output.jpg", f"./images/not_match_images/{filename}")
+            shutil.copy("./output.jpg", f"./{filename}")
         return filename
 
 

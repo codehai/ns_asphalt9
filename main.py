@@ -37,7 +37,7 @@ def capture():
     debug = os.environ.get("A9_DEBUG", 0)
     filename = "".join([str(d) for d in datetime.datetime.now().timetuple()]) + ".jpg"
     if not debug:
-        shutil.copy("./images/output.jpg", f"./images/{filename}")
+        shutil.copy("./output.jpg", f"./{filename}")
     return filename
 
 
