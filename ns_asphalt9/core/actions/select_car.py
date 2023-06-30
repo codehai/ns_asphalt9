@@ -1,10 +1,9 @@
 import time
 
-from core import consts, globals
-from core.controller import Buttons, pro
-from core.ocr import ocr_screen
-from core import tasks
-from core.actions import process_race
+from .. import consts, globals, tasks
+from ..actions import process_race
+from ..controller import Buttons, pro
+from ..ocr import ocr_screen
 
 
 def world_series_reset():

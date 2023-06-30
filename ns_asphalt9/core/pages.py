@@ -1,9 +1,9 @@
 import re
 
-from core import actions, consts
-from core.controller import Buttons, pro
-from core.utils.decorator import cache_decorator
-from core.utils.log import logger
+from . import actions, consts
+from .controller import Buttons, pro
+from .utils.decorator import cache_decorator
+from .utils.log import logger
 
 
 class Page:

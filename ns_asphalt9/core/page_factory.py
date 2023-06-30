@@ -2,9 +2,9 @@ import datetime
 import os
 import shutil
 
-from core import consts, pages
-from core.cache import cache
-from core.utils.log import logger
+from . import consts, pages
+from .cache import cache
+from .utils.log import logger
 
 
 class PageFactory:

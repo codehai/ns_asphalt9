@@ -5,9 +5,9 @@ import json
 import pytesseract
 from PIL import Image
 
-from core.page_factory import factory
-from core.screenshot import screenshot
-from core.utils.log import logger
+from .page_factory import factory
+from .screenshot import screenshot
+from .utils.log import logger
 
 
 class LogManager:

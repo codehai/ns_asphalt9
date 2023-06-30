@@ -7,15 +7,15 @@ import time
 import traceback
 import types
 
-from core import consts
-from core import globals as G
-from core.controller import Buttons, pro
-from core.gui.app import App
-from core.ocr import ocr_screen
-from core.pages import Page
-from core.screenshot import screenshot
-from core.tasks import TaskManager
-from core.utils.log import logger
+from .core import consts
+from .core import globals as G
+from .core.controller import Buttons, pro
+from .core.gui.app import App
+from .core.ocr import ocr_screen
+from .core.pages import Page
+from .core.screenshot import screenshot
+from .core.tasks import TaskManager
+from .core.utils.log import logger
 
 
 def process_screen(page: Page):

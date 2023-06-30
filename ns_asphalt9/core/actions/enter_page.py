@@ -1,12 +1,10 @@
 import time
 
-from core.utils.decorator import retry
-
-from core import consts
-from core.controller import Buttons, pro
-from core.ocr import ocr_screen
-from core import globals
-from core.utils.log import logger
+from .. import consts, globals
+from ..controller import Buttons, pro
+from ..ocr import ocr_screen
+from ..utils.decorator import retry
+from ..utils.log import logger
 
 
 def enter_game():

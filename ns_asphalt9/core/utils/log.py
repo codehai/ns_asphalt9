@@ -1,6 +1,7 @@
 import logging
 from logging.handlers import RotatingFileHandler
-from core import globals
+
+from .. import globals
 
 
 class AppConsoleHandler(logging.Handler):

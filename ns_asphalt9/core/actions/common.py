@@ -1,6 +1,6 @@
 import time
-from core.controller import pro, Buttons
-from core import globals
+from ..controller import pro, Buttons
+from .. import globals
 
 
 def connect_controller():

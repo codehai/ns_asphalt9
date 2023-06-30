@@ -1,8 +1,8 @@
 import threading
 
-from core import consts, globals
-from core.actions import enter_carhunt, enter_series, free_pack
-from core.utils.log import logger
+from . import consts, globals
+from .actions import enter_carhunt, enter_series, free_pack
+from .utils.log import logger
 
 
 class TaskManager:

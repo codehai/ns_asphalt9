@@ -1,8 +1,8 @@
 import time
 
-from core import consts, globals, ocr
-from core.controller import Buttons, pro
-from core.utils.log import logger
+from .. import consts, globals, ocr
+from ..controller import Buttons, pro
+from ..utils.log import logger
 
 
 def process_race(race_mode=0):

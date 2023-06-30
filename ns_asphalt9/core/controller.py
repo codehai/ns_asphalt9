@@ -1,6 +1,6 @@
 import time
 import os
-from core.utils.log import logger
+from .utils.log import logger
 
 
 class Buttons:
