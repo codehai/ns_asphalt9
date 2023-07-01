@@ -24,7 +24,7 @@ class PageFactory:
         match_pages.sort(key=lambda pages: pages[1], reverse=True)
 
         if last_page_name in [consts.loading_race, consts.racing] and not match_pages:
-            match_pages.append((self.last_page, 1))
+            match_pages.append((pages.Racing, 1))
 
         if (
             not match_pages
