@@ -34,13 +34,13 @@ class Page:
             consts.searching,
             consts.loading_race,
         ]:
-            self.division = consts.divisions_zh.get(divisions[0], "青铜")
+            self.division = consts.divisions_zh.get(divisions[0], "")
 
         modes = re.findall(
             "CAR HUNT|WORLD SERIES|LIMITED SERIES|TRIAL SERIES", self.text
         )
         if modes and self.name not in [consts.multi_player]:
-            self.mode = modes[0]
+            self.mode = consts.modes_zh.get(modes[0], "")
 
         if "TOUCHDRIVE ON" in self.text:
             self.touchdriver = 1

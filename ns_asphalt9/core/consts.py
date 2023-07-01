@@ -120,10 +120,17 @@ class TaskStatus:
 
 
 ModeTaskMapping = {
-    Mode.car_hunt: TaskName.car_hunt,
-    Mode.world_series: TaskName.world_series,
-    Mode.limited_series: TaskName.other_series,
-    Mode.trial_series: TaskName.other_series,
+    Mode.car_hunt: car_hunt_zh,
+    Mode.world_series: world_series_zh,
+    Mode.limited_series: other_series_zh,
+    Mode.trial_series: other_series_zh,
+}
+
+modes_zh = {
+    Mode.car_hunt: car_hunt_zh,
+    Mode.world_series: world_series_zh,
+    Mode.limited_series: other_series_zh,
+    Mode.trial_series: other_series_zh,
 }
 
 

@@ -4,6 +4,7 @@ from .. import consts, globals, tasks
 from ..actions import process_race
 from ..controller import Buttons, pro
 from ..ocr import ocr_screen
+from ..utils.log import logger
 
 
 def world_series_reset():
@@ -60,7 +61,8 @@ def carhunt_position():
 
 
 def get_race_config():
-    task = consts.ModeTaskMapping.get(globals.MODE, globals.CONFIG["模式"])
+    task = globals.MODE if globals.MODE else globals.CONFIG["模式"]
+    logger.info(f"Get mode {task} config.")
     if task == consts.other_series_zh:
         return other_series_position(), other_series_reset
     elif task == consts.car_hunt_zh:
@@ -73,6 +75,7 @@ def get_race_config():
 
 def select_car():
     # 选车
+    logger.info("Start select car.")
     while globals.G_RUN.is_set():
         positions, reset = get_race_config()
         reset()
