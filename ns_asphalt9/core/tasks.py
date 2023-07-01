@@ -66,7 +66,7 @@ class TaskManager:
         if task == consts.world_series_zh:
             enter_series(page=page)
         if task == consts.other_series_zh:
-            enter_series(task=task, page=page)
+            enter_series(mode=task, page=page)
         if task == consts.car_hunt_zh:
             enter_carhunt(page=page)
         if task == consts.free_pack_zh:
