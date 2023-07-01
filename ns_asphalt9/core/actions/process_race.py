@@ -6,6 +6,7 @@ from ..utils.log import logger
 
 
 def process_race(race_mode=0):
+    logger.info(f"Start processing race, racing = {globals.RACING}")
     if globals.RACING:
         return
     globals.RACING = 1
