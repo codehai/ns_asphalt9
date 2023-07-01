@@ -37,15 +37,16 @@ class PageFactory:
 
         if match_pages:
             page = match_pages[0][0](text, self.last_page)
-            methods = [
-                method for method in dir(page) if callable(getattr(page, method))
-            ]
-            for method in methods:
-                if method.startswith("parse"):
-                    func = getattr(page, method)
-                    func()
-            return page
-        page = pages.Empty(text, self.last_page)
+        else:
+            page = pages.Empty(text, self.last_page)
+        methods = [
+            method for method in dir(page) if callable(getattr(page, method))
+        ]
+        for method in methods:
+            if method.startswith("parse"):
+                func = getattr(page, method)
+                func()
+        self.last_page = page
         return page
 
     def capture(self):

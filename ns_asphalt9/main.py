@@ -101,7 +101,7 @@ def command_input(queue):
                 # 手柄操作
                 control_data = consts.KEY_MAPPING.get(command)
                 if isinstance(control_data, str):
-                    pro.press_buttons(control_data)
+                    pro.press_button(control_data, 0)
                     screenshot()
                 if isinstance(control_data, types.FunctionType):
                     control_data()
@@ -114,6 +114,7 @@ def command_input(queue):
                     logger.info(f"{command} command not support!")
 
         elif isinstance(command, dict):
+            logger.info("Received config update message.")
             G.CONFIG = command
 
         else:
