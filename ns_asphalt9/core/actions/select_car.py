@@ -10,10 +10,10 @@ from ..utils.log import logger
 def world_series_reset():
     division = globals.DIVISION
     if not division:
-        division = "BRONZE"
+        division = "青铜"
     config = globals.CONFIG["多人一"][division]
     level = config["车库等级"]
-    left_count_mapping = {"BRONZE": 4, "SILVER": 3, "GOLD": 2, "PLATINUM": 1}
+    left_count_mapping = {"青铜": 4, "白银": 3, "黄金": 2, "铂金": 1}
     pro.press_group([Buttons.DPAD_UP] * 4, 0)
     pro.press_group([Buttons.DPAD_RIGHT] * 6, 0)
     pro.press_group([Buttons.DPAD_LEFT] * 1, 0)
