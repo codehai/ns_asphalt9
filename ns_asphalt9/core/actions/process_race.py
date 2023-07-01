@@ -6,6 +6,9 @@ from ..utils.log import logger
 
 
 def process_race(race_mode=0):
+    if globals.RACING:
+        return
+    globals.RACING = 1
     for i in range(60):
         progress = 0
         page = ocr.ocr_screen()
@@ -87,3 +90,4 @@ def process_race(race_mode=0):
 
     globals.FINISHED_COUNT += 1
     logger.info(f"Already finished {globals.FINISHED_COUNT} times loop count = {i}.")
+    globals.RACING = 0

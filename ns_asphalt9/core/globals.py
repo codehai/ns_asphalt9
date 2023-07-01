@@ -33,3 +33,6 @@ DIVISION = ""
 
 # 选车次数
 SELECT_COUNT = 0
+
+# 比赛中
+RACING = 0
