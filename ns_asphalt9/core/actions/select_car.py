@@ -46,7 +46,7 @@ def default_positions():
 def world_series_positions():
     division = globals.DIVISION
     if not division:
-        division = "BRONZE"
+        division = "青铜"
     config = globals.CONFIG["多人一"][division]
     return config["车库位置"]
 

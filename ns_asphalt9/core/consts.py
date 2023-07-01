@@ -125,3 +125,16 @@ ModeTaskMapping = {
     Mode.limited_series: TaskName.other_series,
     Mode.trial_series: TaskName.other_series,
 }
+
+
+bronze = "BRONZE"
+silver = "SILVER"
+gold = "GOLD"
+platinum = "PLATINUM"
+
+divisions_zh = {
+    bronze: "青铜",
+    silver: "白银",
+    gold: "黄金",
+    platinum: "铂金"
+}

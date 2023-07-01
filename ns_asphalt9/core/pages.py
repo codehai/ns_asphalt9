@@ -34,7 +34,7 @@ class Page:
             consts.searching,
             consts.loading_race,
         ]:
-            self.division = divisions[0]
+            self.division = consts.divisions_zh.get(divisions[0], "青铜")
 
         modes = re.findall(
             "CAR HUNT|WORLD SERIES|LIMITED SERIES|TRIAL SERIES", self.text
