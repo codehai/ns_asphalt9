@@ -75,6 +75,8 @@ daily_events = "daily_events"
 no_opponents = "no_opponents"
 # 生涯
 career = "career"
+# 大奖赛
+grand_prix = "grand_prix"
 
 
 # 键盘与手柄映射
@@ -97,6 +99,7 @@ car_hunt_zh = "寻车"
 world_series_zh = "多人一"
 other_series_zh = "多人二"
 free_pack_zh = "免费抽卡"
+prix_pack_zh = "大奖赛抽卡"
 
 
 class Mode:

@@ -280,7 +280,7 @@ class Demoted(Page):
     feature = "DEMOTED"
     part_match = False
 
-    action = actions.demoted
+    action = staticmethod(actions.demoted)
 
 
 @cache_decorator("page")
@@ -524,4 +524,13 @@ class Career(Page):
 
     name = consts.career
     feature = "COLLECTED.*CAREER"
+    part_match = False
+
+
+@cache_decorator("page")
+class GrandPrix(Page):
+    """大奖赛抽卡"""
+
+    name = consts.grand_prix
+    feature = "GP Standings"
     part_match = False

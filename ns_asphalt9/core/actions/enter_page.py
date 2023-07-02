@@ -5,6 +5,7 @@ from ..controller import Buttons, pro
 from ..ocr import ocr_screen
 from ..utils.decorator import retry
 from ..utils.log import logger
+from ..tasks import TaskManager
 
 
 def enter_game():
@@ -23,15 +24,11 @@ def enter_game():
 @retry(max_attempts=3)
 def reset_to_career():
     """重置到生涯"""
-    pro.press_group([Buttons.B] * 5, 2)
-    pro.press_group([Buttons.DPAD_DOWN] * 5, 0.5)
-    pro.press_group([Buttons.DPAD_RIGHT] * 7, 0.5)
-    pro.press_group([Buttons.A] * 3, 2)
-    page = ocr_screen()
-    if page.name == consts.career:
-        pro.press_group([Buttons.B], 2)
-    else:
-        raise Exception(f"Failed to access career, current page = {page.name}")
+    pro.press_group([Buttons.B] * 3, 2)
+    pro.press_group([Buttons.DPAD_DOWN] * 4, 0.1)
+    pro.press_group([Buttons.DPAD_RIGHT] * 7, 0.1)
+    pro.press_group([Buttons.A], 2)
+    pro.press_group([Buttons.B], 2)
 
 
 def in_series(page, mode):
@@ -55,9 +52,9 @@ def enter_series(page=None, mode=consts.world_series_zh):
     if page and in_series(page, mode):
         return
     reset_to_career()
-    pro.press_group([Buttons.ZL] * 4, 0.5)
+    pro.press_group([Buttons.ZL] * 4, 0.2)
     if mode != consts.world_series_zh:
-        pro.press_group([Buttons.DPAD_DOWN], 0.5)
+        pro.press_group([Buttons.DPAD_DOWN], 0.2)
     time.sleep(2)
     pro.press_group([Buttons.A], 2)
     page = ocr_screen()
@@ -75,19 +72,19 @@ def enter_carhunt(page=None):
     if page and page.name == consts.carhunt:
         return
     reset_to_career()
-    pro.press_group([Buttons.ZL] * 5, 0.5)
+    pro.press_group([Buttons.ZL] * 5, 0.2)
     pro.press_group([Buttons.A], 2)
-    pro.press_group([Buttons.ZR] * globals.CONFIG["寻车"]["寻车位置"], 0.5)
-    time.sleep(2)
+    pro.press_group([Buttons.ZR] * globals.CONFIG["寻车"]["寻车位置"], 0.2)
+    time.sleep(1)
     page = ocr_screen()
-    if page.has_text("CAR HUNT"):
+    if page.has_text("CAR HUNT(?!\sRIOT)"):
         pro.press_a()
     else:
         pro.press_group([Buttons.ZL] * 12, 0)
         for i in range(20):
-            pro.press_group([Buttons.ZR], 1)
+            pro.press_group([Buttons.ZR], 0.5)
             page = ocr_screen()
-            if page.has_text("CAR HUNT"):
+            if page.has_text("CAR HUNT(?!\sRIOT)"):
                 globals.CONFIG["寻车"]["寻车位置"] = i + 1
                 pro.press_a()
                 break
@@ -99,8 +96,8 @@ def enter_carhunt(page=None):
 def free_pack(page=None):
     """领卡"""
     reset_to_career()
-    pro.press_group([Buttons.DPAD_DOWN] * 3, 0.5)
-    pro.press_group([Buttons.DPAD_LEFT] * 8, 0.5)
+    pro.press_group([Buttons.DPAD_DOWN] * 3, 0.2)
+    pro.press_group([Buttons.DPAD_LEFT] * 8, 0.2)
     pro.press_group([Buttons.A], 0.5)
     pro.press_group([Buttons.DPAD_UP], 0.5)
     pro.press_group([Buttons.A] * 2, 5)
@@ -108,6 +105,31 @@ def free_pack(page=None):
     if page.has_text("CLASSIC PACK.*POSSIBLE CONTENT"):
         pro.press_group([Buttons.A] * 3, 3)
         pro.press_group([Buttons.B], 0.5)
-        # TaskManager.set_done() TODO
+        TaskManager.set_done()
     else:
         raise Exception(f"Failed to access carhunt, current page = {page.name}")
+    
+
+@retry(max_attempts=3)
+def prix_pack():
+    """大奖赛领卡"""
+    reset_to_career()
+    pro.press_group([Buttons.DPAD_DOWN] * 3, 0.2)
+    pro.press_group([Buttons.DPAD_LEFT] * 6, 0.2)
+    pro.press_group([Buttons.A], 0.5)
+    pro.press_group([Buttons.DPAD_UP] * 8, 0.2)
+    if not globals.CONFIG["大奖赛"]["位置"]:
+        logger.info("Please set grand prix position!")  
+    pro.press_group([Buttons.DPAD_DOWN] * globals.CONFIG["大奖赛"]["位置"], 0.5)
+    for _ in range(2):
+        pro.press_group([Buttons.A], 5)
+        page = ocr_screen()
+        if page.name == consts.grand_prix:
+            pro.press_group([Buttons.DPAD_LEFT] * 4, 0.2)
+            pro.press_group([Buttons.DPAD_RIGHT], 0.2)
+            pro.press_group([Buttons.A] * 3, 3)
+            TaskManager.set_done()
+            break
+    else:
+        raise Exception(f"Failed to access carhunt, current page = {page.name}")
+

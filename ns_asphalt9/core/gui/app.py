@@ -125,7 +125,7 @@ class App(customtkinter.CTk):
             self, corner_radius=0, fg_color="transparent"
         )
 
-        for row, label_text in enumerate(["模式", "任务", "多一", "多二", "寻车"]):
+        for row, label_text in enumerate(["模式", "任务", "多一", "多二", "寻车", "大奖赛"]):
             label = customtkinter.CTkLabel(master=self.settings, text=f"{label_text}:")
             label.grid(
                 row=row,
@@ -370,6 +370,32 @@ class App(customtkinter.CTk):
                 option2.set(self.settings_data["寻车"]["车库位置"][r]["col"])
 
             self.setting_modules["寻车"]["车库位置"].append({"row": option1, "col": option2})
+
+        # 大奖赛配置
+        self.setting_modules["大奖赛"] = {}
+        prix_setting_frame = customtkinter.CTkFrame(self.settings, width=340)
+        prix_setting_frame.grid(
+            row=5, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew"
+        )
+
+        prix_position = customtkinter.CTkLabel(
+            master=prix_setting_frame, text="位置:"
+        )
+        prix_position.grid(row=1, column=0, padx=(15, 10), pady=(10, 10))
+        prix_position_option = customtkinter.CTkOptionMenu(
+            prix_setting_frame,
+            dynamic_resizing=False,
+            values=[str(i) for i in range(0, 10)],
+            width=100,
+            height=28,
+            command=self.save_settings,
+        )
+
+        prix_position_option.grid(row=1, column=1, padx=(10, 10), pady=(10, 10))
+
+        if self.settings_data:
+            prix_position.set(self.settings_data["大奖赛"]["位置"])
+        self.setting_modules["大奖赛"]["位置"] = prix_position_option
 
         # create third frame
         self.help = customtkinter.CTkFrame(

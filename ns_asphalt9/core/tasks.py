@@ -1,7 +1,7 @@
 import threading
 
 from . import consts, globals
-from .actions import enter_carhunt, enter_series, free_pack
+from .actions import enter_carhunt, enter_series, free_pack, prix_pack
 from .utils.log import logger
 
 
@@ -71,6 +71,8 @@ class TaskManager:
             enter_carhunt(page=page)
         if task == consts.free_pack_zh:
             free_pack()
+        if task == consts.prix_pack_zh:
+            prix_pack()
 
     @classmethod
     def set_done(cls) -> None:
