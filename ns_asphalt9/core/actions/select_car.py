@@ -79,12 +79,11 @@ def select_car():
     while globals.G_RUN.is_set():
         positions, reset, mode = get_race_config()
         reset()
-        count = globals.SELECT_COUNT[mode]
-        if count >= len(positions):
-            count = 0
-        position = positions[count]
+        if globals.SELECT_COUNT[mode] >= len(positions):
+            globals.SELECT_COUNT[mode] = 0
+        position = positions[globals.SELECT_COUNT[mode]]
 
-        logger.info(f"Start try position = {position}, count = {count}")
+        logger.info(f"Start try position = {position}, count = {globals.SELECT_COUNT[mode]}")
 
         for i in range(position["row"] - 1):
             pro.press_button(Buttons.DPAD_DOWN, 0)
