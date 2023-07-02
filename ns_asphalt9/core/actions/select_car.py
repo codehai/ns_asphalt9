@@ -61,24 +61,25 @@ def carhunt_position():
 
 
 def get_race_config():
-    task = globals.MODE if globals.MODE else globals.CONFIG["模式"]
-    logger.info(f"Get mode {task} config.")
-    if task == consts.other_series_zh:
-        return other_series_position(), other_series_reset, globals.OTHER_SERIES_COUNT
-    elif task == consts.car_hunt_zh:
-        return carhunt_position(), carhunt_reset, globals.CAR_HUNT_COUNT
-    elif task == consts.world_series_zh:
-        return world_series_positions(), world_series_reset, globals.WORLD_SERIES_COUNT
+    mode = globals.MODE if globals.MODE else globals.CONFIG["模式"]
+    logger.info(f"Get mode {mode} config.")
+    if mode == consts.other_series_zh:
+        return other_series_position(), other_series_reset, mode
+    elif mode == consts.car_hunt_zh:
+        return carhunt_position(), carhunt_reset, mode
+    elif mode == consts.world_series_zh:
+        return world_series_positions(), world_series_reset, mode
     else:
-        return default_positions(), default_reset, globals.DEFAULT_COUNT
+        return default_positions(), default_reset, mode
 
 
 def select_car():
     # 选车
     logger.info("Start select car.")
     while globals.G_RUN.is_set():
-        positions, reset, count = get_race_config()
+        positions, reset, mode = get_race_config()
         reset()
+        count = globals.SELECT_COUNT[mode]
         if count >= len(positions):
             count = 0
         position = positions[count]
@@ -128,7 +129,7 @@ def select_car():
                 page = ocr_screen()
                 if page.name == consts.select_car:
                     break
-            count += 1
+            globals.SELECT_COUNT[mode] += 1
             continue
     process_race()
     tasks.TaskManager.set_done()

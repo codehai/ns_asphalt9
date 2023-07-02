@@ -2,6 +2,8 @@ import multiprocessing
 import queue
 import threading
 
+from . import consts
+
 input_queue = multiprocessing.Queue()
 output_queue = multiprocessing.Queue()
 
@@ -32,12 +34,11 @@ MODE = ""
 DIVISION = ""
 
 # 选车次数
-SELECT_COUNT = 0
-
-DEFAULT_COUNT = 0
-WORLD_SERIES_COUNT = 0
-OTHER_SERIES_COUNT = 0
-CAR_HUNT_COUNT = 0
+SELECT_COUNT = {
+    consts.world_series_zh: 0,
+    consts.other_series_zh: 0,
+    consts.car_hunt_zh: 0
+}
 
 # 比赛中
 RACING = 0
