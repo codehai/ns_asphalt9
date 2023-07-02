@@ -1,11 +1,10 @@
 import time
 
-from .. import consts, globals
+from .. import consts, globals, tasks
 from ..controller import Buttons, pro
 from ..ocr import ocr_screen
 from ..utils.decorator import retry
 from ..utils.log import logger
-from ..tasks import TaskManager
 
 
 def enter_game():
@@ -105,7 +104,7 @@ def free_pack(page=None):
     if page.has_text("CLASSIC PACK.*POSSIBLE CONTENT"):
         pro.press_group([Buttons.A] * 3, 3)
         pro.press_group([Buttons.B], 0.5)
-        TaskManager.set_done()
+        tasks.TaskManager.set_done()
     else:
         raise Exception(f"Failed to access carhunt, current page = {page.name}")
     
@@ -128,7 +127,7 @@ def prix_pack():
             pro.press_group([Buttons.DPAD_LEFT] * 4, 0.2)
             pro.press_group([Buttons.DPAD_RIGHT], 0.2)
             pro.press_group([Buttons.A] * 3, 3)
-            TaskManager.set_done()
+            tasks.TaskManager.set_done()
             break
     else:
         raise Exception(f"Failed to access carhunt, current page = {page.name}")
