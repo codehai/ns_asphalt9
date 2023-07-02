@@ -7,15 +7,13 @@ from PIL import Image
 
 
 class App(customtkinter.CTk):
-    def __init__(self, queue):
+    def __init__(self, queue, config_name):
         super().__init__()
-
         self.queue = queue
-
         self.settings_data = None
-
-        if os.path.exists("settings.json"):
-            with open("settings.json", "r") as file:
+        self.config_file = f"{config_name}.json"
+        if os.path.exists(self.config_file):
+            with open(self.config_file, "r") as file:
                 self.settings_data = json.load(file)
 
         self.title("A9 AUTO")
@@ -426,11 +424,9 @@ class App(customtkinter.CTk):
 
         res = get_value(self.setting_modules)
         self.settings_data = res
-        with open("settings.json", "w") as file:
+        with open(self.config_file, "w") as file:
             file.write(json.dumps(res, indent=2, ensure_ascii=False))
         convert_dict_values(res)
-        with open("format_settings.json", "w") as file:
-            file.write(json.dumps(res, indent=2, ensure_ascii=False))
         self.queue.put(res)
 
     def select_frame_by_name(self, name):

@@ -6,6 +6,7 @@ import threading
 import time
 import traceback
 import types
+import argparse
 
 from .core import consts
 from .core import globals as G
@@ -166,8 +167,17 @@ def on_closing(app):
     app.destroy()
 
 
+def init_config():
+
+    parser = argparse.ArgumentParser(description="NS Asphalt9 Tool.")
+    parser.add_argument("-c", "--config", type=str, default="settings", help="自定义配置文件")
+    args = parser.parse_args()
+    return args.config
+
+
 def main():
     G.G_OUT_WORKER.set()
+    config_name = init_config()
     start_worker()
     app = App(G.input_queue)
     start_output_worker(app)
