@@ -70,7 +70,8 @@ def enter_series(page=None, mode=consts.world_series_zh):
 @retry(max_attempts=3)
 def enter_carhunt(page=None):
     """进入寻车"""
-    logger.info(f"page = {page}, page.name = {page.name}")
+    if page:
+        logger.info(f"page = {page}, page.name = {page.name}")
     if page and page.name == consts.carhunt:
         return
     reset_to_career()
