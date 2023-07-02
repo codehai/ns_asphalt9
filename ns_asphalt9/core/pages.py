@@ -44,7 +44,7 @@ class Page:
         if modes and self.name not in [consts.multi_player]:
             self.mode = consts.modes_zh.get(modes[0], "")
             if self.mode == consts.car_hunt_zh:
-                hunt_cars = re.findall("APEX AP-0")
+                hunt_cars = re.findall("APEX AP-0", self.text)
                 if hunt_cars:
                     self.hunt_car = hunt_cars[0]
 
