@@ -54,7 +54,7 @@ def process_race(race_mode=0):
                         time.sleep(3)
                     else:
                         time.sleep(0.5)
-        elif page.hunt_car == "APEX AP-0":
+        elif page.hunt_car == "APEX AP-0" and page.mode == consts.car_hunt_zh:
             if progress > 0:
                 start = time.perf_counter()
                 delta = progress * 0.55 + 4.5
