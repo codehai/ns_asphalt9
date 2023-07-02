@@ -118,7 +118,8 @@ def prix_pack():
     pro.press_group([Buttons.A], 0.5)
     pro.press_group([Buttons.DPAD_UP] * 8, 0.2)
     if not globals.CONFIG["大奖赛"]["位置"]:
-        logger.info("Please set grand prix position!")  
+        logger.info("Please set grand prix position!")
+        return
     pro.press_group([Buttons.DPAD_DOWN] * globals.CONFIG["大奖赛"]["位置"], 0.5)
     for _ in range(2):
         pro.press_group([Buttons.A], 5)
