@@ -51,9 +51,9 @@ def enter_series(page=None, mode=consts.world_series_zh):
     if page and in_series(page, mode):
         return
     reset_to_career()
-    pro.press_group([Buttons.ZL] * 4, 0.2)
+    pro.press_group([Buttons.ZL] * 4, 0.5)
     if mode != consts.world_series_zh:
-        pro.press_group([Buttons.DPAD_DOWN], 0.2)
+        pro.press_group([Buttons.DPAD_DOWN], 0.5)
     time.sleep(2)
     pro.press_group([Buttons.A], 2)
     page = ocr_screen()
@@ -71,9 +71,9 @@ def enter_carhunt(page=None):
     if page and page.name == consts.carhunt:
         return
     reset_to_career()
-    pro.press_group([Buttons.ZL] * 5, 0.2)
+    pro.press_group([Buttons.ZL] * 5, 0.5)
     pro.press_group([Buttons.A], 2)
-    pro.press_group([Buttons.ZR] * globals.CONFIG["寻车"]["寻车位置"], 0.2)
+    pro.press_group([Buttons.ZR] * globals.CONFIG["寻车"]["寻车位置"], 0.5)
     time.sleep(1)
     page = ocr_screen()
     if page.has_text("CAR HUNT(?!\sRIOT)"):
