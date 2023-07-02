@@ -11,6 +11,7 @@ class Page:
     name = None
     data = None
     mode = None
+    hunt_car = None
     division = None
     touchdriver = None
 
@@ -25,6 +26,7 @@ class Page:
             self.mode = last_page.mode
             self.division = last_page.division
             self.touchdriver = last_page.touchdriver
+            self.hunt_car = last_page.hunt_car
         self.text = text
 
     def parse_common(self):
@@ -41,6 +43,10 @@ class Page:
         )
         if modes and self.name not in [consts.multi_player]:
             self.mode = consts.modes_zh.get(modes[0], "")
+            if self.mode == consts.car_hunt_zh:
+                hunt_cars = re.findall("APEX AP-0")
+                if hunt_cars:
+                    self.hunt_car = hunt_cars[0]
 
         if "TOUCHDRIVE ON" in self.text:
             self.touchdriver = 1
