@@ -77,7 +77,7 @@ def enter_carhunt(page=None):
     reset_to_career()
     pro.press_group([Buttons.ZL] * 5, 0.5)
     pro.press_group([Buttons.A], 2)
-    pro.press_group([Buttons.ZR] * globals.CONFIG["寻车"]["位置"], 0.5)
+    pro.press_group([Buttons.ZR] * globals.CONFIG["寻车"]["寻车位置"], 0.5)
     time.sleep(2)
     page = ocr_screen()
     if page.has_text("CAR HUNT"):
@@ -88,7 +88,7 @@ def enter_carhunt(page=None):
             pro.press_group([Buttons.ZR], 1)
             page = ocr_screen()
             if page.has_text("CAR HUNT"):
-                globals.CONFIG["寻车"]["位置"] = i + 1
+                globals.CONFIG["寻车"]["寻车位置"] = i + 1
                 pro.press_a()
                 break
         else:
