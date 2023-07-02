@@ -339,6 +339,13 @@ class RaceResults(Page):
     action = staticmethod(pro.press_button)
     args = (Buttons.A,)
 
+    @classmethod
+    def calc_weight(cls, text: str) -> int:
+        match_count = len(re.findall(cls.feature, text))
+        if "RACE RESULTS" in text:
+            match_count = 10
+        return match_count
+
 
 @cache_decorator("page")
 class RaceScore(Page):
@@ -350,6 +357,13 @@ class RaceScore(Page):
     action = staticmethod(pro.press_button)
     args = (Buttons.A,)
 
+    @classmethod
+    def calc_weight(cls, text: str) -> int:
+        match_count = len(re.findall(cls.feature, text))
+        if "WINNER" in text:
+            match_count = 10
+        return match_count
+
 
 @cache_decorator("page")
 class RaceReward(Page):
@@ -360,6 +374,13 @@ class RaceReward(Page):
     part_match = True
     action = staticmethod(pro.press_button)
     args = (Buttons.A,)
+
+    @classmethod
+    def calc_weight(cls, text: str) -> int:
+        match_count = len(re.findall(cls.feature, text))
+        if "RACE REWARDS" in text:
+            match_count = 10
+        return match_count
 
 
 @cache_decorator("page")
