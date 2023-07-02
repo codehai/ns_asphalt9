@@ -83,7 +83,7 @@ def process_race(race_mode=0):
             pro.press_button(Buttons.Y, 0.7)
             pro.press_button(Buttons.Y, 0)
 
-        if page.name in [consts.race_score, consts.race_results, consts.race_reward]:
+        if page.name in [consts.race_score, consts.race_results, consts.race_reward, consts.system_error]:
             break
 
     globals.FINISHED_COUNT += 1
