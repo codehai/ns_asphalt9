@@ -179,7 +179,7 @@ def main():
     G.G_OUT_WORKER.set()
     config_name = init_config()
     start_worker()
-    app = App(G.input_queue)
+    app = App(G.input_queue, config_name)
     start_output_worker(app)
     app.protocol("WM_DELETE_WINDOW", lambda: on_closing(app))
     app.mainloop()
