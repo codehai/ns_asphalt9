@@ -534,3 +534,12 @@ class GrandPrix(Page):
     name = consts.grand_prix
     feature = "GP Standings"
     part_match = False
+
+
+@cache_decorator("page")
+class LegendPass(Page):
+    """通行证页"""
+
+    name = consts.legend_pass
+    feature = "ENDS IN|CURRENT TIER|GARAGE|GRANTS UP TO"
+    part_match = True

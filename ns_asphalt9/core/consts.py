@@ -77,6 +77,8 @@ no_opponents = "no_opponents"
 career = "career"
 # 大奖赛
 grand_prix = "grand_prix"
+# 通行证页
+legend_pass = "legend_pass"
 
 
 # 键盘与手柄映射

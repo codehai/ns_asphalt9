@@ -43,6 +43,7 @@ class TaskManager:
             consts.trial_series,
             consts.carhunt,
             consts.card_pack,
+            consts.legend_pass
         ]:
             return False
 
