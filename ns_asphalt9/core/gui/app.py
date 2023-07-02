@@ -429,6 +429,8 @@ class App(customtkinter.CTk):
         with open("settings.json", "w") as file:
             file.write(json.dumps(res, indent=2, ensure_ascii=False))
         convert_dict_values(res)
+        with open("format_settings.json", "w") as file:
+            file.write(json.dumps(res, indent=2, ensure_ascii=False))
         self.queue.put(res)
 
     def select_frame_by_name(self, name):
