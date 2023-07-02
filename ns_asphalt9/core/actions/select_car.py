@@ -83,7 +83,7 @@ def select_car():
             count = 0
         position = positions[count]
 
-        logger.info(f"Start try position = {position}")
+        logger.info(f"Start try position = {position}, count = {count}")
 
         for i in range(position["row"] - 1):
             pro.press_button(Buttons.DPAD_DOWN, 0)
