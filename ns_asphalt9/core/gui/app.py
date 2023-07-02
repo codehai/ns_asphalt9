@@ -393,7 +393,7 @@ class App(customtkinter.CTk):
 
         prix_position_option.grid(row=1, column=1, padx=(10, 10), pady=(10, 10))
 
-        if self.settings_data:
+        if self.settings_data and "大奖赛" in self.settings_data:
             prix_position_option.set(self.settings_data["大奖赛"]["位置"])
         self.setting_modules["大奖赛"]["位置"] = prix_position_option
 
