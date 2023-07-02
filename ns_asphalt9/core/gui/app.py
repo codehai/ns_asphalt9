@@ -411,9 +411,11 @@ class App(customtkinter.CTk):
         def convert_dict_values(data):
             if isinstance(data, dict):
                 for key, value in data.items():
+                    if key == "车库位置":
+                        data[key] = [v for v in value if int(v["col"]) and int(v["row"])]
                     if isinstance(value, str) and value.isdigit():
                         data[key] = int(value)
-                    elif isinstance(value, (dict, list)):
+                    if isinstance(value, (dict, list)):
                         convert_dict_values(value)  # 递归调用
             elif isinstance(data, list):
                 for i, item in enumerate(data):
