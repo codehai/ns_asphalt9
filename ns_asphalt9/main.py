@@ -1,3 +1,4 @@
+import argparse
 import datetime
 import multiprocessing
 import os
@@ -6,10 +7,11 @@ import threading
 import time
 import traceback
 import types
-import argparse
 
 from .core import consts
 from .core import globals as G
+from .core.actions import (enter_carhunt, enter_game, enter_series, free_pack,
+                           prix_pack)
 from .core.controller import Buttons, pro
 from .core.gui.app import App
 from .core.ocr import ocr_screen
