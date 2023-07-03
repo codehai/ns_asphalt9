@@ -95,6 +95,10 @@ KEY_MAPPING = {
     "w": "DPAD_UP",
     "a": "DPAD_LEFT",
     "d": "DPAD_RIGHT",
+    "1": "L",
+    "2": "ZL",
+    "9": "ZR",
+    "8": "R",
 }
 
 car_hunt_zh = "寻车"
@@ -144,9 +148,4 @@ silver = "SILVER"
 gold = "GOLD"
 platinum = "PLATINUM"
 
-divisions_zh = {
-    bronze: "青铜",
-    silver: "白银",
-    gold: "黄金",
-    platinum: "铂金"
-}
+divisions_zh = {bronze: "青铜", silver: "白银", gold: "黄金", platinum: "铂金"}
