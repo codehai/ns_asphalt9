@@ -340,17 +340,6 @@ class ClubReward(Page):
 
 
 @cache_decorator("page")
-class VipReward(Page):
-    """通行证任务完成"""
-
-    name = consts.vip_reward
-    feature = "TIER"
-    part_match = False
-    action = staticmethod(pro.press_button)
-    args = (Buttons.B,)
-
-
-@cache_decorator("page")
 class RaceResults(Page):
     """比赛结果"""
 
@@ -563,3 +552,23 @@ class LegendPass(Page):
     name = consts.legend_pass
     feature = "ENDS IN|CURRENT TIER|GARAGE|GRANTS UP TO"
     part_match = True
+
+
+@cache_decorator("page")
+class VipReward(Page):
+    """通行证任务完成"""
+
+    name = consts.vip_reward
+    feature = "TIER"
+    part_match = False
+    action = staticmethod(pro.press_button)
+    args = (Buttons.B,)
+
+    @classmethod
+    def calc_weight(cls, text: str) -> int:
+        match_count = len(re.findall(cls.feature, text))
+        if "ENDS IN" in text:
+            match_count = 0
+        else:
+            match_count = 10
+        return match_count
