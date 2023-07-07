@@ -567,8 +567,9 @@ class VipReward(Page):
     @classmethod
     def calc_weight(cls, text: str) -> int:
         match_count = len(re.findall(cls.feature, text))
-        if "ENDS IN" in text:
-            match_count = 0
-        else:
-            match_count = 10
+        if match_count:
+            if "ENDS IN" in text:
+                match_count = 0
+            else:
+                match_count = 10
         return match_count
