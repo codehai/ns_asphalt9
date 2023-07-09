@@ -106,6 +106,7 @@ world_series_zh = "多人一"
 other_series_zh = "多人二"
 free_pack_zh = "免费抽卡"
 prix_pack_zh = "大奖赛抽卡"
+legendary_hunt_zh = "传奇寻车"
 
 
 class Mode:

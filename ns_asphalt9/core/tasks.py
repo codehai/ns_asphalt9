@@ -43,7 +43,8 @@ class TaskManager:
             consts.trial_series,
             consts.carhunt,
             consts.card_pack,
-            consts.legend_pass
+            consts.legend_pass,
+            consts.legendary_hunt
         ]:
             return False
 
@@ -73,6 +74,8 @@ class TaskManager:
             actions.free_pack()
         if task == consts.prix_pack_zh:
             actions.prix_pack()
+        if task == consts.legendary_hunt:
+            actions.enter_legend_carhunt()
 
     @classmethod
     def set_done(cls) -> None:

@@ -104,29 +104,13 @@ def _enter_carhunt(page=None, mode=0):
 @retry(max_attempts=3)
 def enter_carhunt(page=None):
     """进入寻车"""
-    if page:
-        logger.info(f"page = {page}, page.name = {page.name}")
-    if page and page.name == consts.carhunt:
-        return
-    reset_to_career()
-    pro.press_group([Buttons.ZL] * 5, 0.5)
-    pro.press_group([Buttons.A], 2)
-    pro.press_group([Buttons.ZR] * globals.CONFIG["寻车"]["寻车位置"], 0.5)
-    time.sleep(1)
-    page = ocr_screen()
-    if page.has_text("CAR HUNT(?!\sRIOT)"):
-        pro.press_a()
-    else:
-        pro.press_group([Buttons.ZL] * 12, 0)
-        for i in range(20):
-            pro.press_group([Buttons.ZR], 0.5)
-            page = ocr_screen()
-            if page.has_text("CAR HUNT(?!\sRIOT)"):
-                globals.CONFIG["寻车"]["寻车位置"] = i + 1
-                pro.press_a()
-                break
-        else:
-            raise Exception(f"Failed to access carhunt, current page = {page.name}")
+    _enter_carhunt(page)
+
+
+@retry(max_attempts=3)
+def enter_legend_carhunt(page=None):
+    """进入传奇寻车"""
+    _enter_carhunt(page, 1)
 
 
 @retry(max_attempts=3)
