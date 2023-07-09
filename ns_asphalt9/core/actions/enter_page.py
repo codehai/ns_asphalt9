@@ -63,6 +63,44 @@ def enter_series(page=None, mode=consts.world_series_zh):
         raise Exception(f"Failed to access {mode}, current page = {page.name}")
 
 
+def _enter_carhunt(page=None, mode=0):
+    """进入寻车/传奇寻车
+    0 寻车
+    1 传奇寻车
+    """
+    if mode == 0:
+        page_name = consts.carhunt
+        config_key = "寻车"
+        page_feature = "CAR HUNT(?!\sRIOT)"
+    else:
+        page_name = consts.legendary_hunt
+        config_key = "传奇寻车"
+        page_feature = "LEGENDARY HUNT(?!\sRIOT)"
+    if page:
+        logger.info(f"page = {page}, page.name = {page.name}")
+    if page and page.name == page_name:
+        return
+    reset_to_career()
+    pro.press_group([Buttons.ZL] * 5, 0.5)
+    pro.press_group([Buttons.A], 2)
+    pro.press_group([Buttons.ZR] * globals.CONFIG[config_key]["寻车位置"], 0.5)
+    time.sleep(1)
+    page = ocr_screen()
+    if page.has_text(page_feature):
+        pro.press_a()
+    else:
+        pro.press_group([Buttons.ZL] * 12, 0)
+        for i in range(20):
+            pro.press_group([Buttons.ZR], 0.5)
+            page = ocr_screen()
+            if page.has_text(page_feature):
+                globals.CONFIG[config_key]["寻车位置"] = i + 1
+                pro.press_a()
+                break
+        else:
+            raise Exception(f"Failed to access carhunt, current page = {page.name}")
+
+
 @retry(max_attempts=3)
 def enter_carhunt(page=None):
     """进入寻车"""

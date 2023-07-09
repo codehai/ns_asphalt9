@@ -204,7 +204,7 @@ class LegendaryHunt(Page):
     """通行证寻车"""
 
     name = consts.legendary_hunt
-    feature = "LEGENDARY HUNT"
+    feature = "LEGENDARY HUNT:.*CAR HUNT EVENT PACK"
     part_match = False
 
 

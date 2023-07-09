@@ -125,7 +125,7 @@ class App(customtkinter.CTk):
             self, corner_radius=0, fg_color="transparent"
         )
 
-        for row, label_text in enumerate(["模式", "任务", "多一", "多二", "寻车", "大奖赛"]):
+        for row, label_text in enumerate(["模式", "任务", "多一", "多二", "寻车", "大奖赛", "传奇寻车"]):
             label = customtkinter.CTkLabel(master=self.settings, text=f"{label_text}:")
             label.grid(
                 row=row,
@@ -142,7 +142,7 @@ class App(customtkinter.CTk):
             self.settings,
             variable=self.mode,
             command=self.save_settings,
-            values=["多人一", "多人二", "寻车"],
+            values=["多人一", "多人二", "寻车", "传奇寻车"],
         )
         self.mode_buttons.grid(
             row=0, column=1, padx=(20, 10), pady=(20, 10), sticky="ew"
@@ -154,7 +154,7 @@ class App(customtkinter.CTk):
         # 任务配置
         tasks_frame = customtkinter.CTkFrame(self.settings, width=340)
         tasks_frame.grid(row=1, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        tasks = [("免费抽卡", ["180", "240"]), ("大奖赛抽卡", ["240"]), ("寻车", ["10"])]
+        tasks = [("免费抽卡", ["180", "240"]), ("大奖赛抽卡", ["240"]), ("寻车", ["10"]), ("传奇寻车", ["10"])]
         self.setting_modules["任务"] = []
         for row, (task, values) in enumerate(tasks):
             task_box = customtkinter.CTkCheckBox(
@@ -371,11 +371,80 @@ class App(customtkinter.CTk):
 
             self.setting_modules["寻车"]["车库位置"].append({"row": option1, "col": option2})
 
+        # 传奇寻车配置
+        self.setting_modules["传奇寻车"] = {}
+        carhunt_setting_frame = customtkinter.CTkFrame(self.settings, width=340)
+        carhunt_setting_frame.grid(
+            row=5, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew"
+        )
+
+        car_hunt_position = customtkinter.CTkLabel(
+            master=carhunt_setting_frame, text="寻车位置:"
+        )
+        car_hunt_position.grid(row=1, column=0, padx=(15, 10), pady=(10, 10))
+        position_option = customtkinter.CTkOptionMenu(
+            carhunt_setting_frame,
+            dynamic_resizing=False,
+            values=[str(i) for i in range(0, 20)],
+            width=100,
+            height=28,
+            command=self.save_settings,
+        )
+
+        position_option.grid(row=1, column=1, padx=(10, 10), pady=(10, 10))
+
+        if self.settings_data:
+            position_option.set(self.settings_data["传奇寻车"]["寻车位置"])
+        self.setting_modules["传奇寻车"]["寻车位置"] = position_option
+
+        self.setting_modules["传奇寻车"]["车库位置"] = []
+        car_position = customtkinter.CTkLabel(
+            master=carhunt_setting_frame, text="车库位置:"
+        )
+
+        car_position.grid(row=2, column=0, padx=(15, 10), pady=(10, 10))
+
+        row = customtkinter.CTkLabel(master=carhunt_setting_frame, text="row")
+
+        row.grid(row=2, column=1, padx=(0, 0), pady=(10, 10), sticky="nsew")
+
+        col = customtkinter.CTkLabel(master=carhunt_setting_frame, text="col")
+
+        col.grid(row=2, column=2, padx=(0, 10), pady=(10, 10), sticky="nsew")
+
+        for r in range(6):
+            option1 = customtkinter.CTkOptionMenu(
+                carhunt_setting_frame,
+                dynamic_resizing=False,
+                values=[str(i) for i in range(0, 3)],
+                width=100,
+                height=28,
+                command=self.save_settings,
+            )
+
+            option2 = customtkinter.CTkOptionMenu(
+                carhunt_setting_frame,
+                dynamic_resizing=False,
+                values=[str(i) for i in range(0, 20)],
+                width=100,
+                height=28,
+                command=self.save_settings,
+            )
+
+            option1.grid(row=r + 3, column=1, padx=(10, 10), pady=(10, 10))
+            option2.grid(row=r + 3, column=2, padx=(10, 10), pady=(10, 10))
+
+            if self.settings_data and "传奇寻车" in self.settings_data:
+                option1.set(self.settings_data["传奇寻车"]["车库位置"][r]["row"])
+                option2.set(self.settings_data["传奇寻车"]["车库位置"][r]["col"])
+
+            self.setting_modules["寻车"]["车库位置"].append({"row": option1, "col": option2})
+
         # 大奖赛配置
         self.setting_modules["大奖赛"] = {}
         prix_setting_frame = customtkinter.CTkFrame(self.settings, width=340)
         prix_setting_frame.grid(
-            row=5, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew"
+            row=6, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew"
         )
 
         prix_position = customtkinter.CTkLabel(
