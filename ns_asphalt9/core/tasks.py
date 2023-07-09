@@ -44,7 +44,8 @@ class TaskManager:
             consts.carhunt,
             consts.card_pack,
             consts.legend_pass,
-            consts.legendary_hunt
+            consts.legendary_hunt,
+            consts.daily_events
         ]:
             return False
 
@@ -74,7 +75,7 @@ class TaskManager:
             actions.free_pack()
         if task == consts.prix_pack_zh:
             actions.prix_pack()
-        if task == consts.legendary_hunt:
+        if task == consts.legendary_hunt_zh:
             actions.enter_legend_carhunt()
 
     @classmethod
