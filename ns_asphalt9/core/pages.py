@@ -162,6 +162,13 @@ class WorldSeries(Page):
     action = staticmethod(pro.press_button)
     args = (Buttons.A, 3)
 
+    @classmethod
+    def calc_weight(cls, text: str) -> int:
+        match_count = len(re.findall(cls.feature, text))
+        if "WORLD SERIES" in text:
+            match_count += 3
+        return match_count
+
 
 @cache_decorator("page")
 class TrialSeries(Page):
@@ -174,6 +181,13 @@ class TrialSeries(Page):
     action = staticmethod(pro.press_button)
     args = (Buttons.A, 3)
 
+    @classmethod
+    def calc_weight(cls, text: str) -> int:
+        match_count = len(re.findall(cls.feature, text))
+        if "TRIAL SERIES" in text:
+            match_count += 3
+        return match_count
+
 
 @cache_decorator("page")
 class LimitedSeries(Page):
@@ -185,6 +199,13 @@ class LimitedSeries(Page):
 
     action = staticmethod(pro.press_button)
     args = (Buttons.A, 3)
+
+    @classmethod
+    def calc_weight(cls, text: str) -> int:
+        match_count = len(re.findall(cls.feature, text))
+        if "LIMITED SERIES" in text:
+            match_count += 3
+        return match_count
 
 
 @cache_decorator("page")
@@ -319,17 +340,6 @@ class ClubReward(Page):
 
 
 @cache_decorator("page")
-class VipReward(Page):
-    """通行证任务完成"""
-
-    name = consts.vip_reward
-    feature = "TIER"
-    part_match = False
-    action = staticmethod(pro.press_button)
-    args = (Buttons.B,)
-
-
-@cache_decorator("page")
 class RaceResults(Page):
     """比赛结果"""
 
@@ -435,8 +445,7 @@ class SystemError(Page):
     feature = "software.*closed"
     part_match = False
 
-    action = staticmethod(pro.press_group)
-    args = ([Buttons.A] * 3, 3)
+    action = staticmethod(actions.system_error)
 
 
 @cache_decorator("page")
@@ -543,3 +552,24 @@ class LegendPass(Page):
     name = consts.legend_pass
     feature = "ENDS IN|CURRENT TIER|GARAGE|GRANTS UP TO"
     part_match = True
+
+
+@cache_decorator("page")
+class VipReward(Page):
+    """通行证任务完成"""
+
+    name = consts.vip_reward
+    feature = "TIER"
+    part_match = False
+    action = staticmethod(pro.press_button)
+    args = (Buttons.B,)
+
+    @classmethod
+    def calc_weight(cls, text: str) -> int:
+        match_count = len(re.findall(cls.feature, text))
+        if match_count:
+            if "ENDS IN" in text:
+                match_count = 0
+            else:
+                match_count = 10
+        return match_count
