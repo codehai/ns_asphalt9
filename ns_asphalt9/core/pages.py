@@ -235,6 +235,9 @@ class LegendaryHunt(Page):
     feature = "LEGENDARY HUNT:.*CAR HUNT EVENT PACK"
     part_match = False
 
+    action = staticmethod(pro.press_button)
+    args = (Buttons.A, 3)
+
 
 @cache_decorator("page")
 class Tickets(Page):
