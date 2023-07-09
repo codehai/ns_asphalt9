@@ -394,7 +394,7 @@ class App(customtkinter.CTk):
 
         position_option.grid(row=1, column=1, padx=(10, 10), pady=(10, 10))
 
-        if self.settings_data:
+        if self.settings_data and "传奇寻车" in self.settings_data:
             position_option.set(self.settings_data["传奇寻车"]["寻车位置"])
         self.setting_modules["传奇寻车"]["寻车位置"] = position_option
 
