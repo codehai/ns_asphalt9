@@ -97,6 +97,8 @@ class LoadingGame(Page):
     feature = "GAMELOFT PLAYER ID.*ASPHALT"
     part_match = False
 
+    action = staticmethod(actions.loading_game)
+
 
 @cache_decorator("page")
 class LoadingRace(Page):

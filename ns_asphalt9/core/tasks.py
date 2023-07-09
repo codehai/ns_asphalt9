@@ -45,7 +45,8 @@ class TaskManager:
             consts.card_pack,
             consts.legend_pass,
             consts.legendary_hunt,
-            consts.daily_events
+            consts.daily_events,
+            consts.multi_player
         ]:
             return False
 

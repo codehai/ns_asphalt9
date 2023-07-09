@@ -20,6 +20,15 @@ def set_eng():
     pass
 
 
+def _add_task():
+    if globals.task_queue.empty():
+        globals.task_queue.put(globals.CONFIG["模式"])
+
+
 def system_error():
     pro.press_group([Buttons.A] * 3, 3)
-    globals.task_queue.put(globals.CONFIG["模式"])
+    _add_task()
+
+
+def loading_game():
+    _add_task()

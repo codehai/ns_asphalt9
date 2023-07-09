@@ -46,8 +46,10 @@ def in_series(page, mode):
 
 
 @retry(max_attempts=3)
-def enter_series(page=None, mode=consts.world_series_zh):
+def enter_series(page=None, mode=None):
     """进入多人赛事"""
+    if not mode:
+        mode = globals.CONFIG["模式"]
     if page and in_series(page, mode):
         return
     reset_to_career()
