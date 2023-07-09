@@ -17,7 +17,7 @@ class App(customtkinter.CTk):
                 self.settings_data = json.load(file)
 
         self.title("A9 AUTO")
-        self.geometry("700x450")
+        self.geometry("700x550")
 
         # set grid layout 1x2
         self.grid_rowconfigure(0, weight=1)
@@ -107,7 +107,7 @@ class App(customtkinter.CTk):
         )
         self.home_frame.grid_columnconfigure(0, weight=1)
 
-        self.textbox = customtkinter.CTkTextbox(self.home_frame, width=250, height=360)
+        self.textbox = customtkinter.CTkTextbox(self.home_frame, width=250, height=460)
         self.textbox.grid(row=0, column=0, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
         self.entry = customtkinter.CTkEntry(
@@ -125,7 +125,7 @@ class App(customtkinter.CTk):
             self, corner_radius=0, fg_color="transparent"
         )
 
-        for row, label_text in enumerate(["模式", "任务", "多一", "多二", "寻车", "大奖赛", "传奇寻车"]):
+        for row, label_text in enumerate(["模式", "任务", "多一", "多二", "寻车", "传奇寻车", "大奖赛"]):
             label = customtkinter.CTkLabel(master=self.settings, text=f"{label_text}:")
             label.grid(
                 row=row,
@@ -237,7 +237,7 @@ class App(customtkinter.CTk):
                 option2 = customtkinter.CTkOptionMenu(
                     self.tabview.tab(tab_name),
                     dynamic_resizing=False,
-                    values=[str(i) for i in range(0, 20)],
+                    values=[str(i) for i in range(0, 30)],
                     width=100,
                     height=28,
                     command=self.save_settings,
@@ -288,7 +288,7 @@ class App(customtkinter.CTk):
             option2 = customtkinter.CTkOptionMenu(
                 mp2_settings_frame,
                 dynamic_resizing=False,
-                values=[str(i) for i in range(0, 20)],
+                values=[str(i) for i in range(0, 30)],
                 width=100,
                 height=28,
                 command=self.save_settings,
@@ -357,7 +357,7 @@ class App(customtkinter.CTk):
             option2 = customtkinter.CTkOptionMenu(
                 carhunt_setting_frame,
                 dynamic_resizing=False,
-                values=[str(i) for i in range(0, 20)],
+                values=[str(i) for i in range(0, 30)],
                 width=100,
                 height=28,
                 command=self.save_settings,
@@ -426,7 +426,7 @@ class App(customtkinter.CTk):
             option2 = customtkinter.CTkOptionMenu(
                 carhunt_setting_frame,
                 dynamic_resizing=False,
-                values=[str(i) for i in range(0, 20)],
+                values=[str(i) for i in range(0, 30)],
                 width=100,
                 height=28,
                 command=self.save_settings,
