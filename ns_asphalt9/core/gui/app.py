@@ -167,7 +167,8 @@ class App(customtkinter.CTk):
             )
             task_combobox.grid(row=row, column=2, padx=(20, 100), pady=(10, 10))
 
-            if self.settings_data:
+            if self.settings_data and row < len(self.settings_data["任务"]):
+
                 if self.settings_data["任务"][row]["运行"]:
                     task_box.select()
                 task_combobox.set(self.settings_data["任务"][row]["间隔"])
