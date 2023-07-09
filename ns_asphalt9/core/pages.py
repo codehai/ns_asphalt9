@@ -145,10 +145,17 @@ class MultiPlayer(Page):
     """多人首页"""
 
     name = consts.multi_player
-    feature = "WORLD SERIES.*(LIMITED|TRIAL) SERIES"
+    feature = "WORLD SERIES|LIMITED SERIES|TRIAL SERIES"
     part_match = False
 
     action = staticmethod(actions.enter_series)
+
+    @classmethod
+    def calc_weight(cls, text: str) -> int:
+        match_count = len(re.findall(cls.feature, text))
+        if match_count >= 2:
+            match_count = 10
+        return match_count
 
 
 @cache_decorator("page")
