@@ -435,9 +435,12 @@ class App(customtkinter.CTk):
             option1.grid(row=r + 3, column=1, padx=(10, 10), pady=(10, 10))
             option2.grid(row=r + 3, column=2, padx=(10, 10), pady=(10, 10))
 
-            if self.settings_data and "传奇寻车" in self.settings_data:
-                option1.set(self.settings_data["传奇寻车"]["车库位置"][r]["row"])
-                option2.set(self.settings_data["传奇寻车"]["车库位置"][r]["col"])
+            try:
+                if self.settings_data and "传奇寻车" in self.settings_data:
+                    option1.set(self.settings_data["传奇寻车"]["车库位置"][r]["row"])
+                    option2.set(self.settings_data["传奇寻车"]["车库位置"][r]["col"])
+            except IndexError:
+                pass
 
             self.setting_modules["寻车"]["车库位置"].append({"row": option1, "col": option2})
 
