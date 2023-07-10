@@ -102,8 +102,10 @@ KEY_MAPPING = {
 }
 
 car_hunt_zh = "寻车"
-world_series_zh = "多人一"
-other_series_zh = "多人二"
+mp1_zh = "多人一"
+mp2_zh = "多人二"
+mp3_zh = "多人三"
+mp_zh = "多人"
 free_pack_zh = "免费抽卡"
 prix_pack_zh = "大奖赛抽卡"
 legendary_hunt_zh = "传奇寻车"
@@ -116,31 +118,17 @@ class Mode:
     trial_series = "TRIAL SERIES"
 
 
-class TaskName:
-    car_hunt = "car_hunt"
-    world_series = "world_series"
-    other_series = "other_series"
-    free_pack = "free_pack"
-
-
 class TaskStatus:
     default = ""
     start = "start"
     done = "done"
 
 
-ModeTaskMapping = {
-    Mode.car_hunt: car_hunt_zh,
-    Mode.world_series: world_series_zh,
-    Mode.limited_series: other_series_zh,
-    Mode.trial_series: other_series_zh,
-}
-
 modes_zh = {
     Mode.car_hunt: car_hunt_zh,
-    Mode.world_series: world_series_zh,
-    Mode.limited_series: other_series_zh,
-    Mode.trial_series: other_series_zh,
+    Mode.world_series: mp1_zh,
+    Mode.limited_series: mp_zh,
+    Mode.trial_series: mp_zh,
 }
 
 

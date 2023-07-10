@@ -32,9 +32,9 @@ def reset_to_career():
 
 def in_series(page, mode):
     if (
-        mode == consts.world_series_zh
+        mode == consts.mp1_zh
         and page.name == consts.world_series
-        or mode == consts.other_series_zh
+        or mode in [consts.mp2_zh, consts.mp3_zh]
         and page.name
         in [
             consts.trial_series,
@@ -54,8 +54,10 @@ def enter_series(page=None, mode=None):
         return
     reset_to_career()
     pro.press_group([Buttons.ZL] * 4, 0.5)
-    if mode != consts.world_series_zh:
+    if mode == consts.other_series_zh:
         pro.press_group([Buttons.DPAD_DOWN], 0.5)
+    if mode == consts.mp3_zh:
+        pro.press_group([Buttons.DPAD_DOWN] * 2, 0.5)
     time.sleep(2)
     pro.press_group([Buttons.A], 2)
     page = ocr_screen()

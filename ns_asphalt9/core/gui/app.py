@@ -125,7 +125,7 @@ class App(customtkinter.CTk):
             self, corner_radius=0, fg_color="transparent"
         )
 
-        for row, label_text in enumerate(["模式", "任务", "多一", "多二", "寻车", "传奇寻车", "大奖赛"]):
+        for row, label_text in enumerate(["模式", "任务", "多一", "多二", "寻车", "传奇寻车", "多三", "大奖赛"]):
             label = customtkinter.CTkLabel(master=self.settings, text=f"{label_text}:")
             label.grid(
                 row=row,
@@ -444,11 +444,60 @@ class App(customtkinter.CTk):
 
             self.setting_modules["寻车"]["车库位置"].append({"row": option1, "col": option2})
 
+        # 多人三配置
+        mp3_settings_frame = customtkinter.CTkFrame(self.settings, width=340)
+        mp3_settings_frame.grid(
+            row=6, column=1, columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew"
+        )
+
+        car_position = customtkinter.CTkLabel(master=mp3_settings_frame, text="车库位置:")
+
+        car_position.grid(row=1, column=0, padx=(15, 10), pady=(10, 10))
+
+        row = customtkinter.CTkLabel(master=mp3_settings_frame, text="row")
+
+        row.grid(row=1, column=1, padx=(0, 0), pady=(10, 10), sticky="nsew")
+
+        col = customtkinter.CTkLabel(master=mp3_settings_frame, text="col")
+
+        col.grid(row=1, column=2, padx=(0, 10), pady=(10, 10), sticky="nsew")
+
+        self.setting_modules["多人三"] = {}
+        self.setting_modules["多人三"]["车库位置"] = []
+
+        for r in range(6):
+            option1 = customtkinter.CTkOptionMenu(
+                mp3_settings_frame,
+                dynamic_resizing=False,
+                values=[str(i) for i in range(0, 3)],
+                width=100,
+                height=28,
+                command=self.save_settings,
+            )
+
+            option2 = customtkinter.CTkOptionMenu(
+                mp3_settings_frame,
+                dynamic_resizing=False,
+                values=[str(i) for i in range(0, 30)],
+                width=100,
+                height=28,
+                command=self.save_settings,
+            )
+
+            option1.grid(row=r + 2, column=1, padx=(10, 10), pady=(10, 10))
+            option2.grid(row=r + 2, column=2, padx=(10, 10), pady=(10, 10))
+
+            if self.settings_data and "多人三" in self.settings_data:
+                option1.set(self.settings_data["多人三"]["车库位置"][r]["row"])
+                option2.set(self.settings_data["多人三"]["车库位置"][r]["col"])
+
+            self.setting_modules["多人三"]["车库位置"].append({"row": option1, "col": option2})
+
         # 大奖赛配置
         self.setting_modules["大奖赛"] = {}
         prix_setting_frame = customtkinter.CTkFrame(self.settings, width=340)
         prix_setting_frame.grid(
-            row=6, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew"
+            row=7, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew"
         )
 
         prix_position = customtkinter.CTkLabel(
