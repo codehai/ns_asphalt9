@@ -39,7 +39,7 @@ class Page:
             self.division = consts.divisions_zh.get(divisions[0], "")
 
         modes = re.findall(
-            "CAR HUNT|WORLD SERIES|LIMITED SERIES|TRIAL SERIES", self.text
+            "LEGENDARY HUNT|CAR HUNT|WORLD SERIES|LIMITED SERIES|TRIAL SERIES", self.text
         )
         if modes and self.name not in [consts.multi_player]:
             self.mode = consts.modes_zh.get(modes[0], "")

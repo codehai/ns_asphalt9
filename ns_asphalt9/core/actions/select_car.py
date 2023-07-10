@@ -69,7 +69,7 @@ def legendary_hunt_position():
 def get_race_config():
     mode = globals.MODE if globals.MODE else globals.CONFIG["模式"]
     logger.info(f"Get mode {mode} config.")
-    if mode == consts.mp_zh:
+    if mode in [consts.mp_zh, consts.mp1_zh]:
         if globals.CONFIG["模式"] == consts.mp3_zh:
             return mp3_position(), other_series_reset, mode
         elif globals.CONFIG["模式"] == consts.mp2_zh:
