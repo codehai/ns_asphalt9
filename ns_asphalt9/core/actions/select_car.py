@@ -71,11 +71,11 @@ def get_race_config():
     logger.info(f"Get mode {mode} config.")
     if mode in [consts.mp_zh, consts.mp1_zh]:
         if globals.CONFIG["模式"] == consts.mp3_zh:
-            return mp3_position(), other_series_reset, mode
+            return mp3_position(), other_series_reset, consts.mp3_zh
         elif globals.CONFIG["模式"] == consts.mp2_zh:
-            return other_series_position(), other_series_reset, mode
+            return other_series_position(), other_series_reset, consts.mp2_zh
         else:
-            return world_series_positions(), world_series_reset, mode
+            return world_series_positions(), world_series_reset, consts.mp1_zh
     elif mode == consts.car_hunt_zh:
         return carhunt_position(), carhunt_reset, mode
     elif mode == consts.legendary_hunt_zh:
