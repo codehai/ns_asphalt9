@@ -59,10 +59,9 @@ def event_loop():
                 process_screen(page)
             time.sleep(3)
         except Exception as err:
-            filename = capture()
+            # filename = capture()
             logger.error(
-                f"Caught exception, err = {err}, traceback = {traceback.format_exc()}, \
-                  filename = {filename}"
+                f"Caught exception, err = {err}, traceback = {traceback.format_exc()}"
             )
 
     G.G_RACE_QUIT_EVENT.set()

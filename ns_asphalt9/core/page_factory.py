@@ -33,7 +33,7 @@ class PageFactory:
             and match_pages[0][1] == match_pages[1][1]
         ):
             logger.info(f"match_pages = {match_pages}")
-            self.capture()
+            # self.capture()
 
         if match_pages:
             page = match_pages[0][0](text, self.last_page)
