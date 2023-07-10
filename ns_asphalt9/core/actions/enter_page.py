@@ -54,7 +54,7 @@ def enter_series(page=None, mode=None):
         return
     reset_to_career()
     pro.press_group([Buttons.ZL] * 4, 0.5)
-    if mode == consts.other_series_zh:
+    if mode == consts.mp2_zh:
         pro.press_group([Buttons.DPAD_DOWN], 0.5)
     if mode == consts.mp3_zh:
         pro.press_group([Buttons.DPAD_DOWN] * 2, 0.5)
