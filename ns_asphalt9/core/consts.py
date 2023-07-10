@@ -113,6 +113,7 @@ legendary_hunt_zh = "传奇寻车"
 
 class Mode:
     car_hunt = "CAR HUNT"
+    legendary_hunt = "LEGENDARY HUNT"
     world_series = "WORLD SERIES"
     limited_series = "LIMITED SERIES"
     trial_series = "TRIAL SERIES"
@@ -126,6 +127,7 @@ class TaskStatus:
 
 modes_zh = {
     Mode.car_hunt: car_hunt_zh,
+    Mode.legendary_hunt: legendary_hunt_zh,
     Mode.world_series: mp1_zh,
     Mode.limited_series: mp_zh,
     Mode.trial_series: mp_zh,
