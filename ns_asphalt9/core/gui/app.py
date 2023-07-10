@@ -142,7 +142,7 @@ class App(customtkinter.CTk):
             self.settings,
             variable=self.mode,
             command=self.save_settings,
-            values=["多人一", "多人二", "寻车", "传奇寻车"],
+            values=["多人一", "多人二", "多人三", "寻车", "传奇寻车"],
         )
         self.mode_buttons.grid(
             row=0, column=1, padx=(20, 10), pady=(20, 10), sticky="ew"
