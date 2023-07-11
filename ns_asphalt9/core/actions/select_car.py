@@ -51,6 +51,8 @@ def world_series_positions():
     config = globals.CONFIG["多人一"][division]
     return config["车库位置"]
 
+def mp3_position():
+    return globals.CONFIG["多人三"]["车库位置"]
 
 def other_series_position():
     return globals.CONFIG["多人二"]["车库位置"]
@@ -60,15 +62,24 @@ def carhunt_position():
     return globals.CONFIG["寻车"]["车库位置"]
 
 
+def legendary_hunt_position():
+    return globals.CONFIG["传奇寻车"]["车库位置"]
+
+
 def get_race_config():
     mode = globals.MODE if globals.MODE else globals.CONFIG["模式"]
     logger.info(f"Get mode {mode} config.")
-    if mode == consts.other_series_zh:
-        return other_series_position(), other_series_reset, mode
+    if mode in [consts.mp_zh, consts.mp1_zh]:
+        if globals.CONFIG["模式"] == consts.mp3_zh:
+            return mp3_position(), other_series_reset, consts.mp3_zh
+        elif globals.CONFIG["模式"] == consts.mp2_zh:
+            return other_series_position(), other_series_reset, consts.mp2_zh
+        else:
+            return world_series_positions(), world_series_reset, consts.mp1_zh
     elif mode == consts.car_hunt_zh:
         return carhunt_position(), carhunt_reset, mode
-    elif mode == consts.world_series_zh:
-        return world_series_positions(), world_series_reset, mode
+    elif mode == consts.legendary_hunt_zh:
+        return legendary_hunt_position(), carhunt_reset, mode        
     else:
         return default_positions(), default_reset, mode
 

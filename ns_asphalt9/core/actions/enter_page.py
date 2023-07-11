@@ -32,9 +32,9 @@ def reset_to_career():
 
 def in_series(page, mode):
     if (
-        mode == consts.world_series_zh
+        mode == consts.mp1_zh
         and page.name == consts.world_series
-        or mode == consts.other_series_zh
+        or mode in [consts.mp2_zh, consts.mp3_zh]
         and page.name
         in [
             consts.trial_series,
@@ -46,14 +46,18 @@ def in_series(page, mode):
 
 
 @retry(max_attempts=3)
-def enter_series(page=None, mode=consts.world_series_zh):
+def enter_series(page=None, mode=None):
     """进入多人赛事"""
+    if not mode:
+        mode = globals.CONFIG["模式"]
     if page and in_series(page, mode):
         return
     reset_to_career()
     pro.press_group([Buttons.ZL] * 4, 0.5)
-    if mode != consts.world_series_zh:
+    if mode == consts.mp2_zh:
         pro.press_group([Buttons.DPAD_DOWN], 0.5)
+    if mode == consts.mp3_zh:
+        pro.press_group([Buttons.DPAD_DOWN] * 2, 0.5)
     time.sleep(2)
     pro.press_group([Buttons.A], 2)
     page = ocr_screen()
@@ -63,32 +67,54 @@ def enter_series(page=None, mode=consts.world_series_zh):
         raise Exception(f"Failed to access {mode}, current page = {page.name}")
 
 
-@retry(max_attempts=3)
-def enter_carhunt(page=None):
-    """进入寻车"""
+def _enter_carhunt(page=None, mode=0):
+    """进入寻车/传奇寻车
+    0 寻车
+    1 传奇寻车
+    """
+    if mode == 0:
+        page_name = consts.carhunt
+        config_key = "寻车"
+        page_feature = "CAR HUNT(?!\sRIOT)"
+    else:
+        page_name = consts.legendary_hunt
+        config_key = "传奇寻车"
+        page_feature = "LEGENDARY HUNT(?!\sRIOT)"
     if page:
         logger.info(f"page = {page}, page.name = {page.name}")
-    if page and page.name == consts.carhunt:
+    if page and page.name == page_name:
         return
     reset_to_career()
     pro.press_group([Buttons.ZL] * 5, 0.5)
     pro.press_group([Buttons.A], 2)
-    pro.press_group([Buttons.ZR] * globals.CONFIG["寻车"]["寻车位置"], 0.5)
+    pro.press_group([Buttons.ZR] * globals.CONFIG[config_key]["寻车位置"], 0.5)
     time.sleep(1)
     page = ocr_screen()
-    if page.has_text("CAR HUNT(?!\sRIOT)"):
+    if page.has_text(page_feature):
         pro.press_a()
     else:
         pro.press_group([Buttons.ZL] * 12, 0)
         for i in range(20):
             pro.press_group([Buttons.ZR], 0.5)
             page = ocr_screen()
-            if page.has_text("CAR HUNT(?!\sRIOT)"):
-                globals.CONFIG["寻车"]["寻车位置"] = i + 1
+            if page.has_text(page_feature):
+                globals.CONFIG[config_key]["寻车位置"] = i + 1
                 pro.press_a()
                 break
         else:
             raise Exception(f"Failed to access carhunt, current page = {page.name}")
+
+
+@retry(max_attempts=3)
+def enter_carhunt(page=None):
+    """进入寻车"""
+    _enter_carhunt(page)
+
+
+@retry(max_attempts=3)
+def enter_legend_carhunt(page=None):
+    """进入传奇寻车"""
+    _enter_carhunt(page, 1)
 
 
 @retry(max_attempts=3)

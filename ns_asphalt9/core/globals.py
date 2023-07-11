@@ -35,8 +35,9 @@ DIVISION = ""
 
 # 选车次数
 SELECT_COUNT = {
-    consts.world_series_zh: 0,
-    consts.other_series_zh: 0,
+    consts.mp1_zh: 0,
+    consts.mp2_zh: 0,
+    consts.mp3_zh: 0,
     consts.car_hunt_zh: 0
 }
 

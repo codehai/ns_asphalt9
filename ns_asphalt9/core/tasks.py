@@ -43,7 +43,10 @@ class TaskManager:
             consts.trial_series,
             consts.carhunt,
             consts.card_pack,
-            consts.legend_pass
+            consts.legend_pass,
+            consts.legendary_hunt,
+            consts.daily_events,
+            consts.multi_player
         ]:
             return False
 
@@ -63,16 +66,16 @@ class TaskManager:
     @classmethod
     def task_enter(cls, task, page=None) -> None:
         logger.info(f"Start process {task} task.")
-        if task == consts.world_series_zh:
+        if task in [consts.mp1_zh, consts.mp2_zh, consts.mp3_zh]:
             actions.enter_series(page=page)
-        if task == consts.other_series_zh:
-            actions.enter_series(mode=task, page=page)
         if task == consts.car_hunt_zh:
             actions.enter_carhunt(page=page)
         if task == consts.free_pack_zh:
             actions.free_pack()
         if task == consts.prix_pack_zh:
             actions.prix_pack()
+        if task == consts.legendary_hunt_zh:
+            actions.enter_legend_carhunt()
 
     @classmethod
     def set_done(cls) -> None:

@@ -39,7 +39,7 @@ class Page:
             self.division = consts.divisions_zh.get(divisions[0], "")
 
         modes = re.findall(
-            "CAR HUNT|WORLD SERIES|LIMITED SERIES|TRIAL SERIES", self.text
+            "LEGENDARY HUNT|CAR HUNT|WORLD SERIES|LIMITED SERIES|TRIAL SERIES", self.text
         )
         if modes and self.name not in [consts.multi_player]:
             self.mode = consts.modes_zh.get(modes[0], "")
@@ -97,6 +97,8 @@ class LoadingGame(Page):
     feature = "GAMELOFT PLAYER ID.*ASPHALT"
     part_match = False
 
+    action = staticmethod(actions.loading_game)
+
 
 @cache_decorator("page")
 class LoadingRace(Page):
@@ -145,10 +147,17 @@ class MultiPlayer(Page):
     """多人首页"""
 
     name = consts.multi_player
-    feature = "WORLD SERIES.*(LIMITED|TRIAL) SERIES"
+    feature = "WORLD SERIES|LIMITED SERIES|TRIAL SERIES"
     part_match = False
 
     action = staticmethod(actions.enter_series)
+
+    @classmethod
+    def calc_weight(cls, text: str) -> int:
+        match_count = len(re.findall(cls.feature, text))
+        if match_count >= 2:
+            match_count = 10
+        return match_count
 
 
 @cache_decorator("page")
@@ -225,8 +234,11 @@ class LegendaryHunt(Page):
     """通行证寻车"""
 
     name = consts.legendary_hunt
-    feature = "LEGENDARY HUNT"
+    feature = "LEGENDARY HUNT:.*CAR HUNT EVENT PACK"
     part_match = False
+
+    action = staticmethod(pro.press_button)
+    args = (Buttons.A, 3)
 
 
 @cache_decorator("page")
