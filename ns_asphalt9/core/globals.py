@@ -38,7 +38,8 @@ SELECT_COUNT = {
     consts.mp1_zh: 0,
     consts.mp2_zh: 0,
     consts.mp3_zh: 0,
-    consts.car_hunt_zh: 0
+    consts.car_hunt_zh: 0,
+    consts.legendary_hunt_zh: 0
 }
 
 # 比赛中
