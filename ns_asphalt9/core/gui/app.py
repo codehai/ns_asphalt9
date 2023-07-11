@@ -442,7 +442,7 @@ class App(customtkinter.CTk):
             except IndexError:
                 pass
 
-            self.setting_modules["寻车"]["车库位置"].append({"row": option1, "col": option2})
+            self.setting_modules["传奇寻车"]["车库位置"].append({"row": option1, "col": option2})
 
         # 多人三配置
         mp3_settings_frame = customtkinter.CTkFrame(self.settings, width=340)
