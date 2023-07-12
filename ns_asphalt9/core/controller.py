@@ -1,18 +1,6 @@
 import time
-from random import randint
-
-import nxbt
-from nxbt import Nxbt
-
-from .log import logger
-
-
-def random_colour():
-    return [
-        randint(0, 255),
-        randint(0, 255),
-        randint(0, 255),
-    ]
+import os
+from .utils.log import logger
 
 
 class Buttons:
@@ -44,6 +32,9 @@ class Buttons:
 
 class ProController:
     def __init__(self) -> None:
+        import nxbt
+        from nxbt import Nxbt
+
         self.nx = Nxbt()
         self.controller_index = self.nx.create_controller(nxbt.PRO_CONTROLLER)
         self.nx.wait_for_connection(self.controller_index)
@@ -80,4 +71,15 @@ class ProController:
         self.press_button(Buttons.B, sleep)
 
 
-pro = ProController()
+debug = os.environ.get("A9_DEBUG", 0)
+if debug:
+    from unittest.mock import MagicMock
+
+    pro = MagicMock()
+    pro.press_buttons.return_value = None
+    pro.press_group.return_value = None
+    pro.press_button.return_value = None
+    pro.press_a.return_value = None
+    pro.press_b.return_value = None
+else:
+    pro = ProController()

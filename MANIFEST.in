@@ -1,0 +1,5 @@
+include ns_asphalt9/core/*.py
+include ns_asphalt9/core/actions/*.py
+include ns_asphalt9/core/gui/*.py
+include ns_asphalt9/core/gui/images/*.png
+include ns_asphalt9/core/utils/*.py

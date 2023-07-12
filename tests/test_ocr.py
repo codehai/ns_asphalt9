@@ -25,10 +25,10 @@ def test_ocr():
     for index, num in enumerate([1, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]):
         logger.info(f"scene {num}")
         name = f"output{num}"
-        path = "./images/scene"
+        path = "./scene"
         image_path = os.path.join(path, f"{name}.jpg")
         im = Image.open(image_path)
-        #im = im.resize((640, 360), Image.LANCZOS)
+        # im = im.resize((640, 360), Image.LANCZOS)
         string = pytesseract.image_to_string(
             im,
             lang="eng",
